@@ -6,11 +6,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#include "Acts/Vertexing/VertexingError.hpp"
-
 #include <math.h>
-
-namespace Acts {
 
 template <typename input_track_t>
 std::pair<double, double>
@@ -18,10 +14,7 @@ Acts::GaussianTrackDensity<input_track_t>::globalMaximumWithWidth(
     State& state, const std::vector<const input_track_t*>& trackList,
     const std::function<BoundTrackParameters(input_track_t)>& extractParameters)
     const {
-  auto result = addTracks(state, trackList, extractParameters);
-  if (not result.ok()) {
-    return std::make_pair(0., 0.);
-  }
+  addTracks(state, trackList, extractParameters);
 
   double maxPosition = 0.;
   double maxDensity = 0.;
@@ -75,7 +68,7 @@ double Acts::GaussianTrackDensity<input_track_t>::globalMaximum(
 }
 
 template <typename input_track_t>
-Result<void> Acts::GaussianTrackDensity<input_track_t>::addTracks(
+void Acts::GaussianTrackDensity<input_track_t>::addTracks(
     State& state, const std::vector<const input_track_t*>& trackList,
     const std::function<BoundTrackParameters(input_track_t)>& extractParameters)
     const {
@@ -85,9 +78,6 @@ Result<void> Acts::GaussianTrackDensity<input_track_t>::addTracks(
     const double d0 = boundParams.parameters()[BoundIndices::eBoundLoc0];
     const double z0 = boundParams.parameters()[BoundIndices::eBoundLoc1];
     // Get track covariance
-    if (not boundParams.covariance().has_value()) {
-      return VertexingError::NoCovariance;
-    }
     const auto perigeeCov = *(boundParams.covariance());
     const double covDD =
         perigeeCov(BoundIndices::eBoundLoc0, BoundIndices::eBoundLoc0);
@@ -127,7 +117,6 @@ Result<void> Acts::GaussianTrackDensity<input_track_t>::addTracks(
     state.trackEntries.emplace_back(z0, constantTerm, linearTerm, quadraticTerm,
                                     zMin, zMax);
   }
-  return Result<void>::success();
 }
 
 template <typename input_track_t>
@@ -173,5 +162,3 @@ void Acts::GaussianTrackDensity<input_track_t>::GaussianTrackDensityStore::
     m_secondDerivative += 2. * entry.c2 * delta + qPrime * deltaPrime;
   }
 }
-
-}  // namespace Acts

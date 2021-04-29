@@ -262,9 +262,7 @@ BOOST_DATA_TEST_CASE(
   CHECK_CLOSE_REL(end_parameters_1s->position(tgContext),
                   end_parameters_2s->position(tgContext), 0.001);
 
-  BOOST_CHECK(end_parameters_1s->covariance().has_value());
   const auto& cov_1s = *(end_parameters_1s->covariance());
-  BOOST_CHECK(end_parameters_2s->covariance().has_value());
   const auto& cov_2s = *(end_parameters_2s->covariance());
 
   // CHECK_CLOSE_COVARIANCE(cov_1s, cov_2s, 0.001);
@@ -341,9 +339,7 @@ BOOST_DATA_TEST_CASE(
   CHECK_CLOSE_REL(end_parameters_1s->position(tgContext),
                   end_parameters_2s->position(tgContext), 0.001);
 
-  BOOST_CHECK(end_parameters_1s->covariance().has_value());
   const auto& cov_1s = (*(end_parameters_1s->covariance()));
-  BOOST_CHECK(end_parameters_2s->covariance().has_value());
   const auto& cov_2s = (*(end_parameters_2s->covariance()));
 
   // CHECK_CLOSE_COVARIANCE(cov_1s, cov_2s, 0.001);

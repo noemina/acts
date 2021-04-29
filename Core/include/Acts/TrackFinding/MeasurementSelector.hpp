@@ -85,11 +85,6 @@ class MeasurementSelector {
       return CombinatorialKalmanFilterError::MeasurementSelectionFailed;
     }
 
-    // Need covariance to compute chi2
-    if (not predictedParams.covariance().has_value()) {
-      return CombinatorialKalmanFilterError::MeasurementSelectionFailed;
-    }
-
     // Get geoID of this surface
     auto surface = &predictedParams.referenceSurface();
     auto geoID = surface->geometryId();

@@ -20,6 +20,5 @@ std::ostream& ActsFatras::operator<<(std::ostream& os,
   os << "|pdg=" << particle.pdg();
   os << "|q=" << particle.charge();
   os << "|m=" << particle.mass();
-  os << "|p=" << particle.absoluteMomentum();
   return os;
 }

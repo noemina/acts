@@ -24,7 +24,6 @@
 #include <Acts/Surfaces/RadialBounds.hpp>
 #include <Acts/Surfaces/SurfaceBounds.hpp>
 
-#include <algorithm>
 #include <map>
 
 namespace {
@@ -257,16 +256,6 @@ void Acts::MaterialMapJsonConverter::convertToHierarchy(
     std::vector<std::pair<GeometryIdentifier, Acts::SurfaceAndMaterial>>&
         surfaceHierarchy,
     const Acts::TrackingVolume* tVolume) {
-  auto sameId =
-      [tVolume](
-          std::pair<GeometryIdentifier, Acts::TrackingVolumeAndMaterial> pair) {
-        return (tVolume->geometryId() == pair.first);
-      };
-  if (std::find_if(volumeHierarchy.begin(), volumeHierarchy.end(), sameId) !=
-      volumeHierarchy.end()) {
-    // this volume was already visited
-    return;
-  }
   if ((tVolume->volumeMaterial() != nullptr ||
        m_cfg.processNonMaterial == true) &&
       m_cfg.processVolumes == true) {

@@ -33,11 +33,9 @@ void ActsExamples::Options::addParticleGunOptions(Description& desc) {
   opt("gen-eta",
       value<Interval>()->value_name("MIN:MAX")->default_value({-4.0, 4.0}),
       "Pseudo-rapidity generation range");
-  opt("gen-mom-gev",
+  opt("gen-p-gev",
       value<Interval>()->value_name("MIN:MAX")->default_value({1.0, 10.0}),
-      "Absolute (or transverse) momentum generation range in GeV");
-  opt("gen-mom-transverse", bool_switch(),
-      "Momentum referse to transverse momentum");
+      "Absolute momentum generation range in GeV");
   opt("gen-pdg", value<int32_t>()->default_value(Acts::PdgParticle::eMuon),
       "PDG number of the particle, will be adjusted for charge flip.");
   opt("gen-randomize-charge", bool_switch(),
@@ -73,8 +71,7 @@ ActsExamples::Options::readParticleGunOptions(const Variables& vars) {
   getRange("gen-eta", 1.0, etaMin, etaMax);
   pgCfg.thetaMin = 2 * std::atan(std::exp(-etaMin));
   pgCfg.thetaMax = 2 * std::atan(std::exp(-etaMax));
-  getRange("gen-mom-gev", 1_GeV, pgCfg.pMin, pgCfg.pMax);
-  pgCfg.pTransverse = vars["gen-mom-transverse"].template as<bool>();
+  getRange("gen-p-gev", 1_GeV, pgCfg.pMin, pgCfg.pMax);
   pgCfg.pdg =
       static_cast<Acts::PdgParticle>(vars["gen-pdg"].template as<int32_t>());
   pgCfg.randomizeCharge = vars["gen-randomize-charge"].template as<bool>();

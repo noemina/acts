@@ -144,6 +144,7 @@ void ActsExamples::ResPlotTool::fill(
 
   // get the fitted parameter (at perigee surface) and its error
   auto trackParameter = fittedParamters.parameters();
+  auto covariance = *fittedParamters.covariance();
 
   // get the perigee surface
   auto pSurface = &fittedParamters.referenceSurface();
@@ -183,24 +184,17 @@ void ActsExamples::ResPlotTool::fill(
                            residual);
     PlotHelpers::fillHisto(resPlotCache.res_vs_pT.at(parName), truthPt,
                            residual);
-
-    if (fittedParamters.covariance().has_value()) {
-      auto covariance = *fittedParamters.covariance();
-      if (covariance(parID, parID) > 0) {
-        float pull = residual / sqrt(covariance(parID, parID));
-        PlotHelpers::fillHisto(resPlotCache.pull[parName], pull);
-        PlotHelpers::fillHisto(resPlotCache.pull_vs_eta.at(parName), truthEta,
-                               pull);
-        PlotHelpers::fillHisto(resPlotCache.pull_vs_pT.at(parName), truthPt,
-                               pull);
-      } else {
-        ACTS_WARNING("Fitted track parameter :" << parName
-                                                << " has negative covariance = "
-                                                << covariance(parID, parID));
-      }
+    if (covariance(parID, parID) > 0) {
+      float pull = residual / sqrt(covariance(parID, parID));
+      PlotHelpers::fillHisto(resPlotCache.pull[parName], pull);
+      PlotHelpers::fillHisto(resPlotCache.pull_vs_eta.at(parName), truthEta,
+                             pull);
+      PlotHelpers::fillHisto(resPlotCache.pull_vs_pT.at(parName), truthPt,
+                             pull);
     } else {
       ACTS_WARNING("Fitted track parameter :" << parName
-                                              << " has no covariance");
+                                              << " has negative covariance = "
+                                              << covariance(parID, parID));
     }
   }
 }
