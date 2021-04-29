@@ -199,4 +199,20 @@ struct SurfaceGridData {
                  nbins_loc1, min_loc1, max_loc1);
 };
 
+struct SpacePointData {
+  /// Event-unique measurement identifier. Each value can appear at most once.
+  uint64_t measurement_id;
+  /// Module identifier.
+  uint64_t module_idhash;
+  /// Space point type pixel, strip, strip overlap
+  int32_t sp_type;
+  /// Space point information
+  float sp_x, sp_y, sp_z, sp_radius;
+  float sp_covr, sp_covz;
+
+  DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_type, module_idhash, 
+                 sp_x, sp_y, sp_z, sp_radius, 
+                 sp_covr, sp_covz);
+};
+
 }  // namespace ActsExamples

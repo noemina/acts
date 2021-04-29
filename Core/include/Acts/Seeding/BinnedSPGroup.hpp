@@ -129,6 +129,10 @@ class Neighborhood {
         m_indices, m_spgrid, m_indices.size() - 1,
         std::end(m_spgrid->at(m_indices.back())));
   }
+  
+  int size() {
+    return m_indices.size();
+  }
 
  private:
   std::vector<size_t> m_indices;
@@ -141,6 +145,7 @@ template <typename external_spacepoint_t>
 class BinnedSPGroupIterator {
  public:
   BinnedSPGroupIterator& operator++() {
+    
     if (zIndex < phiZbins[1]) {
       zIndex++;
 
@@ -148,12 +153,20 @@ class BinnedSPGroupIterator {
       zIndex = 1;
       phiIndex++;
     }
+    
+    std::cout << "|||| in operator++: " << phiIndex << ", " << zIndex << std::endl;
+    
     // set current & neighbor bins only if bin indices valid
     if (phiIndex <= phiZbins[0] && zIndex <= phiZbins[1]) {
       currentBin =
           std::vector<size_t>{grid->globalBinFromLocalBins({phiIndex, zIndex})};
       bottomBinIndices = m_bottomBinFinder->findBins(phiIndex, zIndex, grid);
       topBinIndices = m_topBinFinder->findBins(phiIndex, zIndex, grid);
+      
+      std::cout << "===== current bin size --> " << currentBin.size() << std::endl;
+      std::cout << "===== bottom --> " << bottomBinIndices.size() << std::endl;
+      std::cout << "===== top    --> " << topBinIndices.size() << std::endl;
+      
       outputIndex++;
       return *this;
     }
@@ -186,6 +199,8 @@ class BinnedSPGroupIterator {
                         BinFinder<external_spacepoint_t>* botBinFinder,
                         BinFinder<external_spacepoint_t>* tBinFinder)
       : currentBin({spgrid->globalBinFromLocalBins({1, 1})}) {
+    
+    std::cout << "itr (0): (1, 1) " << std::endl;
     grid = spgrid;
     m_bottomBinFinder = botBinFinder;
     m_topBinFinder = tBinFinder;
@@ -195,6 +210,10 @@ class BinnedSPGroupIterator {
     outputIndex = 0;
     bottomBinIndices = m_bottomBinFinder->findBins(phiIndex, zIndex, grid);
     topBinIndices = m_topBinFinder->findBins(phiIndex, zIndex, grid);
+    
+    std::cout << "===== current bin size --> " << currentBin.size() << std::endl;
+    std::cout << "===== bottom --> " << bottomBinIndices.size() << std::endl;
+    std::cout << "===== top    --> " << topBinIndices.size() << std::endl;
   }
 
   BinnedSPGroupIterator(const SpacePointGrid<external_spacepoint_t>* spgrid,
@@ -202,6 +221,7 @@ class BinnedSPGroupIterator {
                         BinFinder<external_spacepoint_t>* tBinFinder,
                         size_t phiInd, size_t zInd)
       : currentBin({spgrid->globalBinFromLocalBins({phiInd, zInd})}) {
+    std::cout << "itr (1): (" << phiInd << ", " << zInd << ") " << std::endl;
     m_bottomBinFinder = botBinFinder;
     m_topBinFinder = tBinFinder;
     grid = spgrid;
@@ -212,7 +232,10 @@ class BinnedSPGroupIterator {
     if (phiIndex <= phiZbins[0] && zIndex <= phiZbins[1]) {
       bottomBinIndices = m_bottomBinFinder->findBins(phiIndex, zIndex, grid);
       topBinIndices = m_topBinFinder->findBins(phiIndex, zIndex, grid);
-    }
+      std::cout << "===== current bin size --> " << currentBin.size() << std::endl;
+      std::cout << "===== bottom --> " << bottomBinIndices.size() << std::endl;
+      std::cout << "===== top    --> " << topBinIndices.size() << std::endl;
+    }      
   }
 
  private:

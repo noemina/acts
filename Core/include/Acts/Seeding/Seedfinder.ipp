@@ -40,6 +40,7 @@ std::vector<Seed<external_spacepoint_t>>
 Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     sp_range_t bottomSPs, sp_range_t middleSPs, sp_range_t topSPs) const {
   std::vector<Seed<external_spacepoint_t>> outputVec;
+  std::cout << "====>>> createSeedsForGroup: " << middleSPs.size() << ", " << bottomSPs.size() << ", " << topSPs.size() << std::endl;
   for (auto spM : middleSPs) {
     float rM = spM->radius();
     float zM = spM->z();

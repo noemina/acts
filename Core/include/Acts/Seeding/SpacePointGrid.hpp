@@ -13,6 +13,7 @@
 #include "Acts/Utilities/detail/Grid.hpp"
 
 #include <memory>
+#include <variant>
 
 namespace Acts {
 
@@ -35,6 +36,12 @@ struct SpacePointGridConfig {
   float deltaRMax;
   // maximum forward direction expressed as cot(theta)
   float cotThetaMax;
+  // maximum impact parameter in mm
+  float impactMax;
+  // number of consecutive phi bins used in the seeding
+  int numberOfPhiBins = 1;
+  // enable non equidistant binning in z
+  std::vector < float > zBinEdges;
 };
 template <typename external_spacepoint_t>
 using SpacePointGrid =
@@ -42,9 +49,9 @@ using SpacePointGrid =
                      const InternalSpacePoint<external_spacepoint_t>>>,
                  detail::Axis<detail::AxisType::Equidistant,
                               detail::AxisBoundaryType::Closed>,
-                 detail::Axis<detail::AxisType::Equidistant,
+                 detail::Axis<detail::AxisType::Variable,
                               detail::AxisBoundaryType::Bound>>;
-
+  
 class SpacePointGridCreator {
  public:
   template <typename external_spacepoint_t>

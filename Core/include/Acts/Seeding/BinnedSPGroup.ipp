@@ -1,3 +1,4 @@
+#include <../../home/noemi/Work/ACTS/acts/Core/include/Acts/Material/MaterialGridHelper.hpp>
 // This file is part of the Acts project.
 //
 // Copyright (C) 2019 CERN for the benefit of the Acts project
@@ -34,6 +35,9 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
   // create number of bins equal to number of millimeters rMax
   // (worst case minR: configured minR + 1mm)
   size_t numRBins = (config.rMax + config.beamPos.norm());
+  
+  std::cout << "Number of rBins = " << numRBins << std::endl;
+  
   std::vector<std::vector<
       std::unique_ptr<const InternalSpacePoint<external_spacepoint_t>>>>
       rBins(numRBins);
@@ -45,6 +49,8 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
     float spX = sp.x();
     float spY = sp.y();
     float spZ = sp.z();
+    
+    std::cout << "Checking space point... " << sp.x() << ", " << sp.y() << ", " << sp.z() << std::endl;
 
     if (spZ > zMax || spZ < zMin) {
       continue;
@@ -81,6 +87,22 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
       bin.push_back(std::move(isp));
     }
   }
+  
+  Acts::Grid2D::index_t nBins = grid->numLocalBins();
+  for (unsigned int phiBin = 0; phiBin < nBins[0]; phiBin++) {
+    std::cout << "(" << phiBin << ") ==> |";
+    for (unsigned int zBin = 0; zBin < nBins[1]; zBin++) {
+      Acts::Grid2D::index_t indices = {{phiBin, zBin}};
+      std::vector<
+          std::unique_ptr<const InternalSpacePoint<external_spacepoint_t>>>&
+          bin = grid->atLocalBins(indices);
+          std::cout << bin.size() << "|";
+    }
+    std::cout << std::endl;
+  }
+    
+  
+    
   m_binnedSP = std::move(grid);
   m_bottomBinFinder = botBinFinder;
   m_topBinFinder = tBinFinder;
