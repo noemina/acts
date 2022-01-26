@@ -209,6 +209,7 @@ class Axis<AxisType::Equidistant, bdt> final : public IAxis {
       return NeighborHoodIndices();
     }
 
+//<<<<<<< Updated upstream
     // Handle corner case where user requests more neighbours than the number
     // of bins on the axis. All bins are returned in this case.
 
@@ -218,6 +219,17 @@ class Axis<AxisType::Equidistant, bdt> final : public IAxis {
     if (std::abs(sizes.first - sizes.second) >= max) {
       sizes.first = 1 - idx;
       sizes.second = max - idx;
+//=======
+//    int nbins = getNBins();
+//
+//    // Handle corner case where user requests more neighbours than the numbe
+//    // of bins on the axis. Returns all bins in this case.
+//    sizes.first %= nbins;
+//    sizes.second %= nbins;
+//    if (std::abs(sizes.first - sizes.second) >= nbins) {
+//      sizes.first = 1 - idx;
+//      sizes.second = nbins - idx;
+//>>>>>>> Stashed changes
     }
 
     // If the entire index range is not covered, we must wrap the range of
@@ -235,6 +247,9 @@ class Axis<AxisType::Equidistant, bdt> final : public IAxis {
       return NeighborHoodIndices(itfirst, itlast + 1);
     } else {
       return NeighborHoodIndices(itfirst, max + 1, 1, itlast + 1);
+//=======
+//      return NeighborHoodIndices(itfirst, nbins + 1, 1, itlast + 1);
+//>>>>>>> Stashed changes
     }
   }
 
@@ -441,8 +456,13 @@ class Axis<AxisType::Variable, bdt> final : public IAxis {
                                               -1, 1}) const {
     constexpr int min = 0;
     const int max = getNBins() + 1;
+//<<<<<<< Updated upstream
     const int itmin = std::max(min, static_cast<int>(idx) + sizes.first);
     const int itmax = std::min(max, static_cast<int>(idx) + sizes.second);
+//=======
+//    const int itmin = std::max(min, static_cast<int>(idx) + sizes.first);
+//    const int itmax = std::min(max, static_cast<int>(idx) + sizes.second);
+//>>>>>>> Stashed changes
     return NeighborHoodIndices(itmin, itmax + 1);
   }
 
@@ -465,8 +485,13 @@ class Axis<AxisType::Variable, bdt> final : public IAxis {
     }
     constexpr int min = 1;
     const int max = getNBins();
+//<<<<<<< Updated upstream
     const int itmin = std::max(min, static_cast<int>(idx) + sizes.first);
     const int itmax = std::min(max, static_cast<int>(idx) + sizes.second);
+//=======
+//    const int itmin = std::max(min, static_cast<int>(idx) + sizes.first);
+//    const int itmax = std::min(max, static_cast<int>(idx) + sizes.second);
+//>>>>>>> Stashed changes
     return NeighborHoodIndices(itmin, itmax + 1);
   }
 
@@ -489,6 +514,7 @@ class Axis<AxisType::Variable, bdt> final : public IAxis {
       return NeighborHoodIndices();
     }
 
+//<<<<<<< Updated upstream
     // Handle corner case where user requests more neighbours than the number
     // of bins on the axis. All bins are returned in this case
 
@@ -499,6 +525,17 @@ class Axis<AxisType::Variable, bdt> final : public IAxis {
       sizes.first = 1 - idx;
       sizes.second = max - idx;
     }
+//=======
+//    int nbins = getNBins();
+//    // Handle corner case where user requests more neighbours than the number
+//    // of bins on the axis. All bins are returned in this case
+//    sizes.first %= nbins;
+//    sizes.second %= nbins;
+//    if (std::abs(sizes.first - sizes.second) + 1 > nbins) {
+//      sizes.first = 1 - static_cast<int>(idx);
+//      sizes.second = nbins - static_cast<int>(idx);
+//    }
+//>>>>>>> Stashed changes
 
     // If the entire index range is not covered, we must wrap the range of
     // targeted neighbor indices into the range of valid bin indices. This may

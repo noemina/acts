@@ -25,9 +25,9 @@ namespace detail {
 
 template <typename T>
 constexpr T ipow(T num, unsigned int pow) {
-  return (pow >= sizeof(unsigned int) * 8)
-             ? 0
-             : pow == 0 ? 1 : num * ipow(num, pow - 1);
+  return (pow >= sizeof(unsigned int) * 8) ? 0
+         : pow == 0                        ? 1
+                                           : num * ipow(num, pow - 1);
 }
 
 // This object can be iterated to produce the (ordered) set of global indices
@@ -309,6 +309,22 @@ struct grid_helper_impl {
   }
 
   template <class... Axes>
+  static void neighborHoodIndices(
+      const std::array<size_t, sizeof...(Axes)>& localIndices,
+      std::array<std::pair<int, int>, sizeof...(Axes)> sizes,
+      const std::tuple<Axes...>& axes,
+      std::array<NeighborHoodIndices, sizeof...(Axes)>& neighborIndices) {
+    // ask n-th axis
+    size_t locIdx = localIndices.at(N);
+    NeighborHoodIndices locNeighbors =
+        std::get<N>(axes).neighborHoodIndices(locIdx, sizes.at(N));
+    neighborIndices.at(N) = locNeighbors;
+
+    grid_helper_impl<N - 1>::neighborHoodIndices(localIndices, sizes, axes,
+                                                 neighborIndices);
+  }
+
+  template <class... Axes>
   static void exteriorBinIndices(std::array<size_t, sizeof...(Axes)>& idx,
                                  std::array<bool, sizeof...(Axes)> isExterior,
                                  std::set<size_t>& combinations,
@@ -434,6 +450,19 @@ struct grid_helper_impl<0u> {
     size_t locIdx = localIndices.at(0u);
     NeighborHoodIndices locNeighbors =
         std::get<0u>(axes).neighborHoodIndices(locIdx, sizes);
+    neighborIndices.at(0u) = locNeighbors;
+  }
+
+  template <class... Axes>
+  static void neighborHoodIndices(
+      const std::array<size_t, sizeof...(Axes)>& localIndices,
+      std::array<std::pair<int, int>, sizeof...(Axes)> sizes,
+      const std::tuple<Axes...>& axes,
+      std::array<NeighborHoodIndices, sizeof...(Axes)>& neighborIndices) {
+    // ask 0-th axis
+    size_t locIdx = localIndices.at(0u);
+    NeighborHoodIndices locNeighbors =
+        std::get<0u>(axes).neighborHoodIndices(locIdx, sizes.at(0u));
     neighborIndices.at(0u) = locNeighbors;
   }
 

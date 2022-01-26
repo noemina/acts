@@ -56,6 +56,14 @@ inline InternalSeed<SpacePoint>::InternalSeed(
   m_z = z;
 }
 
+// template <typename SpacePoint>
+// inline bool InternalSeed<SpacePoint>::setQuality(float q) {
+//	if(q > sp[0]->quality() and q > sp[1]->quality() and q >
+//sp[2]->quality()) return false; 	sp[0]->setQuality(q); 	sp[1]->setQuality(q);
+//	sp[2]->setQuality(q);
+//	return true;
+//}
+
 /// @endcond
 
 }  // namespace Acts

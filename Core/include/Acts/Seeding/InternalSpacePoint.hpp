@@ -12,6 +12,7 @@
 
 #include <array>
 #include <cmath>
+#include <iostream>
 #include <limits>
 
 namespace Acts {
@@ -38,18 +39,36 @@ class InternalSpacePoint {
   const float& z() const { return m_z; }
   const float& radius() const { return m_r; }
   float phi() const { return atan2f(m_y, m_x); }
+  // float phi() const { float value = atan2f(m_y, m_x); return value>0 ? value
+  // : value+2*M_PI;}
   const float& varianceR() const { return m_varianceR; }
   const float& varianceZ() const { return m_varianceZ; }
+  const float& cotTheta() const { return m_cotTheta; }
+  void setCotTheta(float& cotTheta) const { m_cotTheta = cotTheta; }
+
+  //	const float& curvature() const {return m_cotTheta; }
+  //	void curvature(float& cotTheta) const { m_cotTheta = cotTheta;}
+
   const SpacePoint& sp() const { return m_sp; }
+  float& quality() const { return m_quality; }
+  void setQuality(float& quality) const {
+    if (quality <= m_quality) {
+      std::cout << "|setQuality| Old quality :" << m_quality
+                << " New quality: " << quality << std::endl;
+      m_quality = quality;
+    }
+  }
 
  protected:
-  float m_x;               // x-coordinate in beam system coordinates
-  float m_y;               // y-coordinate in beam system coordinates
-  float m_z;               // z-coordinate in beam system coordinetes
-  float m_r;               // radius       in beam system coordinates
-  float m_varianceR;       //
-  float m_varianceZ;       //
-  const SpacePoint& m_sp;  // external space point
+  float m_x;                 // x-coordinate in beam system coordinates
+  float m_y;                 // y-coordinate in beam system coordinates
+  float m_z;                 // z-coordinate in beam system coordinetes
+  float m_r;                 // radius       in beam system coordinates
+  float m_varianceR;         //
+  float m_varianceZ;         //
+  mutable float m_cotTheta;  //
+  const SpacePoint& m_sp;    // external space point
+  mutable float m_quality;   // quality of the best seed containing this SP
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +86,7 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_r = std::sqrt(m_x * m_x + m_y * m_y);
   m_varianceR = variance.x();
   m_varianceZ = variance.y();
+  m_quality = 100000.;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +103,8 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_r = sp.m_r;
   m_varianceR = sp.m_varianceR;
   m_varianceZ = sp.m_varianceZ;
+  m_cotTheta = sp.m_cotTheta;
+  m_quality = sp.m_quality;
 }
 
 }  // end of namespace Acts

@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Acts/Definitions/Units.hpp"
+#include "Acts/Seeding/SeedfinderConfig.hpp"
 
 // System include(s).
 #include <cstddef>
@@ -33,6 +34,13 @@ struct SeedFilterConfig {
   // compatible seed?
   size_t compatSeedLimit = 2;
   // Tool to apply experiment specific cuts on collected middle space points
+
+  // seed confirmation
+  bool seedConfirmation = false;
+  // contains parameters for central seed confirmation
+  SeedConfirmationRange centralSeedConfirmationRange;
+  // contains parameters for forward seed confirmation
+  SeedConfirmationRange forwardSeedConfirmationRange;
 
   SeedFilterConfig toInternalUnits() const {
     using namespace Acts::UnitLiterals;

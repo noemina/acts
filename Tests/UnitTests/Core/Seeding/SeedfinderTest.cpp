@@ -137,6 +137,8 @@ int main(int argc, char** argv) {
 
   config.beamPos = {-.5_mm, -.5_mm};
   config.impactMax = 10._mm;
+	
+	config.numPhiNeighbors = 1;
 
   config.useVariableMiddleSPRange = false;
   Acts::Extent rRangeSPExtent;

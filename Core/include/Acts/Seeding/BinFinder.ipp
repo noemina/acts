@@ -24,6 +24,10 @@ boost::container::small_vector<size_t, 10>
 Acts::BinFinder<external_spacepoint_t>::findBins(
     size_t phiBin, size_t zBin,
     const Acts::SpacePointGrid<external_spacepoint_t>* binnedSP) {
+	
+	//    std::cout << " === dumping bin information (phi,z): " << phiBin << ", "
+	//    << zBin << std::endl;
+	
   boost::container::small_vector<size_t, 9> indices;
   // if zBinNeighbors is not defined, get the indices using
   // neighborHoodIndices
@@ -37,7 +41,37 @@ Acts::BinFinder<external_spacepoint_t>::findBins(
     sizePerAxis.at(1) = m_zBinNeighbors[zBin - 1];
     indices =
         binnedSP->neighborHoodIndices({phiBin, zBin}, sizePerAxis).collect();
+		////      std::cout << "phi,z" << std::endl;
+		//      // loop over the phi range defined by m_numPhiNeighbors
+		//      int phiNeighborRange = m_numPhiNeighbors;
+		//      for (int phiBinIndex = -phiNeighborRange; phiBinIndex <=
+		//      phiNeighborRange; phiBinIndex++) {
+		//        // loop over the z bins inside zBinNeighbors
+		//        for (size_t zBinIndex = 0; zBinIndex < m_zBinNeighbors[zBin -
+		//        1].size(); zBinIndex++) {
+		//          // get z bin local index from zBinNeighbors
+		//          auto zBinLocalIndex = m_zBinNeighbors[zBin - 1][zBinIndex];
+		//          // get phi bin local index
+		//          int maxPhiBin = (binnedSP->numLocalBins())[0];
+		//          // wrap around phi
+		//          size_t phiBinLocalIndex = 1 + (phiBin + phiBinIndex +
+		//          (maxPhiBin-1)) % (maxPhiBin); const std::array<size_t, 2>
+		//          localIndexArray = {phiBinLocalIndex,
+		//                                                            zBinLocalIndex};
+		//          // get the global bin index from local bin index
+		//          auto globalIndex =
+		//              binnedSP->globalBinFromLocalBins(localIndexArray);
+		//          indices.push_back(globalIndex);
+		//        }
+		//      }
   }
+
+  //    std::cout << "indices --> (phi,z)" << std::endl;
+  //    for (unsigned int i_bin = 0; i_bin < indices.size(); i_bin++){
+  //        auto position = binnedSP->localBinsFromGlobalBin(indices[i_bin]);
+  //        std::cout << indices[i_bin] << " --> " << position[0] << "," <<
+  //        position[1] << std::endl;
+  //    }
 
   return {indices.begin(), indices.end()};
 }

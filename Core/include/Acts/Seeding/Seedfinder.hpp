@@ -25,6 +25,20 @@
 
 namespace Acts {
 
+struct LinCircle {
+  float Zo;
+  float cotTheta;
+  float iDeltaR;
+  float Er;
+  float U;
+  float V;
+
+  float x;
+  float y;
+  float z;
+  float r;
+};
+
 template <typename external_spacepoint_t, typename platform_t = void*>
 class Seedfinder {
   ///////////////////////////////////////////////////////////////////
@@ -47,6 +61,7 @@ class Seedfinder {
     std::vector<const InternalSpacePoint<external_spacepoint_t>*> topSpVec;
     std::vector<float> curvatures;
     std::vector<float> impactParameters;
+    std::vector<float> dScores;
     std::vector<float> etaVec;
     std::vector<float> ptVec;
 

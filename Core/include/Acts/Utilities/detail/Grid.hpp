@@ -421,11 +421,19 @@ class Grid final {
   ///       over-/underflow bins, the neighborhood is of size \f$2 \times
   ///       \text{size}+1\f$ along each dimension.
   detail::GlobalNeighborHoodIndices<DIM> neighborHoodIndices(
+//<<<<<<< Updated upstream
       const index_t& localBins,
       std::array<std::pair<int, int>, DIM>& sizePerAxis) const {
     return grid_helper::neighborHoodIndices(localBins, sizePerAxis, m_axes);
   }
 
+//=======
+//      const index_t& localBins,
+//      std::array<std::pair<int, int>, DIM>& sizePerAxis) const {
+//    return grid_helper::neighborHoodIndices(localBins, sizePerAxis, m_axes);
+//  }
+//
+//>>>>>>> Stashed changes
   /// @brief total number of bins
   ///
   /// @return total number of bins in the grid

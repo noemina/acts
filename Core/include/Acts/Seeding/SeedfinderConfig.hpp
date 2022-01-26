@@ -10,6 +10,7 @@
 
 #include "Acts/Definitions/Algebra.hpp"
 #include "Acts/Definitions/Units.hpp"
+#include "Acts/Utilities/detail/Axis.hpp"
 
 #include <memory>
 
@@ -112,6 +113,25 @@ struct SeedfinderConfig {
   Acts::Vector2 beamPos{0 * Acts::UnitConstants::mm,
                         0 * Acts::UnitConstants::mm};
 
+  // radial range for middle SP
+  std::vector<std::vector<float>> rRangeMiddleSP;
+  bool useVariableMiddleSPRange = true;
+  float deltaRMiddleSPRange = 10.;
+  float rMinMiddleSP;
+  float rMaxMiddleSP;
+  // non equidistant binning in z
+  std::vector<float> zBinEdges;
+
+  // seed confirmation
+  bool seedConfirmation = false;
+  // contains parameters for central seed confirmation
+  SeedConfirmationRange centralSeedConfirmationRange;
+  // contains parameters for forward seed confirmation
+  SeedConfirmationRange forwardSeedConfirmationRange;
+
+  // sort the SP by cotTheta
+  bool cotSeedSort = true;
+
   // average radiation lengths of material on the length of a seed. used for
   // scattering.
   // default is 5%
@@ -136,6 +156,10 @@ struct SeedfinderConfig {
   float minHelixDiameter2 = 0;
   float pT2perRadius = 0;
   float sigmapT2perRadius = 0;
+
+  // constant factor used to evaluate multiple scattering contribution
+//  float kConstant = 134. * 0.05 * 9.;
+
 
   // only for Cuda plugin
   int maxBlockSize = 1024;

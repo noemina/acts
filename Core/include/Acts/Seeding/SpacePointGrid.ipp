@@ -8,6 +8,7 @@
 
 #include "Acts/Utilities/detail/Axis.hpp"
 
+#include <iostream>
 #include <memory>
 
 template <typename SpacePoint>
@@ -57,7 +58,6 @@ Acts::SpacePointGridCreator::createGrid(
     // expected azimutal deflection
     float deltaPhi = (outerAngle - innerAngle + deltaAngleWithMaxD0) /
                      (2 * config.numPhiNeighbors + 1);
-
     // divide 2pi by angle delta to get number of phi-bins
     // size is always 2pi even for regions of interest
     phiBins = std::ceil(2 * M_PI / deltaPhi);
@@ -66,10 +66,19 @@ Acts::SpacePointGridCreator::createGrid(
     // Each individual bin should be approximately a fraction (depending on this
     // number) of the maximum expected azimutal deflection.
   }
-
+	
+	// std::cout << "deltaPhi =" << deltaPhi << std::endl;
+	// std::cout << "outerAngle= " << outerAngle << " innerAngle= " <<
+	// innerAngle << std::endl; std::cout << "deltaAngleWithMaxD0= " <<
+	// deltaAngleWithMaxD0 << " impactMax= " << config.impactMax << std::endl;
+	// std::cout << "Rmin= " << Rmin << " rMax= " << config.rMax << std::endl;
+	
   Acts::detail::Axis<detail::AxisType::Equidistant,
                      detail::AxisBoundaryType::Closed>
       phiAxis(-M_PI, M_PI, phiBins);
+	
+	// std::cout << "Phi axis (-" << M_PI << "," << M_PI << ") number of bins: "
+	// << phiBins << std::endl;
 
   // vector that will store the edges of the bins of z
   std::vector<AxisScalar> zValues;
@@ -81,11 +90,13 @@ Acts::SpacePointGridCreator::createGrid(
     // seeds
     // FIXME: zBinSize must include scattering
     float zBinSize = config.cotThetaMax * config.deltaRMax;
+
     int zBins =
         std::max(1, (int)std::floor((config.zMax - config.zMin) / zBinSize));
 
     for (int bin = 0; bin <= zBins; bin++) {
       AxisScalar edge = config.zMin + bin * zBinSize;
+			// std::cout << "zbin: " << edge << std::endl;
       zValues.push_back(edge);
     }
 
@@ -93,6 +104,7 @@ Acts::SpacePointGridCreator::createGrid(
     // Use the zBinEdges defined in the config
     for (auto& bin : config.zBinEdges) {
       zValues.push_back(bin);
+			// std::cout << "zbin: " << bin << std::endl;
     }
   }
 

@@ -57,6 +57,8 @@ ActsExamples::ProcessCode ActsExamples::CsvSpacePointReader::read(
   const auto& path =
       perEventFilepath(m_cfg.inputDir, filename + ".csv", ctx.eventNumber);
 
+  std::cout << " ================ EVENT " << ctx.eventNumber << " ====================" << std::endl;
+
   dfe::NamedTupleCsvReader<SpacePointData> reader(path);
   SpacePointData data;
 
@@ -75,7 +77,8 @@ ActsExamples::ProcessCode ActsExamples::CsvSpacePointReader::read(
 
   ACTS_DEBUG("Created " << spacePoints.size() << " " << m_cfg.inputCollection
                         << " space points");
-  ctx.eventStore.add("PixelSpacePoints", std::move(spacePoints));
+
+	ctx.eventStore.add("PixelSpacePoints", std::move(spacePoints));
 
   return ProcessCode::SUCCESS;
 }
