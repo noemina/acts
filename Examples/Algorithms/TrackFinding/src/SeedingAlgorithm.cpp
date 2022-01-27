@@ -92,6 +92,14 @@ ActsExamples::SeedingAlgorithm::SeedingAlgorithm(
 //  if (m_cfg.gridConfig.zBinEdges.size()-1 != m_cfg.seedFinderConfig.rRangeMiddleSP.size()) {
 //    throw std::invalid_argument("Inconsistent config rRangeMiddleSP");
 //  }
+
+  if (m_cfg.seedFinderConfig.zBinsCustomLooping.size() != 0) {
+		for (int i=1; i!=m_cfg.gridConfig.zBinEdges.size(); i++) {
+			if(std::find(m_cfg.seedFinderConfig.zBinsCustomLooping.begin(), m_cfg.seedFinderConfig.zBinsCustomLooping.end(), i) == m_cfg.seedFinderConfig.zBinsCustomLooping.end()) {
+				throw std::invalid_argument("Inconsistent config zBinsCustomLooping");
+			}
+		}
+  }
 				
   m_cfg.seedFinderConfig.seedFilter =
       std::make_unique<Acts::SeedFilter<SimSpacePoint>>(m_cfg.seedFilterConfig);

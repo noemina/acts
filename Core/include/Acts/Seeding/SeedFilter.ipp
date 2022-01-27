@@ -7,6 +7,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 #include <utility>
+#include <numeric>
+#include <algorithm>
 
 namespace Acts {
 // constructor
@@ -25,7 +27,7 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
     const InternalSpacePoint<external_spacepoint_t>& middleSP,
     std::vector<const InternalSpacePoint<external_spacepoint_t>*>& topSpVec,
     std::vector<float>& invHelixDiameterVec,
-    std::vector<float>& impactParametersVec, float zOrigin, int& nOneSeedsQ,
+    std::vector<float>& impactParametersVec, std::vector<float>& cotThetaVec, float zOrigin, int& nOneSeedsQ,
     std::back_insert_iterator<std::vector<std::pair<
         float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>>
         outIt) const {
@@ -48,7 +50,22 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
   bool iminTest = false;
   float weightMin = 1.e20;
 
-  for (size_t i = 0; i < topSpVec.size(); i++) {
+	
+	// TODO: pass this from the Seedfinder, adding a new config called enableSortingInFilter
+	bool enableSorting = true;
+	
+	// initialize original index locations
+	std::vector<size_t> idx(topSpVec.size());
+	std::iota(idx.begin(), idx.end(), 0);
+	
+	if (enableSorting) {
+		// sort indexes based on comparing values in cotThetaVec
+		std::sort(idx.begin(), idx.end(),
+							[&invHelixDiameterVec](size_t i1, size_t i2) {return invHelixDiameterVec[i1] < invHelixDiameterVec[i2];});
+	}
+	
+	for (auto& i : idx) {
+//  for (size_t i = 0; i < topSpVec.size(); i++) {
     //		std::cout << "|seed filter| i: " << i << std::endl;
     // if two compatible seeds with high distance in r are found, compatible
     // seeds span 5 layers
@@ -79,7 +96,8 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
     float a = 0;
 
     float weight = -(impact * m_cfg.impactWeightFactor);
-    for (size_t j = 0; j < topSpVec.size(); j++) {
+		for (auto& j : idx) {
+//    for (size_t j = 0; j < topSpVec.size(); j++) {
       //			std::cout << "|seed filter| j: " << j <<
       //std::endl;
       // skip it if we are looking at the same SP

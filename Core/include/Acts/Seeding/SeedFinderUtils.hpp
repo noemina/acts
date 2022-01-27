@@ -14,12 +14,17 @@
 namespace Acts {
 /// @brief A partial description of a circle in u-v space.
 struct LinCircle {
-  float Zo;
-  float cotTheta;
-  float iDeltaR;
-  float Er;
-  float U;
-  float V;
+	float Zo;
+	float cotTheta;
+	float iDeltaR;
+	float Er;
+	float U;
+	float V;
+	
+	float x;
+	float y;
+	float z;
+	float r;
 };
 
 /// @brief Transform two spacepoints to a u-v space circle.

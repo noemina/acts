@@ -46,7 +46,7 @@ class SeedFilter {
       const InternalSpacePoint<external_spacepoint_t>& middleSP,
       std::vector<const InternalSpacePoint<external_spacepoint_t>*>& topSpVec,
       std::vector<float>& invHelixDiameterVec,
-      std::vector<float>& impactParametersVec, float zOrigin, int& nOneSeedsQ,
+      std::vector<float>& impactParametersVec, std::vector<float>& cotThetaVec, float zOrigin, int& nOneSeedsQ,
       std::back_insert_iterator<std::vector<std::pair<
           float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>>
           outIt) const;

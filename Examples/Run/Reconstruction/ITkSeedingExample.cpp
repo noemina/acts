@@ -143,6 +143,10 @@ int main(int argc, char* argv[]) {
                                             250., 450., 925., 1400., 2500., 3000.};
   seedingCfg.seedFinderConfig.zBinEdges = seedingCfg.gridConfig.zBinEdges;
 
+	seedingCfg.seedFinderConfig.zBinsCustomLooping = {1, 2, 3, 4, 11, 10, 9, 8, 6, 5, 7};
+	
+	seedingCfg.seedFinderConfig.enableCutsForSortedSP = true;
+	
   // LUT for building neighbors
   /* Guide for the following:
    * z == 6: central z region, |z|<250mm

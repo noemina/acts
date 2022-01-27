@@ -43,6 +43,7 @@ struct SeedfinderConfig {
   float deltaRMin = 5 * Acts::UnitConstants::mm;
   // maximum distance in r between two measurements within one seed
   float deltaRMax = 270 * Acts::UnitConstants::mm;
+//<<<<<<< Updated upstream
   // minimum distance in r between middle and top SP
   float deltaRMinTopSP = 5 * Acts::UnitConstants::mm;
   // maximum distance in r between middle and top SP
@@ -54,13 +55,13 @@ struct SeedfinderConfig {
 
   // radial range for middle SP
   std::vector<std::vector<float>> rRangeMiddleSP;
-  bool useVariableMiddleSPRange = false;
+  bool useVariableMiddleSPRange = true;
   float deltaRMiddleSPRange = 10.;
   float rMinMiddleSP;
   float rMaxMiddleSP;
 
   // seed confirmation
-  bool seedConfirmation = false;
+  bool seedConfirmation = true;
   // parameters for central seed confirmation
   SeedConfirmationRange centralSeedConfirmationRange;
   // parameters for forward seed confirmation
@@ -71,8 +72,19 @@ struct SeedfinderConfig {
 
   // sort the SP in transformCoordinates method and enables compatibility cuts
   // based on the sorting of cotTheta
-  bool enableCutsForSortedSP = false;
+  bool enableCutsForSortedSP = true;
 
+//=======
+//  //
+//  float deltaRMinTopSP = 5 * Acts::UnitConstants::mm;
+//  //
+//  float deltaRMaxTopSP = 270 * Acts::UnitConstants::mm;
+//  //
+//  float deltaRMinBottomSP = 5 * Acts::UnitConstants::mm;
+//  //
+//  float deltaRMaxBottomSP = 270 * Acts::UnitConstants::mm;
+//
+//>>>>>>> Stashed changes
   // FIXME: this is not used yet
   //        float upperPtResolutionPerSeed = 20* Acts::GeV;
 
@@ -112,25 +124,27 @@ struct SeedfinderConfig {
   // used as offset for Space Points
   Acts::Vector2 beamPos{0 * Acts::UnitConstants::mm,
                         0 * Acts::UnitConstants::mm};
+	
+	boost::container::small_vector<size_t, 20> zBinsCustomLooping = {};
 
-  // radial range for middle SP
-  std::vector<std::vector<float>> rRangeMiddleSP;
-  bool useVariableMiddleSPRange = true;
-  float deltaRMiddleSPRange = 10.;
-  float rMinMiddleSP;
-  float rMaxMiddleSP;
-  // non equidistant binning in z
-  std::vector<float> zBinEdges;
-
-  // seed confirmation
-  bool seedConfirmation = false;
-  // contains parameters for central seed confirmation
-  SeedConfirmationRange centralSeedConfirmationRange;
-  // contains parameters for forward seed confirmation
-  SeedConfirmationRange forwardSeedConfirmationRange;
-
-  // sort the SP by cotTheta
-  bool cotSeedSort = true;
+//  // radial range for middle SP
+//  std::vector<std::vector<float>> rRangeMiddleSP;
+//  bool useVariableMiddleSPRange = true;
+//  float deltaRMiddleSPRange = 10.;
+//  float rMinMiddleSP;
+//  float rMaxMiddleSP;
+//  // non equidistant binning in z
+//  std::vector<float> zBinEdges;
+//
+//  // seed confirmation
+//  bool seedConfirmation = false;
+//  // contains parameters for central seed confirmation
+//  SeedConfirmationRange centralSeedConfirmationRange;
+//  // contains parameters for forward seed confirmation
+//  SeedConfirmationRange forwardSeedConfirmationRange;
+//
+//  // sort the SP by cotTheta
+//  bool cotSeedSort = true;
 
   // average radiation lengths of material on the length of a seed. used for
   // scattering.
@@ -156,10 +170,6 @@ struct SeedfinderConfig {
   float minHelixDiameter2 = 0;
   float pT2perRadius = 0;
   float sigmapT2perRadius = 0;
-
-  // constant factor used to evaluate multiple scattering contribution
-//  float kConstant = 134. * 0.05 * 9.;
-
 
   // only for Cuda plugin
   int maxBlockSize = 1024;

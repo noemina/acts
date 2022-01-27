@@ -194,7 +194,7 @@ public:
 	BinnedSPGroupIterator(const SpacePointGrid<external_spacepoint_t>* spgrid,
 												BinFinder<external_spacepoint_t>* botBinFinder,
 												BinFinder<external_spacepoint_t>* tBinFinder,
-												std::vector<size_t> bins = {}) {
+												boost::container::small_vector<size_t, 20> bins = {}) {
 		grid = spgrid;
 		m_bottomBinFinder = botBinFinder;
 		m_topBinFinder = tBinFinder;
@@ -212,7 +212,7 @@ public:
 	BinnedSPGroupIterator(const SpacePointGrid<external_spacepoint_t>* spgrid,
 												BinFinder<external_spacepoint_t>* botBinFinder,
 												BinFinder<external_spacepoint_t>* tBinFinder,
-												size_t phiInd, size_t zInd, std::vector<size_t> bins = {}) {
+												size_t phiInd, size_t zInd, boost::container::small_vector<size_t, 20> bins = {}) {
 		m_bottomBinFinder = botBinFinder;
 		m_topBinFinder = tBinFinder;
 		grid = spgrid;
@@ -242,7 +242,7 @@ private:
 	std::array<long unsigned int, 2ul> phiZbins;
 	BinFinder<external_spacepoint_t>* m_bottomBinFinder;
 	BinFinder<external_spacepoint_t>* m_topBinFinder;
-	std::vector<size_t> customZorder;
+	boost::container::small_vector<size_t, 20> customZorder;
 };
 
 /// @c BinnedSPGroup Provides access to begin and end BinnedSPGroupIterator
@@ -287,7 +287,7 @@ private:
 	std::shared_ptr<BinFinder<external_spacepoint_t>> m_bottomBinFinder;
 	
 	// TODO: use boost small vector (size 20 should be enough) and add it into the seedfinderConfig
-	std::vector<size_t> m_bins = {1, 2, 3, 9, 8, 7, 5, 4, 6};
+	boost::container::small_vector<size_t, 20> m_bins;
 };
 
 }  // namespace Acts
