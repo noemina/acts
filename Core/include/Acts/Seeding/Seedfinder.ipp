@@ -72,10 +72,13 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     size_t nSeeds_test1 = 0;
     size_t nSeeds_test2 = 0;
     size_t nSeeds_test3 = 0;
+
+    // THESE ARE ONLY FOR DEBUGGING
     auto pVal = std::lower_bound(m_config.zBinEdges.begin(),
                                  m_config.zBinEdges.end(), zM);
     int zBin = std::distance(m_config.zBinEdges.begin(), pVal);
     zBin == 0 ? zBin : --zBin;
+
     // *************
 
     /// check if spM is outside our radial region of interest
@@ -89,13 +92,13 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       }
     } else if (not m_config.rRangeMiddleSP.empty()) {
       /// get zBin position of the middle SP
-      auto pVal = std::lower_bound(m_config.zBinEdges.begin(),
-                                   m_config.zBinEdges.end(), zM);
-      int zBin = std::distance(m_config.zBinEdges.begin(), pVal);
+      auto zValMiddle = std::lower_bound(m_config.zBinEdges.begin(),
+                                         m_config.zBinEdges.end(), zM);
+      int zBinMiddle = std::distance(m_config.zBinEdges.begin(), zValMiddle);
       /// protects against zM at the limit of zBinEdges
-      zBin == 0 ? zBin : --zBin;
-      if (rM < m_config.rRangeMiddleSP[zBin][0] ||
-          rM > m_config.rRangeMiddleSP[zBin][1]) {
+      zBinMiddle == 0 ? zBinMiddle : --zBinMiddle;
+      if (rM < m_config.rRangeMiddleSP[zBinMiddle][0] ||
+          rM > m_config.rRangeMiddleSP[zBinMiddle][1]) {
         // std::cout << "|Seeds| !!! rM < rRangeMiddleSP || rM > rRangeMiddleSP
         // == TRUE !!!" << std::endl;
         continue;
