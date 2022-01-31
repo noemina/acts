@@ -13,6 +13,7 @@
 #include "Acts/Utilities/detail/Axis.hpp"
 
 #include <memory>
+#include <limits>
 
 namespace Acts {
 
@@ -20,9 +21,18 @@ struct SeedConfirmationRange {
   float zMinSeedConf;
   float zMaxSeedConf;
   float rMaxSeedConf;
-  size_t nTopSeedConf;
   size_t nTopForLargeR;
   size_t nTopForSmallR;
+
+  SeedConfirmationRange(float zMin = std::numeric_limits<float>::min(),
+                        float zMax = std::numeric_limits<float>::max(),
+                        float rMax = std::numeric_limits<float>::max(),
+                        size_t nTopLargeR = 0, size_t nTopSmallR = 0 ) :
+  zMinSeedConf(zMin),
+  zMaxSeedConf(zMax),
+  rMaxSeedConf(rMax),
+  nTopForLargeR(nTopLargeR),
+  nTopForSmallR(nTopSmallR) {}
 };
 
 // forward declaration to avoid cyclic dependence
