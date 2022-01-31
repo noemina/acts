@@ -66,19 +66,21 @@ Acts::SpacePointGridCreator::createGrid(
     // Each individual bin should be approximately a fraction (depending on this
     // number) of the maximum expected azimutal deflection.
   }
-	
-	// std::cout << "deltaPhi =" << deltaPhi << std::endl;
-	// std::cout << "outerAngle= " << outerAngle << " innerAngle= " <<
-	// innerAngle << std::endl; std::cout << "deltaAngleWithMaxD0= " <<
-	// deltaAngleWithMaxD0 << " impactMax= " << config.impactMax << std::endl;
-	// std::cout << "Rmin= " << Rmin << " rMax= " << config.rMax << std::endl;
-	
+
+  // std::cout << "deltaPhi =" << deltaPhi << std::endl;
+  // std::cout << "outerAngle= " << outerAngle << " innerAngle= " <<
+  // innerAngle << std::endl; std::cout << "deltaAngleWithMaxD0= " <<
+  // deltaAngleWithMaxD0 << " impactMax= " << config.impactMax << std::endl;
+  // std::cout << "Rmin= " << Rmin << " rMax= " << config.rMax << std::endl;
+
   Acts::detail::Axis<detail::AxisType::Equidistant,
                      detail::AxisBoundaryType::Closed>
-      phiAxis(0, 2*M_PI, phiBins); // ********************* mudar (-MPI, MPI) para (0, 2MPI)
-	
-	// std::cout << "Phi axis (-" << M_PI << "," << M_PI << ") number of bins: "
-	// << phiBins << std::endl;
+      phiAxis(
+          0, 2 * M_PI,
+          phiBins);  // ********************* mudar (-MPI, MPI) para (0, 2MPI)
+
+  // std::cout << "Phi axis (-" << M_PI << "," << M_PI << ") number of bins: "
+  // << phiBins << std::endl;
 
   // vector that will store the edges of the bins of z
   std::vector<AxisScalar> zValues;
@@ -96,7 +98,7 @@ Acts::SpacePointGridCreator::createGrid(
 
     for (int bin = 0; bin <= zBins; bin++) {
       AxisScalar edge = config.zMin + bin * zBinSize;
-			// std::cout << "zbin: " << edge << std::endl;
+      // std::cout << "zbin: " << edge << std::endl;
       zValues.push_back(edge);
     }
 
@@ -104,7 +106,7 @@ Acts::SpacePointGridCreator::createGrid(
     // Use the zBinEdges defined in the config
     for (auto& bin : config.zBinEdges) {
       zValues.push_back(bin);
-			// std::cout << "zbin: " << bin << std::endl;
+      // std::cout << "zbin: " << bin << std::endl;
     }
   }
 

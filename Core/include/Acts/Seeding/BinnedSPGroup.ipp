@@ -83,7 +83,7 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
   for (auto& rbin : rBins) {
     for (auto& isp : rbin) {
       //			std::cout << "|a|" << isp->radius() <<
-      //std::endl;
+      // std::endl;
 
       Acts::Vector2 spLocation(isp->phi(), isp->z());
       std::vector<
@@ -121,6 +121,6 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
   m_binnedSP = std::move(grid);
   m_bottomBinFinder = botBinFinder;
   m_topBinFinder = tBinFinder;
-	
-	m_bins = _config.zBinsCustomLooping;
+
+  m_bins = _config.zBinsCustomLooping;
 }
