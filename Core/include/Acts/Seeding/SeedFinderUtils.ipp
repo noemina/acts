@@ -57,6 +57,16 @@ void transformCoordinates(
   float varianceRM = spM.varianceR();
   float cosPhiM = xM / rM;
   float sinPhiM = yM / rM;
+	
+//	// sort the SP in order of cotTheta
+//	if (enableCutsForSortedSP) {
+//		std::sort(vec.begin(), vec.end(),
+//							[](const InternalSpacePoint<external_spacepoint_t>* a,
+//								 const InternalSpacePoint<external_spacepoint_t>* b) -> bool {
+//			return (a->cotTheta() < b->cotTheta());
+//		});
+//	}
+	
   for (auto sp : vec) {
     float deltaX = sp->x() - xM;
     float deltaY = sp->y() - yM;
@@ -100,19 +110,20 @@ void transformCoordinates(
 		
 		linCircleVec.push_back(l);
 		sp->setCotTheta(cot_theta);
-		
   }
-  // sort the SP in order of cotTheta
-  if (enableCutsForSortedSP) {
-    std::sort(vec.begin(), vec.end(),
-              [](const InternalSpacePoint<external_spacepoint_t>* a,
-                 const InternalSpacePoint<external_spacepoint_t>* b) -> bool {
-                return (a->cotTheta() < b->cotTheta());
-              });
-    std::sort(linCircleVec.begin(), linCircleVec.end(),
-              [](const LinCircle& a, const LinCircle& b) -> bool {
-                return (a.cotTheta < b.cotTheta);
-              });
-  }
+	
+	// sort the SP in order of cotTheta
+	if (enableCutsForSortedSP) {
+		std::sort(vec.begin(), vec.end(),
+							[](const InternalSpacePoint<external_spacepoint_t>* a,
+								 const InternalSpacePoint<external_spacepoint_t>* b) -> bool {
+			return (a->cotTheta() < b->cotTheta());
+		});
+		std::sort(linCircleVec.begin(), linCircleVec.end(),
+							[](const LinCircle& a, const LinCircle& b) -> bool {
+			return (a.cotTheta < b.cotTheta);
+		});
+	}
+	
 }
 }  // namespace Acts

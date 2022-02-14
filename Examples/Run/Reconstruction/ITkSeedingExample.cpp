@@ -33,6 +33,9 @@
 
 #include "RecInput.hpp"
 
+//#include "../../Tests/UnitTests/Core/Seeding/ATLASCuts.hpp"
+#include "Acts/Seeding/SeedFilter.hpp"
+
 using namespace Acts::UnitLiterals;
 using namespace ActsExamples;
 
@@ -92,6 +95,9 @@ int main(int argc, char* argv[]) {
   seedingCfg.inputSpacePoints = {"PixelSpacePoints"};
   seedingCfg.outputSeeds = "PixelSeeds";
   seedingCfg.outputProtoTracks = "prototracks";
+	
+//	Acts::ATLASCuts<SimSpacePoint> atlasCuts = Acts::ATLASCuts<SimSpacePoint>();
+//	seedingCfg.expCuts = atlasCuts;
 
   seedingCfg.gridConfig.rMax = 320._mm;
   seedingCfg.seedFinderConfig.rMax = seedingCfg.gridConfig.rMax;
@@ -106,7 +112,7 @@ int main(int argc, char* argv[]) {
   seedingCfg.seedFinderConfig.deltaRMax = seedingCfg.gridConfig.deltaRMax;
 	
 	seedingCfg.seedFinderConfig.deltaRMaxTopSP = 280_mm;
-	seedingCfg.seedFinderConfig.deltaRMaxBottomSP = 120_mm;
+	seedingCfg.seedFinderConfig.deltaRMaxBottomSP = 120_mm; // 120._mm -> 21.9 ******
 
   seedingCfg.seedFinderConfig.collisionRegionMin = -200_mm;
   seedingCfg.seedFinderConfig.collisionRegionMax = 200._mm;
@@ -129,7 +135,7 @@ int main(int argc, char* argv[]) {
   seedingCfg.gridConfig.minPt = 900._MeV;
   seedingCfg.seedFinderConfig.minPt = seedingCfg.gridConfig.minPt;
 
-  seedingCfg.gridConfig.bFieldInZ = 1.997244311_T;
+	seedingCfg.gridConfig.bFieldInZ =  1.997244311_T; // 1.997244192_T; //
   seedingCfg.seedFinderConfig.bFieldInZ = seedingCfg.gridConfig.bFieldInZ;
 
   seedingCfg.seedFinderConfig.beamPos = {0_mm, 0_mm};
@@ -141,9 +147,11 @@ int main(int argc, char* argv[]) {
   
   seedingCfg.gridConfig.zBinEdges = {-3000., -2500., -1400., -925., -450., -250., 
                                             250., 450., 925., 1400., 2500., 3000.};
+	
   seedingCfg.seedFinderConfig.zBinEdges = seedingCfg.gridConfig.zBinEdges;
 
 	seedingCfg.seedFinderConfig.zBinsCustomLooping = {1, 2, 3, 4, 11, 10, 9, 8, 6, 5, 7};
+//	seedingCfg.seedFinderConfig.zBinsCustomLooping = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 	
 	seedingCfg.seedFinderConfig.enableCutsForSortedSP = true;
 	

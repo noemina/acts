@@ -203,7 +203,7 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
           break;
         }
       }
-      if (std::abs(deltaR) < m_cfg.deltaRMin) {  // ***** ver se faz diferença colocar isso aqui
+      if (std::abs(deltaR) < m_cfg.deltaRMin) {
         newCompSeed = false;
         std::cout << "previousDiameter -  otherTop_r " << currentTop_r << " - "
                   << otherTop_r << std::endl;
@@ -297,11 +297,6 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
 
 //    if (!dN)
 //      continue;
-
-    //		bottomSP.setQuality(weight);
-    //		middleSP.setQuality(weight);
-    //		topSpVec[i]->setQuality(weight);
-
   }
 
   if (iminTest and !nOneSeedsQ) {  // weightMin < 1.e20
@@ -367,14 +362,23 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_1SpFixed(
               << (*it).second->sp[0]->x() << " " << (*it).second->sp[1]->x()
               << " " << (*it).second->sp[2]->x() << std::endl;
 
-    if (bestSeedQuality >= (*it).second->sp[0]->quality() and
-        bestSeedQuality >= (*it).second->sp[1]->quality() and
-        bestSeedQuality >= (*it).second->sp[2]->quality()) {
-      std::cout << "|set quality| " << (*it).second->sp[0]->quality() << " "
-                << (*it).second->sp[1]->quality() << " "
-                << (*it).second->sp[2]->quality() << std::endl;
-      continue;
-    }
+//		bool testQ = (bestSeedQuality < (*it).second->sp[0]->quality() ||  bestSeedQuality < (*it).second->sp[1]->quality() || bestSeedQuality < (*it).second->sp[2]->quality());
+//
+//		if (!testQ) continue;
+		
+//    if (bestSeedQuality >= (*it).second->sp[0]->quality() and
+//        bestSeedQuality >= (*it).second->sp[1]->quality() and
+//        bestSeedQuality >= (*it).second->sp[2]->quality()) {
+//      std::cout << "|set quality| " << (*it).second->sp[0]->quality() << " "
+//                << (*it).second->sp[1]->quality() << " "
+//                << (*it).second->sp[2]->quality() << std::endl;
+//
+//			(*it).second->sp[0]->setQuality(bestSeedQuality);
+//			(*it).second->sp[1]->setQuality(bestSeedQuality);
+//			(*it).second->sp[2]->setQuality(bestSeedQuality);
+//
+//      continue;
+//    }
 
     std::cout << "|set quality| " << (*it).second->sp[0]->quality() << " "
               << (*it).second->sp[1]->quality() << " "

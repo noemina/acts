@@ -93,16 +93,16 @@ ActsExamples::SeedingAlgorithm::SeedingAlgorithm(
 //    throw std::invalid_argument("Inconsistent config rRangeMiddleSP");
 //  }
 
-  if (m_cfg.seedFinderConfig.zBinsCustomLooping.size() != 0) {
-		for (int i=1; i!=m_cfg.gridConfig.zBinEdges.size(); i++) {
-			if(std::find(m_cfg.seedFinderConfig.zBinsCustomLooping.begin(), m_cfg.seedFinderConfig.zBinsCustomLooping.end(), i) == m_cfg.seedFinderConfig.zBinsCustomLooping.end()) {
-				throw std::invalid_argument("Inconsistent config zBinsCustomLooping");
-			}
-		}
-  }
+//  if (m_cfg.seedFinderConfig.zBinsCustomLooping.size() != 0) {
+//		for (int i=1; i!=m_cfg.gridConfig.zBinEdges.size(); i++) {
+//			if(std::find(m_cfg.seedFinderConfig.zBinsCustomLooping.begin(), m_cfg.seedFinderConfig.zBinsCustomLooping.end(), i) == m_cfg.seedFinderConfig.zBinsCustomLooping.end()) {
+//				throw std::invalid_argument("Inconsistent config zBinsCustomLooping");
+//			}
+//		}
+//  }
 				
   m_cfg.seedFinderConfig.seedFilter =
-      std::make_unique<Acts::SeedFilter<SimSpacePoint>>(m_cfg.seedFilterConfig);
+      std::make_unique<Acts::SeedFilter<SimSpacePoint>>(m_cfg.seedFilterConfig, m_cfg.expCuts);
 }
 
 ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
@@ -205,19 +205,19 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
     int n_top = 0;
     //auto mid_bin = grid->
     if (bot.begin() != bot.end() && mid.begin() != mid.end() && top.begin() != top.end()){
-        std::cout << "------> Group " << i << " (phi,z)= " << phibin << ", " << zbin << std::endl;
+        std::cout << "------> Group " << i << " (phi,z)= " << phibin-1 << ", " << zbin-1 << std::endl;
 //          std::cout << "phi, z =" << oi << std::endl;
         for (auto sp : bot) {
             n_bot++;
-//            std::cout << "Bottom layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
+            std::cout << std::setprecision(10) << "Bottom layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
         }
         for (auto sp : mid) {
             n_mid++;
-//            std::cout << "Middle layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
+            std::cout << std::setprecision(10) << "Middle layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
         }
         for (auto sp : top) {
             n_top++;
-//            std::cout << "Top layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
+            std::cout << std::setprecision(10) << "Top layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
         }
         i++;
         std::cout << "|Groups| n_group, n_mid, n_top, n_bot, phi_bin, z_bin: " << i << ", " << n_mid << ", " << n_top << ", " << n_bot << ", " << phibin-1 << ", " << zbin-1 << std::endl;
@@ -241,7 +241,7 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
           s_mid+=std::to_string(n_mid)+std::string("|");
     }
   }
-  s_mid+=std::string("|Groups Mid| ( z ) ==> |1|2|3|4|5|6|7|8|9|10|11|");
+  s_mid+=std::string("|Groups Mid| ( z ) ==> |0|1|2|3|4|5|6|7|8|9|10|");
 //    std::cout<<s_mid<<std::endl;
 
   // extract proto tracks, i.e. groups of measurement indices, from tracks seeds

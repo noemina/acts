@@ -145,17 +145,26 @@ template <typename external_spacepoint_t>
 class BinnedSPGroupIterator {
  public:
   BinnedSPGroupIterator& operator++() {
-    if (zIndex < phiZbins[1]) {
+		if (start == true) {
+			zIndex = 1;
+			phiIndex = 1;
+		}
+		
+    if (zIndex < phiZbins[1] and start == false) {
       zIndex++;
 
-    } else {
+    } else if (start == false) {
       zIndex = 1;
       phiIndex++;
     }
+		
+		start = false;
 
     size_t this_zIndex = zIndex;
     if (not customZorder.empty())
       this_zIndex = customZorder.at(this_zIndex - 1);
+		
+//		std::cout << " BIN TEST " << this_zIndex << " " << phiIndex << "  " << std::endl;
 
     // set current & neighbor bins only if bin indices valid
     if (phiIndex <= phiZbins[0] && zIndex <= phiZbins[1]) {
@@ -196,6 +205,7 @@ class BinnedSPGroupIterator {
                         BinFinder<external_spacepoint_t>* botBinFinder,
                         BinFinder<external_spacepoint_t>* tBinFinder,
                         boost::container::small_vector<size_t, 20> bins = {}) {
+//		std::cout << " BIN TEST " << 1 << " " << phiIndex << " first " << std::endl;
     grid = spgrid;
     m_bottomBinFinder = botBinFinder;
     m_topBinFinder = tBinFinder;
@@ -209,6 +219,7 @@ class BinnedSPGroupIterator {
         NeighborhoodVector(spgrid->globalBinFromLocalBins({1, this_zIndex}));
     bottomBinIndices = m_bottomBinFinder->findBins(phiIndex, this_zIndex, grid);
     topBinIndices = m_topBinFinder->findBins(phiIndex, this_zIndex, grid);
+//		std::cout << " BIN TEST " << this_zIndex << " " << phiIndex << " first " << std::endl;
   }
 
   BinnedSPGroupIterator(const SpacePointGrid<external_spacepoint_t>* spgrid,
@@ -216,6 +227,7 @@ class BinnedSPGroupIterator {
                         BinFinder<external_spacepoint_t>* tBinFinder,
                         size_t phiInd, size_t zInd,
                         boost::container::small_vector<size_t, 20> bins = {}) {
+//		std::cout << " BIN TEST " << zInd << " " << phiInd << " end " << std::endl;
     m_bottomBinFinder = botBinFinder;
     m_topBinFinder = tBinFinder;
     grid = spgrid;
@@ -235,6 +247,7 @@ class BinnedSPGroupIterator {
           m_bottomBinFinder->findBins(phiIndex, this_zIndex, grid);
       topBinIndices = m_topBinFinder->findBins(phiIndex, this_zIndex, grid);
     }
+//		std::cout << " BIN TEST " << this_zIndex << " " << phiIndex << " end " << std::endl;
   }
 
  private:
@@ -250,6 +263,7 @@ class BinnedSPGroupIterator {
   BinFinder<external_spacepoint_t>* m_bottomBinFinder;
   BinFinder<external_spacepoint_t>* m_topBinFinder;
   boost::container::small_vector<size_t, 20> customZorder;
+	bool start = true;
 };
 
 /// @c BinnedSPGroup Provides access to begin and end BinnedSPGroupIterator

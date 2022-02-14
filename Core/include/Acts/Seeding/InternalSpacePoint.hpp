@@ -43,7 +43,7 @@ class InternalSpacePoint {
   // : value+2*M_PI;}
   const float& varianceR() const { return m_varianceR; }
   const float& varianceZ() const { return m_varianceZ; }
-  const float& cotTheta() const { return m_cotTheta; }
+	float& cotTheta() const { return m_cotTheta; }
   void setCotTheta(float& cotTheta) const { m_cotTheta = cotTheta; }
 
   //	const float& curvature() const {return m_cotTheta; }
