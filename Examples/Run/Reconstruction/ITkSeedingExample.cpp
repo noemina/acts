@@ -178,10 +178,11 @@ int main(int argc, char* argv[]) {
 	// seed confirmation
 	seedingCfg.seedFinderConfig.seedConfirmation = true;
 	seedingCfg.seedFilterConfig.seedConfirmation = seedingCfg.seedFinderConfig.seedConfirmation;
-	seedingCfg.seedFinderConfig.centralSeedConfirmationRange = {.zMaxSeedConf=250.,.zMinSeedConf=-250.,.rMaxSeedConf=140.,.nTopForLargeR=1,.nTopForSmallR=2};
+
+	seedingCfg.seedFinderConfig.centralSeedConfirmationRange = Acts::SeedConfirmationRange(250., -250., 140., 1, 2);
 	seedingCfg.seedFilterConfig.centralSeedConfirmationRange = seedingCfg.seedFinderConfig.centralSeedConfirmationRange;
 	// contains parameters for forward seed confirmation
-	seedingCfg.seedFinderConfig.forwardSeedConfirmationRange = {.zMaxSeedConf=3000.,.zMinSeedConf=-3000.,.rMaxSeedConf=140.,.nTopForLargeR=1,.nTopForSmallR=2};
+	seedingCfg.seedFinderConfig.forwardSeedConfirmationRange = Acts::SeedConfirmationRange(3000., -3000., 140., 1, 2);
 	seedingCfg.seedFilterConfig.forwardSeedConfirmationRange = seedingCfg.seedFinderConfig.forwardSeedConfirmationRange;
 	
 	seedingCfg.seedFilterConfig.impactWeightFactor = -100.;
