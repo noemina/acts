@@ -178,6 +178,8 @@ int main(int argc, char* argv[]) {
 	// seed confirmation
 	seedingCfg.seedFinderConfig.seedConfirmation = true;
 	seedingCfg.seedFilterConfig.seedConfirmation = seedingCfg.seedFinderConfig.seedConfirmation;
+	
+	seedingCfg.seedFilterConfig.curvatureSortingInFilter = true;
 
 	seedingCfg.seedFinderConfig.centralSeedConfirmationRange = Acts::SeedConfirmationRange(250., -250., 140., 1, 2);
 	seedingCfg.seedFilterConfig.centralSeedConfirmationRange = seedingCfg.seedFinderConfig.centralSeedConfirmationRange;

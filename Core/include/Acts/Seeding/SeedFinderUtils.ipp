@@ -114,11 +114,57 @@ void transformCoordinates(
 	
 	// sort the SP in order of cotTheta
 	if (enableCutsForSortedSP) {
-		std::sort(vec.begin(), vec.end(),
-							[](const InternalSpacePoint<external_spacepoint_t>* a,
-								 const InternalSpacePoint<external_spacepoint_t>* b) -> bool {
-			return (a->cotTheta() < b->cotTheta());
+		
+		
+//		std::sort(vec.begin(), vec.end(),
+//							[&linCircleVec, &vec](const InternalSpacePoint<external_spacepoint_t>* a,
+//															const InternalSpacePoint<external_spacepoint_t>* b) {
+//			return linCircleVec[std::find(vec.begin(), vec.end(), a)].cotTheta < linCircleVec[std::find(vec.begin(), vec.end(), b)].cotTheta;
+//		});
+		
+		std::vector<size_t> idx(vec.size());
+		std::iota(idx.begin(), idx.end(), 0);
+
+		std::sort(idx.begin(), idx.end(),
+							[&linCircleVec](size_t i1, size_t i2) {
+			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
 		});
+		
+		std::vector<const InternalSpacePoint<external_spacepoint_t>*> newVec;
+		for (size_t i = 0; i<vec.size();i++) {
+			newVec.push_back(vec[idx[i]]);
+		}		
+		vec = newVec;
+		
+//		std::vector<size_t> idx(vec.size());
+//		std::iota(idx.begin(), idx.end(), 0);
+//
+//		std::sort(idx.begin(), idx.end(),
+//							[&linCircleVec](size_t i1, size_t i2) {
+//			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+//		});
+//
+//		for (size_t i = 0; i<vec.size();i++) {
+//			while(i != idx[i]){
+//				size_t j = idx[i];
+//				std::swap(vec[j], vec[idx[j]]);
+//				std::swap(idx[i], idx[j]);
+//			}
+//		}
+		
+//		size_t i, j, k;
+//		for(i = 0; i < vec.size(); i++){
+//			while(i != (j = idx[i])){
+//				k = idx[j];
+//				std::swap(vec[j], vec[k]);
+//				std::swap(idx[i], idx[j]);
+//			}
+//		}
+
+//		std::sort(vec.begin(), vec.end(), [&linCircleVec](size_t i1, size_t i2) {
+//			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+//		});
+		
 		std::sort(linCircleVec.begin(), linCircleVec.end(),
 							[](const LinCircle& a, const LinCircle& b) -> bool {
 			return (a.cotTheta < b.cotTheta);
