@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
   seedingCfg.seedFinderConfig.deltaRMax = seedingCfg.gridConfig.deltaRMax;
 	
 	seedingCfg.seedFinderConfig.deltaRMaxTopSP = 280_mm;
-	seedingCfg.seedFinderConfig.deltaRMaxBottomSP = 120_mm; // 120._mm -> 21.9 ******
+	seedingCfg.seedFinderConfig.deltaRMaxBottomSP = 120_mm;
 
   seedingCfg.seedFinderConfig.collisionRegionMin = -200_mm;
   seedingCfg.seedFinderConfig.collisionRegionMax = 200._mm;
@@ -129,7 +129,9 @@ int main(int argc, char* argv[]) {
 	seedingCfg.gridConfig.cotThetaMax = 27.2899; // 4.0 eta ---> 27.2899 = 1/np.tan(2*np.arctan(np.exp(-4)))
   seedingCfg.seedFinderConfig.cotThetaMax = seedingCfg.gridConfig.cotThetaMax;
 
+	// number of standard deviations of Coulomb scattering angle that should be considered
 	seedingCfg.seedFinderConfig.sigmaScattering = 2;
+	// radiation length in Highland equation
 	seedingCfg.seedFinderConfig.radLengthPerSeed = 0.09804522341059585;
 
   seedingCfg.gridConfig.minPt = 900._MeV;
@@ -145,13 +147,12 @@ int main(int argc, char* argv[]) {
 	
 	seedingCfg.seedFinderConfig.maxPtScattering = 1000000._GeV;
   
+	//
   seedingCfg.gridConfig.zBinEdges = {-3000., -2500., -1400., -925., -450., -250., 
                                             250., 450., 925., 1400., 2500., 3000.};
-	
   seedingCfg.seedFinderConfig.zBinEdges = seedingCfg.gridConfig.zBinEdges;
 
 	seedingCfg.seedFinderConfig.zBinsCustomLooping = {1, 2, 3, 4, 11, 10, 9, 8, 6, 5, 7};
-//	seedingCfg.seedFinderConfig.zBinsCustomLooping = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 	
 	seedingCfg.seedFinderConfig.enableCutsForSortedSP = true;
 	
@@ -163,12 +164,16 @@ int main(int argc, char* argv[]) {
    * --------------------------------------------------------------------------------------------> Z[mm]
    * Z=-3000                                  IP,Z=0                                  Z=+3000
    */
-  // vector containing the map of z bins in the top layer
+	// allows to specify the number of neighbors desired for each bin
+	// {-1,1} means one neighbor on the left and one on the right
+  // vector containing the map of z bins for the top SP
   seedingCfg.zBinNeighborsTop = {{0,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,1},{0,1},{0,1},{0,1},{0,1},{0,0}};
-  // vector containing the map of z bins in the bottom layer
+  // vector containing the map of z bins for the bottom SP
   seedingCfg.zBinNeighborsBottom = {{0,1},{0,1},{0,1},{0,1},{0,1},{0,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0}};
-	
+	// numPhiNeighbors for the Grid means "how many phiBin neighbors (plus the current bin) should cover the full deflection of a minimum pT particle".
+	// numPhiNeighbors for the BinFinder sets how many neighboring phi bins at each side of the current bin are returned
 	seedingCfg.gridConfig.numPhiNeighbors = 1;
+	
 	
   // radial range for middle SP
   seedingCfg.seedFinderConfig.rRangeMiddleSP = {{40., 90.},{40., 200.},{46., 200.},{46., 200.},{46., 250.},{46., 250.},{46., 250.},{46., 200.},{46., 200.},{40., 200.},{40., 90.}};
@@ -179,16 +184,18 @@ int main(int argc, char* argv[]) {
 	seedingCfg.seedFinderConfig.seedConfirmation = true;
 	seedingCfg.seedFilterConfig.seedConfirmation = seedingCfg.seedFinderConfig.seedConfirmation;
 	
+	// enable curvature sorting in SeedFilter
 	seedingCfg.seedFilterConfig.curvatureSortingInFilter = true;
 
+	// contains parameters for central seed confirmation
 	seedingCfg.seedFinderConfig.centralSeedConfirmationRange = Acts::SeedConfirmationRange(250., -250., 140., 1, 2);
 	seedingCfg.seedFilterConfig.centralSeedConfirmationRange = seedingCfg.seedFinderConfig.centralSeedConfirmationRange;
 	// contains parameters for forward seed confirmation
 	seedingCfg.seedFinderConfig.forwardSeedConfirmationRange = Acts::SeedConfirmationRange(3000., -3000., 140., 1, 2);
 	seedingCfg.seedFilterConfig.forwardSeedConfirmationRange = seedingCfg.seedFinderConfig.forwardSeedConfirmationRange;
 	
-	seedingCfg.seedFilterConfig.impactWeightFactor = -100.;
-	seedingCfg.seedFilterConfig.compatSeedWeight = -100.;
+	seedingCfg.seedFilterConfig.impactWeightFactor = 100.;
+	seedingCfg.seedFilterConfig.compatSeedWeight = 100.;
 	seedingCfg.seedFilterConfig.compatSeedLimit = 3;
 	
   sequencer.addAlgorithm(

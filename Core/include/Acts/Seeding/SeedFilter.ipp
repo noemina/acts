@@ -27,12 +27,11 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
     const InternalSpacePoint<external_spacepoint_t>& middleSP,
     std::vector<const InternalSpacePoint<external_spacepoint_t>*>& topSpVec,
     std::vector<float>& invHelixDiameterVec,
-    std::vector<float>& impactParametersVec, std::vector<float>& cotThetaVec,
-    float zOrigin, int& nOneSeedsQ,
+    std::vector<float>& impactParametersVec, std::vector<float>& cotThetaVec, float zOrigin, int& nQualitySeeds,
     std::back_insert_iterator<std::vector<std::pair<
         float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>>
         outIt) const {
-  std::cout << " tedt QQ" << nOneSeedsQ << std::endl;
+  std::cout << " tedt QQ" << nQualitySeeds << std::endl;
 
   int nTopSeedConf;
   if (m_cfg.seedConfirmation) {
@@ -47,10 +46,10 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
 
   size_t minWeightSeedIndex = 0;
   bool minWeightSeed = false;
-  float weightMin = 1.e20;
-	
-	int i_n = -1; //delete
-	int j_n = -1; //delete
+  float weightMin = -1.e20;
+
+  int i_n = -1;  // delete
+  int j_n = -1;  // delete
 
   // TODO: pass this from the Seedfinder, adding a new config called
   // enableSortingInFilter
@@ -69,8 +68,8 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
   }
 
   for (auto& i : idx) {
-		i_n += 1;
-		
+    i_n += 1;
+
     //  for (size_t i = 0; i < topSpVec.size(); i++) {
     //		std::cout << "|seed filter| i: " << i << std::endl;
     // if two compatible seeds with high distance in r are found, compatible
@@ -82,31 +81,35 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
     float lowerLimitCurv = invHelixDiameter - m_cfg.deltaInvHelixDiameter;
     float upperLimitCurv = invHelixDiameter + m_cfg.deltaInvHelixDiameter;
     float currentTop_r = topSpVec[i]->radius();
-//    currentTop_r = std::sqrt(std::pow((topSpVec[i]->x() - bottomSP.x()), 2) +
-//                             std::pow((topSpVec[i]->y() - bottomSP.y()), 2) +
-//                             std::pow((topSpVec[i]->z() - bottomSP.z()), 2));
+    //    currentTop_r = std::sqrt(std::pow((topSpVec[i]->x() - bottomSP.x()),
+    //    2) +
+    //                             std::pow((topSpVec[i]->y() - bottomSP.y()),
+    //                             2) + std::pow((topSpVec[i]->z() -
+    //                             bottomSP.z()), 2));
 
     //		**** test ****
-    float deltaXt = topSpVec[i]->x() - middleSP.x();
-    float deltaYt = topSpVec[i]->y() - middleSP.y();
-    float deltaZt = topSpVec[i]->z() - middleSP.z();
-    float cosPhiMt = middleSP.x() / middleSP.radius();
-    float sinPhiMt = middleSP.y() / middleSP.radius();
-    float xt = deltaXt * cosPhiMt + deltaYt * sinPhiMt;
-    float yt = deltaYt * cosPhiMt - deltaXt * sinPhiMt;
-    currentTop_r = std::sqrt((xt * xt) + (yt * yt) + (deltaZt * deltaZt)); // ***
+//    float deltaXt = topSpVec[i]->x() - middleSP.x();
+//    float deltaYt = topSpVec[i]->y() - middleSP.y();
+//    float deltaZt = topSpVec[i]->z() - middleSP.z();
+//    float cosPhiMt = middleSP.x() / middleSP.radius();
+//    float sinPhiMt = middleSP.y() / middleSP.radius();
+//    float xt = deltaXt * cosPhiMt + deltaYt * sinPhiMt;
+//    float yt = deltaYt * cosPhiMt - deltaXt * sinPhiMt;
+//    currentTop_r =
+//        std::sqrt((xt * xt) + (yt * yt) + (deltaZt * deltaZt));  // ***
+    currentTop_r = topSpVec[i]->deltaR();
     //		**** **** ****
 
     float impact = impactParametersVec[i];
 
     float a = 0;
-		
-		std::vector<size_t> jn;
+
+    std::vector<size_t> jn;
 
     float weight = -(impact * m_cfg.impactWeightFactor);
-		for (auto& j : idx) {
-			j_n += 1;
-			
+    for (auto& j : idx) {
+      j_n += 1;
+
       //    for (size_t j = 0; j < topSpVec.size(); j++) {
       //			std::cout << "|seed filter| j: " << j <<
       // std::endl;
@@ -114,10 +117,10 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
       if (i == j) {
         continue;
       }
-			
-//			if(std::find(jn.begin(), jn.end(), j) != jn.end()) {
-//				break;
-//			}
+
+      //			if(std::find(jn.begin(), jn.end(), j) !=
+      //jn.end()) { 				break;
+      //			}
 
       std::cout << std::endl;
 
@@ -126,19 +129,23 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
 
       // compared top SP should have at least deltaRMin distance
       float otherTop_r = topSpVec[j]->radius();
-//      otherTop_r = std::sqrt(std::pow((topSpVec[j]->x() - bottomSP.x()), 2) +
-//                             std::pow((topSpVec[j]->y() - bottomSP.y()), 2) +
-//                             std::pow((topSpVec[j]->z() - bottomSP.z()), 2));
+      //      otherTop_r = std::sqrt(std::pow((topSpVec[j]->x() - bottomSP.x()),
+      //      2) +
+      //                             std::pow((topSpVec[j]->y() - bottomSP.y()),
+      //                             2) + std::pow((topSpVec[j]->z() -
+      //                             bottomSP.z()), 2));
 
       //		**** test ****
-      float deltaXot = topSpVec[j]->x() - middleSP.x();
-      float deltaYot = topSpVec[j]->y() - middleSP.y();
-      float deltaZot = topSpVec[j]->z() - middleSP.z();
-      float cosPhiMot = middleSP.x() / middleSP.radius();
-      float sinPhiMot = middleSP.y() / middleSP.radius();
-      float xot = deltaXot * cosPhiMot + deltaYot * sinPhiMot;
-      float yot = deltaYot * cosPhiMot - deltaXot * sinPhiMot;
-      otherTop_r = std::sqrt((xot * xot) + (yot * yot) + (deltaZot * deltaZot)); // ***
+//      float deltaXot = topSpVec[j]->x() - middleSP.x();
+//      float deltaYot = topSpVec[j]->y() - middleSP.y();
+//      float deltaZot = topSpVec[j]->z() - middleSP.z();
+//      float cosPhiMot = middleSP.x() / middleSP.radius();
+//      float sinPhiMot = middleSP.y() / middleSP.radius();
+//      float xot = deltaXot * cosPhiMot + deltaYot * sinPhiMot;
+//      float yot = deltaYot * cosPhiMot - deltaXot * sinPhiMot;
+//      otherTop_r =
+//          std::sqrt((xot * xot) + (yot * yot) + (deltaZot * deltaZot));  // ***
+			otherTop_r = topSpVec[j]->deltaR();
       //		**** **** ****
 
       float deltaR = currentTop_r - otherTop_r;
@@ -176,7 +183,7 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
         std::cout
             << "|seed filter 1| invHelixDiameterVec[j] < lowerLimitCurv !!!"
             << std::endl;
-				jn.push_back(j);
+        jn.push_back(j);
         continue;
       }
       if (invHelixDiameterVec[j] > upperLimitCurv) {
@@ -185,6 +192,14 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
             << std::endl;
         break;
       }
+			if (std::abs(deltaR) < m_cfg.deltaRMin) {
+//				newCompSeed = false;
+				std::cout << "previousDiameter -  otherTop_r " << currentTop_r << " - "
+				<< otherTop_r << std::endl;
+				std::cout << "|seed filter 1| std::abs(deltaR) < m_cfg.deltaRMin !!!"
+				<< std::endl;
+				continue;
+			}
       bool newCompSeed = true;
       for (float previousDiameter : compatibleSeedR) {
         // original ATLAS code uses higher min distance for 2nd found compatible
@@ -201,14 +216,6 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
           break;
         }
       }
-      if (std::abs(deltaR) < m_cfg.deltaRMin) {
-        newCompSeed = false;
-        std::cout << "previousDiameter -  otherTop_r " << currentTop_r << " - "
-                  << otherTop_r << std::endl;
-        std::cout << "|seed filter 1| std::abs(deltaR) < m_cfg.deltaRMin !!!"
-                  << std::endl;
-        continue;
-      }
       if (newCompSeed) {
         compatibleSeedR.push_back(otherTop_r);
         weight += m_cfg.compatSeedWeight;
@@ -224,30 +231,28 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
         break;
       }
     }
-		j_n = -1;
+    j_n = -1;
 
     int deltaSeedConf;
     if (m_cfg.seedConfirmation) {
       deltaSeedConf = compatibleSeedR.size() + 1 - nTopSeedConf;
-      std::cout << "compatibleSeedR.size(), m_nOneSeedsQ, dN, NTc "
-                << compatibleSeedR.size() + 1 << "  " << nOneSeedsQ << "  "
+      std::cout << "compatibleSeedR.size(), m_nQualitySeeds, dN, NTc "
+                << compatibleSeedR.size() + 1 << "  " << nQualitySeeds << "  "
                 << deltaSeedConf << "  " << nTopSeedConf << std::endl;
-      if (deltaSeedConf < 0 || (nOneSeedsQ and !deltaSeedConf)) {
-        std::cout << "|seed filter 1| (dN < 0 || (m_nOneSeedsQ and !dN)) !!!"
+      if (deltaSeedConf < 0 || (nQualitySeeds and !deltaSeedConf)) {
+        std::cout << "|seed filter 1| (dN < 0 || (m_nQualitySeeds and !dN)) !!!"
                   << std::endl;
         continue;
       }
-			bool Qm = bottomSP.radius() < 60. || std::abs(zOrigin) > 150.; // ***
-      if (Qm and !deltaSeedConf and impact > 1.) {
-        std::cout << "Qm, dN, impact " << Qm << "  " << deltaSeedConf << "  " << impact
-                  << std::endl;
+      bool seedConfMinRange = bottomSP.radius() < m_cfg.seedConfMinBottomRadius || std::abs(zOrigin) > m_cfg.seedConfMaxZOrigin;  // ***
+      if (seedConfMinRange and !deltaSeedConf and impact > m_cfg.minImpactSeedConf) {
+        std::cout << "Qm, dN, impact " << seedConfMinRange << "  " << deltaSeedConf << "  "
+                  << impact << std::endl;
         std::cout << "|seed filter 1| (Qm and !dN and impact > 1.) !!!"
                   << std::endl;
         continue;
       }
     }
-		
-		
 
     if (m_experimentCuts != nullptr) {
       // add detector specific considerations on the seed weight
@@ -260,46 +265,49 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
       }
     }
 
-    weight += std::abs(zOrigin) + m_cfg.compatSeedWeight;
+    weight += -std::abs(zOrigin) + m_cfg.compatSeedWeight;
     //		weight = -weight;
     std::cout << "|seed filter 1| Q: " << weight << std::endl;
     std::cout << "|seed filter 1| Q = "
               << " -1* " << m_cfg.impactWeightFactor << " * " << impact << " + "
-              << std::abs(zOrigin) << " + " << a - 100 << std::endl;
+              << std::abs(zOrigin) << " + " << a + 100 << std::endl;
     std::cout << "|seed filter 1| SP quality: " << bottomSP.quality() << " "
               << middleSP.quality() << " " << topSpVec[i]->quality() << " "
               << std::endl;
 
-    if (weight > bottomSP.quality() and weight > middleSP.quality() and
-				weight > topSpVec[i]->quality()) {
-			std::cout << "|seed filter 1| quality " << std::endl;
+    if (weight < bottomSP.quality() and weight < middleSP.quality() and
+        weight < topSpVec[i]->quality()) {
+      std::cout << "|seed filter 1| quality " << std::endl;
       continue;  // ***
-		}
+    }
 
-    if (deltaSeedConf) { // ***
-      ++nOneSeedsQ;
-      std::cout << "|seed filter 1| dN = true " << nOneSeedsQ << " " << minWeightSeedIndex
-                << std::endl;
-			outIt = std::make_pair(weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(bottomSP, middleSP, *topSpVec[i], zOrigin));
+    if (deltaSeedConf) {  // ***
+      ++nQualitySeeds;
+      std::cout << "|seed filter 1| dN = true " << nQualitySeeds << " "
+                << minWeightSeedIndex << std::endl;
+      outIt = std::make_pair(
+          weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(
+                      bottomSP, middleSP, *topSpVec[i], zOrigin));
 
-			std::cout << "|seed filter 1| newOneSeedQ" << std::endl;
-    } else if (weight < weightMin) {
+      std::cout << "|seed filter 1| newOneSeedQ" << std::endl;
+    } else if (weight > weightMin) {
       weightMin = weight;
       minWeightSeedIndex = i;
       minWeightSeed = true;
-      std::cout << "|seed filter 1| weight < weightMin " << nOneSeedsQ << " "
+      std::cout << "|seed filter 1| weight > weightMin " << nQualitySeeds << " "
                 << minWeightSeedIndex << " " << weightMin << std::endl;
     }
-		//    if (!deltaSeedConf)
-		//      continue;
-	}
+    //    if (!deltaSeedConf)
+    //      continue;
+  }
 
-  if (minWeightSeed and !nOneSeedsQ) {  // weightMin < 1.e20
+  if (minWeightSeed and !nQualitySeeds) {  // weightMin < 1.e20
     outIt = std::make_pair(
-        weightMin, std::make_unique<const InternalSeed<external_spacepoint_t>>(
-                       bottomSP, middleSP, *topSpVec[minWeightSeedIndex], zOrigin));
-    std::cout << "|seed filter 1| newOneSeed test " << nOneSeedsQ << " " << minWeightSeedIndex
-              << " " << weightMin << std::endl;
+        weightMin,
+        std::make_unique<const InternalSeed<external_spacepoint_t>>(
+            bottomSP, middleSP, *topSpVec[minWeightSeedIndex], zOrigin));
+    std::cout << "|seed filter 1| newOneSeed test " << nQualitySeeds << " "
+              << minWeightSeedIndex << " " << weightMin << std::endl;
   }
 }
 
@@ -319,8 +327,8 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_1SpFixed(
                const std::pair<float, std::unique_ptr<const Acts::InternalSeed<
                                           external_spacepoint_t>>>& i2) {
               if (i1.first != i2.first) {
-                //                return i1.first > i2.first;
-                return i1.first < i2.first;  // ********* change this **********
+									return i1.first > i2.first;
+//                return i1.first < i2.first;  // ********* change this **********
               } else {
                 // This is for the case when the weights from different seeds
                 // are same. This makes cpu & cuda results same
@@ -356,24 +364,6 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_1SpFixed(
     std::cout << "|set quality| w = " << bestSeedQuality << " "
               << (*it).second->sp[0]->x() << " " << (*it).second->sp[1]->x()
               << " " << (*it).second->sp[2]->x() << std::endl;
-
-//		bool testQ = (bestSeedQuality < (*it).second->sp[0]->quality() ||  bestSeedQuality < (*it).second->sp[1]->quality() || bestSeedQuality < (*it).second->sp[2]->quality());
-//
-//		if (!testQ) continue;
-		
-//    if (bestSeedQuality >= (*it).second->sp[0]->quality() and
-//        bestSeedQuality >= (*it).second->sp[1]->quality() and
-//        bestSeedQuality >= (*it).second->sp[2]->quality()) {
-//      std::cout << "|set quality| " << (*it).second->sp[0]->quality() << " "
-//                << (*it).second->sp[1]->quality() << " "
-//                << (*it).second->sp[2]->quality() << std::endl;
-//
-//			(*it).second->sp[0]->setQuality(bestSeedQuality);
-//			(*it).second->sp[1]->setQuality(bestSeedQuality);
-//			(*it).second->sp[2]->setQuality(bestSeedQuality);
-//
-//      continue;
-//    }
 
     std::cout << "|set quality| " << (*it).second->sp[0]->quality() << " "
               << (*it).second->sp[1]->quality() << " "

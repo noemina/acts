@@ -16,6 +16,7 @@ namespace Acts {
 struct LinCircle {
   float Zo;
   float cotTheta;
+//  float topDeltaR;
   float iDeltaR;
   float Er;
   float U;

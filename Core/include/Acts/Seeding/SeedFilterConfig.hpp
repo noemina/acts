@@ -35,15 +35,19 @@ struct SeedFilterConfig {
   size_t compatSeedLimit = 2;
   // Tool to apply experiment specific cuts on collected middle space points
 
-	// sort vectors vectors by curvature
-	bool curvatureSortingInFilter = false;
-	
+  // sort vectors vectors by curvature
+  bool curvatureSortingInFilter = false;
+
   // seed confirmation
   bool seedConfirmation = false;
   // contains parameters for central seed confirmation
   SeedConfirmationRange centralSeedConfirmationRange;
   // contains parameters for forward seed confirmation
   SeedConfirmationRange forwardSeedConfirmationRange;
+	// minimum radius for bottom SP in seed confirmation
+	float seedConfMinBottomRadius = 60. * Acts::UnitConstants::mm;
+	// maximum zOrigin in seed confirmation
+	float seedConfMaxZOrigin = 150. * Acts::UnitConstants::mm;
 
   SeedFilterConfig toInternalUnits() const {
     using namespace Acts::UnitLiterals;

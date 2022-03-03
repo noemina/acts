@@ -100,8 +100,7 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
 
   Acts::Grid2D::index_t nBins = grid->numLocalBins();
   for (unsigned int phiBin = 0; phiBin <= nBins[0]; phiBin++) {
-    s +=
-        std::string("(") + std::to_string(phiBin) + std::string(") ===> |");
+    s += std::string("(") + std::to_string(phiBin) + std::string(") ===> |");
     for (unsigned int zBin = 1; zBin <= nBins[1]; zBin++) {
       Acts::Grid2D::index_t indices = {{phiBin, zBin}};
       std::vector<

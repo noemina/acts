@@ -38,6 +38,6 @@ Acts::BinFinder<external_spacepoint_t>::findBins(
     indices =
         binnedSP->neighborHoodIndices({phiBin, zBin}, sizePerAxis).collect();
   }
- 
+
   return {indices.begin(), indices.end()};
 }

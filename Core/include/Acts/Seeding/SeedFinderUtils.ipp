@@ -57,16 +57,17 @@ void transformCoordinates(
   float varianceRM = spM.varianceR();
   float cosPhiM = xM / rM;
   float sinPhiM = yM / rM;
-	
-//	// sort the SP in order of cotTheta
-//	if (enableCutsForSortedSP) {
-//		std::sort(vec.begin(), vec.end(),
-//							[](const InternalSpacePoint<external_spacepoint_t>* a,
-//								 const InternalSpacePoint<external_spacepoint_t>* b) -> bool {
-//			return (a->cotTheta() < b->cotTheta());
-//		});
-//	}
-	
+
+  //	// sort the SP in order of cotTheta
+  //	if (enableCutsForSortedSP) {
+  //		std::sort(vec.begin(), vec.end(),
+  //							[](const
+  //InternalSpacePoint<external_spacepoint_t>* a, 								 const
+  //InternalSpacePoint<external_spacepoint_t>* b) -> bool { 			return
+  //(a->cotTheta() < b->cotTheta());
+  //		});
+  //	}
+
   for (auto sp : vec) {
     float deltaX = sp->x() - xM;
     float deltaY = sp->y() - yM;
@@ -90,86 +91,90 @@ void transformCoordinates(
     // location on z-axis of this SP-duplet
     l.Zo = zM - rM * cot_theta;
     l.iDeltaR = iDeltaR;
-    // transformation of circle equation (x,y) into linear equation (u,v)
-    // x^2 + y^2 - 2x_0*x - 2y_0*y = 0
-    // is transformed into
-    // 1 - 2x_0*u - 2y_0*v = 0
-    // using the following m_U and m_V
-    // (u = A + B*v); A and B are created later on
-    l.U = x * iDeltaR2;
+			// transformation of circle equation (x,y) into linear equation (u,v)
+        // x^2 + y^2 - 2x_0*x - 2y_0*y = 0
+        // is transformed into
+        // 1 - 2x_0*u - 2y_0*v = 0
+        // using the following m_U and m_V
+        // (u = A + B*v); A and B are created later on
+		l.U = x * iDeltaR2;
     l.V = y * iDeltaR2;
     // error term for sp-pair without correlation of middle space point
     l.Er = ((varianceZM + sp->varianceZ()) +
             (cot_theta * cot_theta) * (varianceRM + sp->varianceR())) *
            iDeltaR2;
+
+    l.x = sp->x();
+    l.y = sp->y();
+    l.z = sp->z();
+    l.r = sp->radius();
+
+    linCircleVec.push_back(l);
+    sp->setCotTheta(cot_theta);
 		
-		l.x = sp->x();
-		l.y = sp->y();
-		l.z = sp->z();
-		l.r = sp->radius();
-		
-		linCircleVec.push_back(l);
-		sp->setCotTheta(cot_theta);
+		if (bottom == false) {
+//			l.topDeltaR = std::sqrt((x * x) + (y * y) + (deltaZ * deltaZ));
+			sp->setDeltaR(std::sqrt((x * x) + (y * y) + (deltaZ * deltaZ)));
+//			std::cout << "TEST " << l.topDeltaR << std::endl;
+		}
   }
-	
-	// sort the SP in order of cotTheta
-	if (enableCutsForSortedSP) {
-		
-		
-//		std::sort(vec.begin(), vec.end(),
-//							[&linCircleVec, &vec](const InternalSpacePoint<external_spacepoint_t>* a,
-//															const InternalSpacePoint<external_spacepoint_t>* b) {
-//			return linCircleVec[std::find(vec.begin(), vec.end(), a)].cotTheta < linCircleVec[std::find(vec.begin(), vec.end(), b)].cotTheta;
-//		});
-		
-		std::vector<size_t> idx(vec.size());
-		std::iota(idx.begin(), idx.end(), 0);
 
-		std::sort(idx.begin(), idx.end(),
-							[&linCircleVec](size_t i1, size_t i2) {
-			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
-		});
-		
-		std::vector<const InternalSpacePoint<external_spacepoint_t>*> newVec;
-		for (size_t i = 0; i<vec.size();i++) {
-			newVec.push_back(vec[idx[i]]);
-		}		
-		vec = newVec;
-		
-//		std::vector<size_t> idx(vec.size());
-//		std::iota(idx.begin(), idx.end(), 0);
-//
-//		std::sort(idx.begin(), idx.end(),
-//							[&linCircleVec](size_t i1, size_t i2) {
-//			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
-//		});
-//
-//		for (size_t i = 0; i<vec.size();i++) {
-//			while(i != idx[i]){
-//				size_t j = idx[i];
-//				std::swap(vec[j], vec[idx[j]]);
-//				std::swap(idx[i], idx[j]);
-//			}
-//		}
-		
-//		size_t i, j, k;
-//		for(i = 0; i < vec.size(); i++){
-//			while(i != (j = idx[i])){
-//				k = idx[j];
-//				std::swap(vec[j], vec[k]);
-//				std::swap(idx[i], idx[j]);
-//			}
-//		}
+  // sort the SP in order of cotTheta
+  if (enableCutsForSortedSP) {
+    //		std::sort(vec.begin(), vec.end(),
+    //							[&linCircleVec, &vec](const
+    //InternalSpacePoint<external_spacepoint_t>* a, 															const
+    //InternalSpacePoint<external_spacepoint_t>* b) { 			return
+    //linCircleVec[std::find(vec.begin(), vec.end(), a)].cotTheta <
+    //linCircleVec[std::find(vec.begin(), vec.end(), b)].cotTheta;
+    //		});
 
-//		std::sort(vec.begin(), vec.end(), [&linCircleVec](size_t i1, size_t i2) {
-//			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
-//		});
-		
-		std::sort(linCircleVec.begin(), linCircleVec.end(),
-							[](const LinCircle& a, const LinCircle& b) -> bool {
-			return (a.cotTheta < b.cotTheta);
-		});
-	}
-	
+    std::vector<size_t> idx(vec.size());
+    std::iota(idx.begin(), idx.end(), 0);
+
+    std::sort(idx.begin(), idx.end(), [&linCircleVec](size_t i1, size_t i2) {
+      return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+    });
+
+    std::vector<const InternalSpacePoint<external_spacepoint_t>*> newVec;
+    for (size_t i = 0; i < vec.size(); i++) {
+      newVec.push_back(vec[idx[i]]);
+    }
+    vec = newVec;
+
+    //		std::vector<size_t> idx(vec.size());
+    //		std::iota(idx.begin(), idx.end(), 0);
+    //
+    //		std::sort(idx.begin(), idx.end(),
+    //							[&linCircleVec](size_t i1, size_t i2)
+    //{ 			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+    //		});
+    //
+    //		for (size_t i = 0; i<vec.size();i++) {
+    //			while(i != idx[i]){
+    //				size_t j = idx[i];
+    //				std::swap(vec[j], vec[idx[j]]);
+    //				std::swap(idx[i], idx[j]);
+    //			}
+    //		}
+
+    //		size_t i, j, k;
+    //		for(i = 0; i < vec.size(); i++){
+    //			while(i != (j = idx[i])){
+    //				k = idx[j];
+    //				std::swap(vec[j], vec[k]);
+    //				std::swap(idx[i], idx[j]);
+    //			}
+    //		}
+
+    //		std::sort(vec.begin(), vec.end(), [&linCircleVec](size_t i1, size_t
+    //i2) { 			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+    //		});
+
+    std::sort(linCircleVec.begin(), linCircleVec.end(),
+              [](const LinCircle& a, const LinCircle& b) -> bool {
+                return (a.cotTheta < b.cotTheta);
+              });
+  }
 }
 }  // namespace Acts

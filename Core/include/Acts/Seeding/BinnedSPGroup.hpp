@@ -145,7 +145,6 @@ template <typename external_spacepoint_t>
 class BinnedSPGroupIterator {
  public:
   BinnedSPGroupIterator& operator++() {
-
     if (zIndex < phiZbins[1]) {
       zIndex++;
     } else {
@@ -205,10 +204,11 @@ class BinnedSPGroupIterator {
     customZorder = bins;
     size_t this_zIndex = bins.empty() ? zIndex : bins.front();
     outputIndex = grid->globalBinFromLocalBins({phiIndex, this_zIndex});
-    currentBin = NeighborhoodVector{grid->globalBinFromLocalBins({phiIndex, this_zIndex})};
+    currentBin = NeighborhoodVector{
+        grid->globalBinFromLocalBins({phiIndex, this_zIndex})};
     bottomBinIndices = m_bottomBinFinder->findBins(phiIndex, this_zIndex, grid);
     topBinIndices = m_topBinFinder->findBins(phiIndex, this_zIndex, grid);
-}
+  }
 
   BinnedSPGroupIterator(const SpacePointGrid<external_spacepoint_t>* spgrid,
                         BinFinder<external_spacepoint_t>* botBinFinder,
@@ -227,7 +227,8 @@ class BinnedSPGroupIterator {
             ? zIndex
             : (zIndex <= phiZbins[1] ? bins.at(zIndex - 1) : bins.back());
     outputIndex = grid->globalBinFromLocalBins({phiIndex, this_zIndex});
-    currentBin = NeighborhoodVector(grid->globalBinFromLocalBins({phiInd, this_zIndex}));
+    currentBin =
+        NeighborhoodVector(grid->globalBinFromLocalBins({phiInd, this_zIndex}));
     if (phiIndex <= phiZbins[0] && zIndex <= phiZbins[1]) {
       bottomBinIndices =
           m_bottomBinFinder->findBins(phiIndex, this_zIndex, grid);
@@ -248,7 +249,7 @@ class BinnedSPGroupIterator {
   BinFinder<external_spacepoint_t>* m_bottomBinFinder;
   BinFinder<external_spacepoint_t>* m_topBinFinder;
   boost::container::small_vector<size_t, 20> customZorder;
-// 	bool start = true;
+  // 	bool start = true;
 };
 
 /// @c BinnedSPGroup Provides access to begin and end BinnedSPGroupIterator

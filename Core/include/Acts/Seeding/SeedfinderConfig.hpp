@@ -12,8 +12,8 @@
 #include "Acts/Definitions/Units.hpp"
 #include "Acts/Utilities/detail/Axis.hpp"
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 namespace Acts {
 
@@ -27,12 +27,12 @@ struct SeedConfirmationRange {
   SeedConfirmationRange(float zMin = std::numeric_limits<float>::min(),
                         float zMax = std::numeric_limits<float>::max(),
                         float rMax = std::numeric_limits<float>::max(),
-                        size_t nTopLargeR = 0, size_t nTopSmallR = 0 ) :
-  zMinSeedConf(zMin),
-  zMaxSeedConf(zMax),
-  rMaxSeedConf(rMax),
-  nTopForLargeR(nTopLargeR),
-  nTopForSmallR(nTopSmallR) {}
+                        size_t nTopLargeR = 0, size_t nTopSmallR = 0)
+      : zMinSeedConf(zMin),
+        zMaxSeedConf(zMax),
+        rMaxSeedConf(rMax),
+        nTopForLargeR(nTopLargeR),
+        nTopForSmallR(nTopSmallR) {}
 };
 
 // forward declaration to avoid cyclic dependence
@@ -53,7 +53,7 @@ struct SeedfinderConfig {
   float deltaRMin = 5 * Acts::UnitConstants::mm;
   // maximum distance in r between two measurements within one seed
   float deltaRMax = 270 * Acts::UnitConstants::mm;
-  //<<<<<<< Updated upstream
+
   // minimum distance in r between middle and top SP
   float deltaRMinTopSP = 5 * Acts::UnitConstants::mm;
   // maximum distance in r between middle and top SP
@@ -66,9 +66,7 @@ struct SeedfinderConfig {
   // radial range for middle SP
   std::vector<std::vector<float>> rRangeMiddleSP;
   bool useVariableMiddleSPRange = true;
-  float deltaRMiddleSPRange = 10.;
-  float rMinMiddleSP;
-  float rMaxMiddleSP;
+  float deltaRMiddleSPRange = 10. * Acts::UnitConstants::mm;
 
   // seed confirmation
   bool seedConfirmation = true;
@@ -192,6 +190,11 @@ struct SeedfinderConfig {
     config.minPt /= 1_MeV;
     config.deltaRMin /= 1_mm;
     config.deltaRMax /= 1_mm;
+		config.deltaRMinTopSP /= 1_mm;
+		config.deltaRMaxTopSP /= 1_mm;
+		config.deltaRMinBottomSP /= 1_mm;
+		config.deltaRMaxBottomSP /= 1_mm;
+		config.deltaRMiddleSPRange /= 1_mm;
     config.impactMax /= 1_mm;
     config.maxPtScattering /= 1_MeV;  // correct?
     config.collisionRegionMin /= 1_mm;

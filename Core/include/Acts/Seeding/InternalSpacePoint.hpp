@@ -43,8 +43,10 @@ class InternalSpacePoint {
   // : value+2*M_PI;}
   const float& varianceR() const { return m_varianceR; }
   const float& varianceZ() const { return m_varianceZ; }
-	float& cotTheta() const { return m_cotTheta; }
+  float& cotTheta() const { return m_cotTheta; }
   void setCotTheta(float& cotTheta) const { m_cotTheta = cotTheta; }
+	float& deltaR() const { return m_deltaR; }
+	void setDeltaR(const float& deltaR) const { m_deltaR = deltaR; }
 
   //	const float& curvature() const {return m_cotTheta; }
   //	void curvature(float& cotTheta) const { m_cotTheta = cotTheta;}
@@ -52,7 +54,7 @@ class InternalSpacePoint {
   const SpacePoint& sp() const { return m_sp; }
   float& quality() const { return m_quality; }
   void setQuality(float& quality) const {
-    if (quality <= m_quality) {
+    if (quality >= m_quality) {
       std::cout << "|setQuality| Old quality :" << m_quality
                 << " New quality: " << quality << std::endl;
       m_quality = quality;
@@ -67,6 +69,7 @@ class InternalSpacePoint {
   float m_varianceR;         //
   float m_varianceZ;         //
   mutable float m_cotTheta;  //
+	mutable float m_deltaR;  //
   const SpacePoint& m_sp;    // external space point
   mutable float m_quality;   // quality of the best seed containing this SP
 };
@@ -86,7 +89,7 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_r = std::sqrt(m_x * m_x + m_y * m_y);
   m_varianceR = variance.x();
   m_varianceZ = variance.y();
-  m_quality = 100000.;
+  m_quality = -100000.;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +107,7 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_varianceR = sp.m_varianceR;
   m_varianceZ = sp.m_varianceZ;
   m_cotTheta = sp.m_cotTheta;
+			m_deltaR = sp.deltaR;
   m_quality = sp.m_quality;
 }
 

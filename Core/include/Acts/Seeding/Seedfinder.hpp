@@ -51,6 +51,7 @@ class Seedfinder {
     std::vector<float> etaVec;
     std::vector<float> ptVec;
     std::vector<float> cotThetaVec;
+//    std::vector<float> topDeltaR;
 
     std::vector<std::pair<
         float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>
