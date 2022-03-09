@@ -66,7 +66,8 @@ struct SeedfinderConfig {
   // radial range for middle SP
   std::vector<std::vector<float>> rRangeMiddleSP;
   bool useVariableMiddleSPRange = true;
-  float deltaRMiddleSPRange = 10. * Acts::UnitConstants::mm;
+  float deltaRMiddleMinSPRange = 10. * Acts::UnitConstants::mm;
+	float deltaRMiddleMaxSPRange = 10. * Acts::UnitConstants::mm;
 
   // seed confirmation
   bool seedConfirmation = true;
@@ -74,9 +75,18 @@ struct SeedfinderConfig {
   SeedConfirmationRange centralSeedConfirmationRange;
   // parameters for forward seed confirmation
   SeedConfirmationRange forwardSeedConfirmationRange;
+	
+	// enable cut on the compatibility between interaction point and SPs
+	bool interactionPointCut = false;
 
+	// use arithmetic average in the calculation of the squared error on the difference in tan(theta)
+	bool arithmeticAverageCotTheta = false;
+	
   // non equidistant binning in z
   std::vector<float> zBinEdges;
+	
+	// delete
+	std::string inputCollectionTest = "pixel";
 
   // sort the SP in transformCoordinates method and enables compatibility cuts
   // based on the sorting of cotTheta
@@ -194,7 +204,8 @@ struct SeedfinderConfig {
 		config.deltaRMaxTopSP /= 1_mm;
 		config.deltaRMinBottomSP /= 1_mm;
 		config.deltaRMaxBottomSP /= 1_mm;
-		config.deltaRMiddleSPRange /= 1_mm;
+		config.deltaRMiddleMaxSPRange /= 1_mm;
+		config.deltaRMiddleMinSPRange /= 1_mm;
     config.impactMax /= 1_mm;
     config.maxPtScattering /= 1_MeV;  // correct?
     config.collisionRegionMin /= 1_mm;

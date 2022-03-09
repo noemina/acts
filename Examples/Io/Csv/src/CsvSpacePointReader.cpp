@@ -66,9 +66,15 @@ ActsExamples::ProcessCode ActsExamples::CsvSpacePointReader::read(
     Acts::Vector3 globalPos(data.sp_x, data.sp_y, data.sp_z);
 
     if (m_cfg.inputCollection == "pixel" || m_cfg.inputCollection == "strip" ||
-        m_cfg.inputCollection == "overlap")
-      spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz,
-                               data.measurement_id);
+				m_cfg.inputCollection == "overlap") {
+			if (m_cfg.extendCollection) {
+				std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
+				spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id);
+			} else {
+				std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
+      	spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id);
+			}
+		}
     else {
       ACTS_ERROR("Invalid space point type " << m_cfg.inputStem);
       return ProcessCode::ABORT;
@@ -78,7 +84,11 @@ ActsExamples::ProcessCode ActsExamples::CsvSpacePointReader::read(
   ACTS_DEBUG("Created " << spacePoints.size() << " " << m_cfg.inputCollection
                         << " space points");
 
+	std::cout << "Created " << spacePoints.size() << " " << m_cfg.inputCollection
+	<< " space points" << std::endl;
+	
 	ctx.eventStore.add("PixelSpacePoints", std::move(spacePoints));
+	ctx.eventStore.add("StripSpacePoints", std::move(spacePoints));
 
   return ProcessCode::SUCCESS;
 }

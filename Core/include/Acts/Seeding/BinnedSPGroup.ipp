@@ -44,6 +44,7 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
       rBins(numRBins);
   for (spacepoint_iterator_t it = spBegin; it != spEnd; it++) {
     if (*it == nullptr) {
+			std::cout << "nullptr" << std::endl;
       continue;
     }
     const external_spacepoint_t& sp = **it;
@@ -55,10 +56,12 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
     float spZ = spPosition[2];
 
     if (spZ > zMax || spZ < zMin) {
+			std::cout << "spZ > zMax || spZ < zMin" << spZ <<" " << zMax << std::endl;
       continue;
     }
     float spPhi = std::atan2(spY, spX);
     if (spPhi > phiMax || spPhi < phiMin) {
+			std::cout << "spPhi > phiMax || spPhi < phiMin" << spPhi <<" " << phiMax << std::endl;
       continue;
     }
 
@@ -70,20 +73,21 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
     size_t rIndex = isp->radius();
     // if index out of bounds, the SP is outside the region of interest
     if (rIndex >= numRBins) {
+			std::cout << "rIndex >= numRBins" << rIndex <<" " << numRBins<< std::endl;
       continue;
     }
     rBins[rIndex].push_back(std::move(isp));
   }
 
-  //	std::cout << "|rmin|" << rBins[0][0]->radius() << std::endl;
-  //	std::cout << "|rmax|" << std::endl;
+//  	std::cout << "|rmin|" << rBins[0][0]->radius() << std::endl;
+//  	std::cout << "|rmax|" << std::endl;
 
   // fill rbins into grid such that each grid bin is sorted in r
   // space points with delta r < rbin size can be out of order
   for (auto& rbin : rBins) {
     for (auto& isp : rbin) {
-      //			std::cout << "|a|" << isp->radius() <<
-      // std::endl;
+//      			std::cout << "|a|" << isp->radius() <<
+//       std::endl;
 
       Acts::Vector2 spLocation(isp->phi(), isp->z());
       std::vector<
@@ -92,9 +96,9 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
       bin.push_back(std::move(isp));
     }
   }
-  //	config.rRanMiddleSP.push_back(rMinMiddleSP);
-  //	config.rRanMiddleSP.push_back(rMaxMiddleSP);
-  //	std::cout << "|a|" << rmax_test << " " << rmin_test << std::endl;
+//  	config.rRanMiddleSP.push_back(rMinMiddleSP);
+//  	config.rRanMiddleSP.push_back(rMaxMiddleSP);
+//  	std::cout << "|a|" << rmax_test << " " << rmin_test << std::endl;
 
   std::string s = "";
 

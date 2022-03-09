@@ -108,7 +108,12 @@ void transformCoordinates(
     l.y = sp->y();
     l.z = sp->z();
     l.r = sp->radius();
-
+		
+		iSinTheta2 = (1. + cotThetaB * cotThetaB)
+		l.Ce = cotThetaB / std::sqrt(iSinTheta2);
+		l.Sx = cosPhiM / std::sqrt(iSinTheta2);
+		l.Sy = sinPhiM / std::sqrt(iSinTheta2);
+		
     linCircleVec.push_back(l);
     sp->setCotTheta(cot_theta);
 		

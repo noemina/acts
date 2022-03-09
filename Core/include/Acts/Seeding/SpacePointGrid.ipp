@@ -23,6 +23,10 @@ Acts::SpacePointGridCreator::createGrid(
   if (config.bFieldInZ == 0) {
     phiBins = 100;
   } else {
+		
+		config.rMax = 1000;
+		config.deltaRMax = 600;
+		
     // calculate circle intersections of helix and max detector radius
     float minHelixRadius =
         config.minPt /

@@ -46,6 +46,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
   //	std::sort(middleSPs.begin(), middleSPs.end(), [] (auto* a, auto* b) ->
   // bool { return (a->radius() < b->radius()); } );
 
+	std::string inputCollectionTest = m_config.inputCollectionTest;
+	
   int i_n = 0;
   for (auto spM : middleSPs) {
     // std::cout << std::endl;
@@ -61,7 +63,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     std::cout << std::endl;
     std::cout << "|Seeds| rM: " << rM << " deltaRMin: "
               << std::floor(rRangeSPExtent.min(Acts::binR) / 2) * 2 +
-                     m_config.deltaRMiddleSPRange
+                     m_config.deltaRMiddleMinSPRange
               << std::endl;
     //		 std::cout << "|Seeds| rMinMiddleSP: " << m_config.rRanMiddleSP[0] <<
     //" rMaxMiddleSP: " << m_config.rRanMiddleSP[1] << std::endl;
@@ -85,9 +87,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     /// check if spM is outside our radial region of interest
     if (m_config.useVariableMiddleSPRange) {
       float rMinMiddleSP = std::floor(rRangeSPExtent.min(Acts::binR) / 2) * 2 +
-                           m_config.deltaRMiddleSPRange;
+                           m_config.deltaRMiddleMinSPRange;
       float rMaxMiddleSP = std::floor(rRangeSPExtent.max(Acts::binR) / 2) * 2 -
-                           m_config.deltaRMiddleSPRange;
+                           m_config.deltaRMiddleMaxSPRange;
       std::cout << "rMaxMiddleSP, rMinMiddleSP: " << rMaxMiddleSP << " "
                 << rMinMiddleSP << std::endl;
       if (rM < rMinMiddleSP || rM > rMaxMiddleSP) {
@@ -107,7 +109,11 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         continue;
       }
     }
-
+		
+//		if (std::abs(zM) > 2700) {
+//			continue;
+//		}
+		
     size_t nTopSeedConf = 0;
     if (m_config.seedConfirmation == true) {
       // check if middle SP is in the central or forward region
@@ -170,42 +176,44 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       // points away from the interaction point in addition to a translation
       // transformation we also perform a rotation in order to keep the
       // curvature of the circle tangent to the x axis
-      float xVal = (topSP->x() - spM->x()) * (spM->x() / rM) +
-                   (topSP->y() - spM->y()) * (spM->y() / rM);
-      float yVal = (topSP->y() - spM->y()) * (spM->x() / rM) -
-                   (topSP->x() - spM->x()) * (spM->y() / rM);
-      std::cout << std::abs(rM) << " * " << std::abs(yVal) << " > "
-                << -m_config.impactMax << " * " << xVal << std::endl;
-      if (std::abs(rM * yVal) > m_config.impactMax * xVal) {
-        // conformal transformation u=x/(x²+y²) v=y/(x²+y²) transform the circle
-        // into straight lines in the u/v plane the line equation can be
-        // described in terms of aCoef and bCoef, where v = aCoef * u + bCoef
-        float uT = xVal / (xVal * xVal + yVal * yVal);
-        float vT = yVal / (xVal * xVal + yVal * yVal);
-        // in the rotated frame the interaction point is positioned at x = -rM
-        // and y ~= impactParam
-        float uIP = -1. / rM;
-        float vIP = m_config.impactMax / (rM * rM);
-        if (yVal > 0.)
-          vIP = -vIP;
-        // we can obtain aCoef as the slope dv/du of the linear function,
-        // estimated using du and dv between the two SP bCoef is obtained by
-        // inserting aCoef into the linear equation
-        float aCoef = (vT - vIP) / (uT - uIP);
-        float bCoef = vIP - aCoef * uIP;
-        // the distance of the straight line from the origin (radius of the
-        // circle) is related to aCoef and bCoef by d^2 = bCoef^2 / (1 +
-        // aCoef^2) = 1 / (radius^2) and we can apply the cut on the curvature
-        if ((bCoef * bCoef) >
-            (1 + aCoef * aCoef) / m_config.minHelixDiameter2) {
-          std::cout << bCoef << " * " << bCoef << " > 1+" << aCoef << " * "
-                    << aCoef << " / " << m_config.minHelixDiameter2
-                    << std::endl;
-          std::cout << "|Seeds| !!!  impact parameter cut == TRUE !!!"
-                    << std::endl;
-          continue;
-        }
-      }
+			if (m_config.interactionPointCut) {
+      	float xVal = (topSP->x() - spM->x()) * (spM->x() / rM) +
+        	           (topSP->y() - spM->y()) * (spM->y() / rM);
+      	float yVal = (topSP->y() - spM->y()) * (spM->x() / rM) -
+        	           (topSP->x() - spM->x()) * (spM->y() / rM);
+      	std::cout << std::abs(rM) << " * " << std::abs(yVal) << " > "
+        	        << -m_config.impactMax << " * " << xVal << std::endl;
+      	if (std::abs(rM * yVal) > m_config.impactMax * xVal) {
+        	// conformal transformation u=x/(x²+y²) v=y/(x²+y²) transform the circle
+        	// into straight lines in the u/v plane the line equation can be
+	        // described in terms of aCoef and bCoef, where v = aCoef * u + bCoef
+  	      float uT = xVal / (xVal * xVal + yVal * yVal);
+    	    float vT = yVal / (xVal * xVal + yVal * yVal);
+      	  // in the rotated frame the interaction point is positioned at x = -rM
+        	// and y ~= impactParam
+	        float uIP = -1. / rM;
+  	      float vIP = m_config.impactMax / (rM * rM);
+    	    if (yVal > 0.)
+      	    vIP = -vIP;
+        	// we can obtain aCoef as the slope dv/du of the linear function,
+	        // estimated using du and dv between the two SP bCoef is obtained by
+  	      // inserting aCoef into the linear equation
+    	    float aCoef = (vT - vIP) / (uT - uIP);
+      	  float bCoef = vIP - aCoef * uIP;
+        	// the distance of the straight line from the origin (radius of the
+	        // circle) is related to aCoef and bCoef by d^2 = bCoef^2 / (1 +
+  	      // aCoef^2) = 1 / (radius^2) and we can apply the cut on the curvature
+    	    if ((bCoef * bCoef) >
+      	      (1 + aCoef * aCoef) / m_config.minHelixDiameter2) {
+        	  std::cout << bCoef << " * " << bCoef << " > 1+" << aCoef << " * "
+          	          << aCoef << " / " << m_config.minHelixDiameter2
+            	        << std::endl;
+          	std::cout << "|Seeds| !!!  impact parameter cut == TRUE !!!"
+            	        << std::endl;
+          	continue;
+        	}
+      	}
+			}
       state.compatTopSP.push_back(topSP);
       std::cout << "|Seeds| # Fill SP" << std::endl;
     }
@@ -272,41 +280,43 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       // points away from the interaction point in addition to a translation
       // transformation we also perform a rotation in order to keep the
       // curvature of the circle tangent to the x axis
-      float xVal = (bottomSP->x() - spM->x()) * (spM->x() / rM) +
-                   (bottomSP->y() - spM->y()) * (spM->y() / rM);
-      float yVal = (bottomSP->y() - spM->y()) * (spM->x() / rM) -
-                   (bottomSP->x() - spM->x()) * (spM->y() / rM);
-      // std::cout << std::abs(rM) << " * " << std::abs(yVal) << " > " <<
-      // -m_config.impactMax << " * " << xVal << std::endl;
-      if (std::abs(rM * yVal) > -m_config.impactMax * xVal) {
-        // conformal transformation u=x/(x²+y²) v=y/(x²+y²) transform the circle
-        // into straight lines in the u/v plane the line equation can be
-        // described in terms of aCoef and bCoef, where v = aCoef * u + bCoef
-        float uB = xVal / (xVal * xVal + yVal * yVal);
-        float vB = yVal / (xVal * xVal + yVal * yVal);
-        // in the rotated frame the interaction point is positioned at x = -rM
-        // and y ~= impactParam
-        float uIP = -1. / rM;
-        float vIP = m_config.impactMax / (rM * rM);
-        if (yVal < 0.)
-          vIP = -vIP;
-        // we can obtain aCoef as the slope dv/du of the linear function,
-        // estimated using du and dv between the two SP bCoef is obtained by
-        // inserting aCoef into the linear equation
-        float aCoef = (vB - vIP) / (uB - uIP);
-        float bCoef = vIP - aCoef * uIP;
-        // the distance of the straight line from the origin (radius of the
-        // circle) is related to aCoef and bCoef by d^2 = bCoef^2 / (1 +
-        // aCoef^2) = 1 / (radius^2) and we can apply the cut on the curvature
-        std::cout << bCoef << "^2 > (1 - " << aCoef << "^2) /"
-                  << m_config.minHelixDiameter2 << std::endl;
-        std::cout << "|Seeds| !!! impact parameter cut == TRUE !!!"
-                  << std::endl;
-        if ((bCoef * bCoef) >
-            (1 + aCoef * aCoef) / m_config.minHelixDiameter2) {
-          continue;
-        }
-      }
+			if (m_config.interactionPointCut) {
+	      float xVal = (bottomSP->x() - spM->x()) * (spM->x() / rM) +
+  	                 (bottomSP->y() - spM->y()) * (spM->y() / rM);
+    	  float yVal = (bottomSP->y() - spM->y()) * (spM->x() / rM) -
+      	             (bottomSP->x() - spM->x()) * (spM->y() / rM);
+	      // std::cout << std::abs(rM) << " * " << std::abs(yVal) << " > " <<
+  	    // -m_config.impactMax << " * " << xVal << std::endl;
+    	  if (std::abs(rM * yVal) > -m_config.impactMax * xVal) {
+      	  // conformal transformation u=x/(x²+y²) v=y/(x²+y²) transform the circle
+        	// into straight lines in the u/v plane the line equation can be
+	        // described in terms of aCoef and bCoef, where v = aCoef * u + bCoef
+  	      float uB = xVal / (xVal * xVal + yVal * yVal);
+    	    float vB = yVal / (xVal * xVal + yVal * yVal);
+      	  // in the rotated frame the interaction point is positioned at x = -rM
+        	// and y ~= impactParam
+	        float uIP = -1. / rM;
+  	      float vIP = m_config.impactMax / (rM * rM);
+    	    if (yVal < 0.)
+      	    vIP = -vIP;
+	        // we can obtain aCoef as the slope dv/du of the linear function,
+  	      // estimated using du and dv between the two SP bCoef is obtained by
+    	    // inserting aCoef into the linear equation
+      	  float aCoef = (vB - vIP) / (uB - uIP);
+        	float bCoef = vIP - aCoef * uIP;
+	        // the distance of the straight line from the origin (radius of the
+  	      // circle) is related to aCoef and bCoef by d^2 = bCoef^2 / (1 +
+    	    // aCoef^2) = 1 / (radius^2) and we can apply the cut on the curvature
+      	  std::cout << bCoef << "^2 > (1 - " << aCoef << "^2) /"
+        	          << m_config.minHelixDiameter2 << std::endl;
+        	std::cout << "|Seeds| !!! impact parameter cut == TRUE !!!"
+	                  << std::endl;
+	        if ((bCoef * bCoef) >
+  	          (1 + aCoef * aCoef) / m_config.minHelixDiameter2) {
+    	      continue;
+      	  }
+      	}
+			}
       state.compatBottomSP.push_back(bottomSP);
       std::cout << "|Seeds| # Fill SP" << std::endl;
     }
@@ -400,6 +410,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
                   << lt.z << std::endl;
 
         nSeeds_test1 += 1;
+				
+				
 
         // add errors of spB-spM and spM-spT pairs and add the correlation term
         // for errors on spM
@@ -408,6 +420,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
                            iDeltaRB * lt.iDeltaR;
 
         float deltaCotTheta = cotThetaB - lt.cotTheta;
+				if (m_config.arithmeticAverageCotTheta) deltaCotTheta = (cotThetaB + lt.cotTheta)/2;
         float deltaCotTheta2 = deltaCotTheta * deltaCotTheta;
         float error;
         float dCotThetaMinusError2;
@@ -501,6 +514,34 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
                     << std::endl;
           continue;
         }
+				
+//				Sx = lb.Sx;
+//				Sy = lb.Sy;
+//				Ce = lb.Ce;
+//				float Cn = Ce * std::sqrt(S2);
+//				float dn[3] = {Sx - Sy * A, Sx * A + Sy, Cn};
+//				float rn[3];
+//				2782         if (!(*iter_centralSP)->coordinates(dn, rn))
+//					2783           continue;
+//				2784
+//				2785         // Bottom  point
+//				2786         //
+//				2787         float B0 = 2. * (Vb - A0 * Ub);
+//				2788         float Cb = 1. - B0 * data.Y[b];
+//				2789         float Sb = A0 + B0 * data.X[b];
+//				2790         float db[3] = {Sx * Cb - Sy * Sb, Sx * Sb + Sy * Cb, Cn};
+//				2791         float rb[3];
+//				2792         if (!data.ITkSP[b]->coordinates(db, rb))
+//					2793           continue;
+//				2794
+//				2795         // Top     point
+//				2796         //
+//				2797         float Ct = 1. - B0 * data.Y[t];
+//				2798         float St = A0 + B0 * data.X[t];
+//				2799         float dt[3] = {Sx * Ct - Sy * St, Sx * St + Sy * Ct, Cn};
+//				2800         float rt[3];
+//				2801         if (!data.ITkSP[t]->coordinates(dt, rt))
+//					2802           continue;
 
         nSeeds_test3 += 1;
 
@@ -579,7 +620,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
 
           // std::cout << "ACEPTED" << std::endl;
-          std::cout << "|Seeds Map| pT, eta, dScore, curvature, Im: "
+          std::cout << "|Seeds Map " << inputCollectionTest << "| pT, eta, dScore, curvature, Im: "
                     << std::setprecision(10) << pT / 1000 << " " << eta << " "
                     << 0 << " " << B / std::sqrt(S2) << " " << Im << std::endl;
         }
@@ -605,7 +646,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     nSeeds_filter2 = (state.seedsPerSpM).size();
 
     // std::cout << std::endl;
-    std::cout << "|Seeds Map| nSeeds, zBin, phiBin: " << nSeeds << " " << zBin
+    std::cout << "|Seeds Map " << inputCollectionTest << "| nSeeds, zBin, phiBin: " << nSeeds << " " << zBin
               << " "
               << std::abs(std::ceil(spM->phi() * 1 / (2 * 3.14159265359 / 138)))
               << std::endl;

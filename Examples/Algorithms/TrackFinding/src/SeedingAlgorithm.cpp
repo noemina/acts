@@ -192,12 +192,14 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
   auto group = spacePointsGrouping.begin();
   auto groupEnd = spacePointsGrouping.end();
 
-  int i = 0;
+	std::string inputCollectionTest = m_cfg.seedFinderConfig.inputCollectionTest;
+	
+	int i = 0;
   int phibin = 1;
   int zbin = 1;
   bool pass = false;
   std::string s_mid = "|Groups Mid| (0) ==> |";
-    
+	    
   for (; !(group == groupEnd); ++group) {
     auto bot = group.bottom();
     auto mid = group.middle();
@@ -222,7 +224,7 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
             std::cout << std::setprecision(10) << "Top layer:  x= " << sp->x() << " y= " << sp->y() << " z= " << sp->z() << " r= " << sp->radius() << std::endl;
         }
         i++;
-        std::cout << "|Groups| n_group, n_mid, n_top, n_bot, phi_bin, z_bin: " << i << ", " << n_mid << ", " << n_top << ", " << n_bot << ", " << phibin-1 << ", " << zbin-1 << std::endl;
+        std::cout << "|Groups " << inputCollectionTest << "| n_group, n_mid, n_top, n_bot, phi_bin, z_bin: " << i << ", " << n_mid << ", " << n_top << ", " << n_bot << ", " << phibin-1 << ", " << zbin-1 << std::endl;
     }
     finder.createSeedsForGroup(state, std::back_inserter(seeds), group.bottom(),
                                group.middle(), group.top(), rRangeSPExtent);
