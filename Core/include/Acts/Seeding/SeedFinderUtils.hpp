@@ -26,6 +26,10 @@ struct LinCircle {
   float y;
   float z;
   float r;
+	
+	float Sx;
+	float Sy;
+	float Ce;
 };
 
 /// @brief Transform two spacepoints to a u-v space circle.

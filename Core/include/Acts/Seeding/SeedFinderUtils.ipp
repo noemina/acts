@@ -109,6 +109,16 @@ void transformCoordinates(
     l.z = sp->z();
     l.r = sp->radius();
 		
+		float iSinTheta2 = (1. + cot_theta * cot_theta);
+		l.Sx = cot_theta / iSinTheta2;
+		l.Sy = cosPhiM / iSinTheta2;
+		l.Ce = sinPhiM / iSinTheta2;
+		
+//		l.topStripVector = sp->topStripVector();
+//		l.bottomStripVector = sp->bottomStripVector();
+//		l.stripCenterDistance = sp->stripCenterDistance();
+//		l.stripCenterPosition = sp->stripCenterPosition();
+		
     linCircleVec.push_back(l);
     sp->setCotTheta(cot_theta);
 		

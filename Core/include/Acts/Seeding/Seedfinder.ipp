@@ -411,6 +411,78 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
         nSeeds_test1 += 1;
 				
+				if (true) {
+				
+					// protects against division by 0
+					float dU = lt.U - Ub;
+					if (dU == 0.) {
+						continue;
+					}
+					// A and B are evaluated as a function of the circumference parameters
+					// x_0 and y_0
+					float A = (lt.V - Vb) / dU;
+					
+					// middle
+					float Sx = lb.Sx;
+					float Sy = lb.Sy;
+					float Ce = lb.Ce;
+					float Cn = Ce * std::sqrt(1 + A * A);
+					float dn[3] = {Sx - Sy * A, Sx * A + Sy, Cn};
+		
+					float rTestM[3];
+					if (!coordinates(dn, rTestM, spM))
+						continue;
+				
+					// bottom
+					float B0 = 2. * (Vb - A * Ub);
+					float Cb = 1. - B0 * lb.y;
+					float Sb = A + B0 * lb.x;
+					float db[3] = {Sx * Cb - Sy * Sb, Sx * Sb + Sy * Cb, Cn};
+				
+					auto spB = state.compatBottomSP[b];
+					float rTestB[3];
+					if (!coordinates(dn, rTestB, spB))
+						continue;
+				
+					// top
+					float Ct = 1. - B0 * lb.y;
+					float St = A + B0 * lb.x;
+					float dt[3] = {Sx * Ct - Sy * St, Sx * St + Sy * Ct, Cn};
+				
+					auto spT = state.compatTopSP[t];
+					float rTestT[3];
+					if (!coordinates(dn, rTestT, spT))
+						continue;
+
+					float xB = rTestB[0] - rTestM[0];
+					float yB = rTestB[1] - rTestM[1];
+					float zB = rTestB[2] - rTestM[2];
+					float xT = rTestT[0] - rTestM[0];
+					float yT = rTestT[1] - rTestM[1];
+					float zT = rTestT[2] - rTestM[2];
+					
+					float iDeltaRB2 = 1. / (xB * xB + yB * yB);
+					iDeltaRB = std::sqrt(iDeltaRB2);
+					lb.iDeltaR = iDeltaRB;
+					
+					float iDeltaRT2 = 1. / (xT * xT + yT * yT);
+					lt.iDeltaR = std::sqrt(iDeltaRT2);
+					
+					cotThetaB = - zB * iDeltaRB;
+					lb.cotTheta = cotThetaB;
+					lt.cotTheta = zT * lt.iDeltaR;
+					
+					float Rn = std::sqrt(rTestM[0] * rTestM[0] + rTestM[1] * rTestM[1]);
+					float Ax = rTestM[0] / Rn;
+					float Ay = rTestM[1] / Rn;
+					
+					Ub = (xB * Ax + yB * Ay) * iDeltaRB2;
+					Vb = (yB * Ax - xB * Ay) * iDeltaRB2;
+					lb.U = Ub;
+					lb.V = Vb;
+					lt.U = (xT * Ax + yT * Ay) * iDeltaRT2;
+					lt.V = (yT * Ax - xT * Ay) * iDeltaRT2;
+				}
 				
 
         // add errors of spB-spM and spM-spT pairs and add the correlation term
@@ -483,66 +555,39 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         }
 
         nSeeds_test2 += 1;
-
-        // protects against division by 0
-        float dU = lt.U - Ub;
-        if (dU == 0.) {
-          continue;
-        }
-        // A and B are evaluated as a function of the circumference parameters
-        // x_0 and y_0
-        float A = (lt.V - Vb) / dU;
-        float S2 = 1. + A * A;
-        float B = Vb - A * Ub;
-        float B2 = B * B;
-        // sqrt(S2)/B = 2 * helixradius
-        // calculated radius must not be smaller than minimum radius
-        std::cout << "|Seeds| S2: " << S2 << " B2: " << B2
-                  << " minHelixDiameter2: " << m_config.minHelixDiameter2
-                  << std::endl;
-        std::cout << "|Seeds| Vb - A * Ub: " << Vb << " - " << A << " * " << Ub
-                  << std::endl;
-        std::cout << "|Seeds| dT*S2" << (deltaCotTheta2 - error2) * S2
-                  << " CSA: "
-                  << iSinTheta2 * 134 * .05 * 9 * 2 * 2 /
-                         (m_config.pTPerHelixRadius * m_config.pTPerHelixRadius)
-                  << " m_COFK " << 134 * .05 * 9 * 1000000 / (300 * 300)
-                  << " iSinTheta2: " << iSinTheta2 << std::endl;
-        // calculated radius must not be smaller than minimum radius
-        if (S2 < B2 * m_config.minHelixDiameter2) {
-          std::cout << "** Continue:  S2 < B2 * m_config.minHelixDiameter2"
-                    << std::endl;
-          continue;
-        }
 				
-				Sx = lb.Sx;
-				Sy = lb.Sy;
-				Ce = lb.Ce;
-//				float Cn = Ce * std::sqrt(S2);
-//				float dn[3] = {Sx - Sy * A, Sx * A + Sy, Cn};
-//				float rn[3];
-//				2782         if (!(*iter_centralSP)->coordinates(dn, rn))
-//					2783           continue;
-//				2784
-//				2785         // Bottom  point
-//				2786         //
-//				2787         float B0 = 2. * (Vb - A0 * Ub);
-//				2788         float Cb = 1. - B0 * data.Y[b];
-//				2789         float Sb = A0 + B0 * data.X[b];
-//				2790         float db[3] = {Sx * Cb - Sy * Sb, Sx * Sb + Sy * Cb, Cn};
-//				2791         float rb[3];
-//				2792         if (!data.ITkSP[b]->coordinates(db, rb))
-//					2793           continue;
-//				2794
-//				2795         // Top     point
-//				2796         //
-//				2797         float Ct = 1. - B0 * data.Y[t];
-//				2798         float St = A0 + B0 * data.X[t];
-//				2799         float dt[3] = {Sx * Ct - Sy * St, Sx * St + Sy * Ct, Cn};
-//				2800         float rt[3];
-//				2801         if (!data.ITkSP[t]->coordinates(dt, rt))
-//					2802           continue;
-
+				// protects against division by 0
+				float dU = lt.U - Ub;
+				if (dU == 0.) {
+					continue;
+				}
+				// A and B are evaluated as a function of the circumference parameters
+				// x_0 and y_0
+				float A = (lt.V - Vb) / dU;
+				float S2 = 1. + A * A;
+				float B = Vb - A * Ub;
+				float B2 = B * B;
+				
+				// sqrt(S2)/B = 2 * helixradius
+				// calculated radius must not be smaller than minimum radius
+				std::cout << "|Seeds| S2: " << S2 << " B2: " << B2
+				<< " minHelixDiameter2: " << m_config.minHelixDiameter2
+				<< std::endl;
+				std::cout << "|Seeds| Vb - A * Ub: " << Vb << " - " << A << " * " << Ub
+				<< std::endl;
+				std::cout << "|Seeds| dT*S2" << (deltaCotTheta2 - error2) * S2
+				<< " CSA: "
+				<< iSinTheta2 * 134 * .05 * 9 * 2 * 2 /
+				(m_config.pTPerHelixRadius * m_config.pTPerHelixRadius)
+				<< " m_COFK " << 134 * .05 * 9 * 1000000 / (300 * 300)
+				<< " iSinTheta2: " << iSinTheta2 << std::endl;
+				// calculated radius must not be smaller than minimum radius
+				if (S2 < B2 * m_config.minHelixDiameter2) {
+					std::cout << "** Continue:  S2 < B2 * m_config.minHelixDiameter2"
+					<< std::endl;
+					continue;
+				}
+				
         nSeeds_test3 += 1;
 
         // refinement of the cut on the compatibility between the r-z slope of
@@ -662,4 +707,31 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     // std::ceil(spM->phi()*1/(2*3.14159265359/138)) << std::endl;
   }
 }
+
+template <typename sp_range_t>
+bool coordinates(const float* dn, float* rTest, sp_range_t sp)
+	{
+	
+	std::cout << "|check strip coord| " << std::endl;
+	std::cout << "|check strip coord| " << sp->bottomStripVector()[0] << " " << sp->bottomStripVector()[1] << " " << sp->bottomStripVector()[2] << std::endl;
+	std::cout << "|check strip coord| " << sp->topStripVector()[0] << " " << sp->topStripVector()[1] << " " << sp->topStripVector()[2] << std::endl;
+	std::cout << "|check strip coord| " << sp->stripCenterDistance()[0] << " " << sp->stripCenterDistance()[1] << " " << sp->stripCenterDistance()[2] << std::endl;
+	std::cout << "|check strip coord| " << sp->stripCenterPosition()[0] << " " << sp->stripCenterPosition()[1] << " " << sp->stripCenterPosition()[2] << std::endl;
+	std::cout << "|check strip coord| " << dn[0] << " " << dn[1] << " " << dn[2] << std::endl;
+	
+	
+	float d0[3] = {sp->bottomStripVector()[1]*dn[2]-sp->bottomStripVector()[2]*dn[1], sp->bottomStripVector()[2]*dn[0]-sp->bottomStripVector()[0]*dn[2], sp->bottomStripVector()[0]*dn[1]-sp->bottomStripVector()[1]*dn[0]};
+	float bd0   =  sp->topStripVector()[0]*d0[0]+sp->topStripVector()[1]*d0[1]+sp->topStripVector()[2]*d0[2];       if(     bd0==0.          ) return false;
+	float s0    =-(sp->stripCenterDistance()[0]*d0[0]+sp->stripCenterDistance()[1]*d0[1]+sp->stripCenterDistance()[2]*d0[2])/bd0;  if(s0 < -.05 || s0 > 1.05) return false;
+	
+	float d1[3] = {sp->topStripVector()[1]*dn[2]-sp->topStripVector()[2]*dn[1], sp->topStripVector()[2]*dn[0]-sp->topStripVector()[0]*dn[2], sp->topStripVector()[0]*dn[1]-sp->topStripVector()[1]*dn[0]};
+	float bd1   =  sp->bottomStripVector()[0]*d1[0]+sp->bottomStripVector()[1]*d1[1]+sp->bottomStripVector()[2]*d1[2];       if(       bd1==0.        ) return false;
+	float s1    = (sp->stripCenterDistance()[0]*d1[0]+sp->stripCenterDistance()[1]*d1[1]+sp->stripCenterDistance()[2]*d1[2])/bd1;  if(s1 < -.05 || s1 > 1.05) return false;
+	
+	rTest[0] = sp->stripCenterPosition()[0]+sp->topStripVector()[0]*s0;
+	rTest[1] = sp->stripCenterPosition()[1]+sp->topStripVector()[1]*s0;
+	rTest[2] = sp->stripCenterPosition()[2]+sp->topStripVector()[2]*s0;
+  return true;
+}
+
 }  // namespace Acts
