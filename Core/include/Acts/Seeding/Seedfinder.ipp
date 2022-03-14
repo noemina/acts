@@ -515,9 +515,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           continue;
         }
 				
-//				Sx = lb.Sx;
-//				Sy = lb.Sy;
-//				Ce = lb.Ce;
+				Sx = lb.Sx;
+				Sy = lb.Sy;
+				Ce = lb.Ce;
 //				float Cn = Ce * std::sqrt(S2);
 //				float dn[3] = {Sx - Sy * A, Sx * A + Sy, Cn};
 //				float rn[3];

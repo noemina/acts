@@ -72,7 +72,7 @@ ActsExamples::CsvParticleReader::Config setupParticleReading(
 ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
 																																 const ActsExamples::Options::Variables& vars,
 																																 ActsExamples::Sequencer& sequencer,
-																																 const std::string& inputCollectionName) {
+																																 const std::string& inputCollectionName, bool extendCollection) {
 	using namespace ActsExamples;
 	
 	// Read some standard options
@@ -82,6 +82,9 @@ ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
 	auto spacePointReaderCfg = Options::readCsvSpacePointReaderConfig(vars);
 	spacePointReaderCfg.inputStem = "spacepoints";
 	spacePointReaderCfg.inputCollection = inputCollectionName;
+	// read extend SP parameters
+	spacePointReaderCfg.extendCollection = extendCollection; // pixel: false, strip: true
+	
 	sequencer.addReader(
 											std::make_shared<CsvSpacePointReader>(spacePointReaderCfg, logLevel));
 	

@@ -33,6 +33,13 @@
 
 #include "RecInput.hpp"
 
+// TODO: add strip space points
+// TODO: change name of numPhiNeighbors in the grid
+// TODO: add deltaRMiddleMinSPRange and max
+// TODO: enable curvature sorting in SeedFilter, seedConf in seedFilter
+// TODO: interactionPointCut and arithmeticAverageCotTheta
+// TODO: extendCollections
+
 //#include "../../Tests/UnitTests/Core/Seeding/ATLASCuts.hpp"
 #include "Acts/Seeding/SeedFilter.hpp"
 
@@ -86,8 +93,11 @@ int main(int argc, char* argv[]) {
 
 	// ====== Pixel SP =======
 
+	// read extend SP parameters
+	bool extendCollection = true; // pixel: false, strip: true
+	
 	// Read the space points and build the container
-	auto spReaderCfg = setupSpacePointReading(vm, sequencer, "strip");
+	auto spReaderCfg = setupSpacePointReading(vm, sequencer, "strip", extendCollection);
 //	spReaderCfg.outputSpacePoints = {"PixelSpacePoints", "StripSpacePoints"};//, "OverlapSpacePoints"};
 	spReaderCfg.outputSpacePoints = "PixelSpacePoints";
 	

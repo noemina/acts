@@ -199,15 +199,34 @@ struct LayerVolumeData {
                  max_v0, min_v1, max_v1, min_v2, max_v2);
 };
 
-struct SpacePointData {
-  /// Event-unique measurement identifier. Each value can appear at most once.
-  uint64_t measurement_id;
-  /// Space point information
-  float sp_x, sp_y, sp_z, sp_radius;
-  float sp_covr, sp_covz;
+//struct SpacePointData {
+//  /// Event-unique measurement identifier. Each value can appear at most once.
+//  uint64_t measurement_id;
+//  /// Space point information
+//  float sp_x, sp_y, sp_z, sp_radius;
+//  float sp_covr, sp_covz;
+//
+//  DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_x, sp_y, sp_z, sp_radius,
+//                 sp_covr, sp_covz);
+//};
 
-  DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_x, sp_y, sp_z, sp_radius,
-                 sp_covr, sp_covz);
+struct SpacePointData {
+	/// Event-unique measurement identifier. Each value can appear at most once.
+	uint64_t measurement_id;
+	/// Space point information
+	float sp_x, sp_y, sp_z, sp_radius;
+	float sp_covr, sp_covz;
+	
+	std::vector<float> sp_topStripVector = std::vector<float>(3);
+	std::vector<float> sp_bottomStripVector = std::vector<float>(3);
+	std::vector<float> sp_stripCenterDistance = std::vector<float>(3); // distance between the center of the two strips
+	std::vector<float> sp_stripCenterPosition = std::vector<float>(3); // position of the center of the first strip
+	
+	DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_x, sp_y, sp_z, sp_radius,
+								 sp_covr, sp_covz, sp_topStripVector[0], sp_topStripVector[1], sp_topStripVector[2],
+								 sp_bottomStripVector[0], sp_bottomStripVector[1], sp_bottomStripVector[2],
+								 sp_stripCenterDistance[0], sp_stripCenterDistance[1], sp_stripCenterDistance[2],
+								 sp_stripCenterPosition[0], sp_stripCenterPosition[1], sp_stripCenterPosition[2]);
 };
 
 struct SurfaceGridData {

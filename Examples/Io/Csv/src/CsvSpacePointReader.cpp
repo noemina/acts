@@ -69,7 +69,8 @@ ActsExamples::ProcessCode ActsExamples::CsvSpacePointReader::read(
 				m_cfg.inputCollection == "overlap") {
 			if (m_cfg.extendCollection) {
 				std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
-				spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id);
+				std::cout << " topStripVector " << data.sp_topStripVector[0] << std::endl;
+				spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id, data.sp_topStripVector, data.sp_bottomStripVector, data.sp_stripCenterDistance, data.sp_stripCenterPosition);
 			} else {
 				std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
       	spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id);

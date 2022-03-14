@@ -29,16 +29,34 @@ class SimSpacePoint {
   /// @param measurementIndex Index of the underlying measurement
   template <typename position_t>
   SimSpacePoint(const Eigen::MatrixBase<position_t>& pos, float varRho,
-                float varZ, Index measurementIndex)
+	float varZ, Index measurementIndex, const std::vector<float> topStripVector, const std::vector<float> bottomStripVector, const std::vector<float> stripCenterDistance, const std::vector<float> stripCenterPosition)
       : m_x(pos[Acts::ePos0]),
         m_y(pos[Acts::ePos1]),
         m_z(pos[Acts::ePos2]),
         m_rho(std::hypot(m_x, m_y)),
         m_varianceRho(varRho),
         m_varianceZ(varZ),
-        m_measurementIndex(measurementIndex) {
+        m_measurementIndex(measurementIndex),
+	      m_topStripVector(topStripVector),
+				m_bottomStripVector(bottomStripVector),
+				m_stripCenterDistance(stripCenterDistance),
+				m_stripCenterPosition(stripCenterPosition) {
     EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(position_t, 3);
   }
+	
+	template <typename position_t>
+	SimSpacePoint(const Eigen::MatrixBase<position_t>& pos, float varRho,
+								float varZ, Index measurementIndex)
+	: m_x(pos[Acts::ePos0]),
+	m_y(pos[Acts::ePos1]),
+	m_z(pos[Acts::ePos2]),
+	m_rho(std::hypot(m_x, m_y)),
+	m_varianceRho(varRho),
+	m_varianceZ(varZ),
+	m_measurementIndex(measurementIndex) {
+		EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(position_t, 3);
+	}
+
 
   constexpr float x() const { return m_x; }
   constexpr float y() const { return m_y; }
@@ -49,6 +67,11 @@ class SimSpacePoint {
 
   constexpr Index measurementIndex() const { return m_measurementIndex; }
 
+	const std::vector<float> topStripVector() const { return m_topStripVector; }
+	const std::vector<float> bottomStripVector() const { return m_bottomStripVector; }
+	const std::vector<float> stripCenterDistance() const { return m_stripCenterDistance; }
+	const std::vector<float> stripCenterPosition() const { return m_stripCenterPosition; }
+	
  private:
   // Global position
   float m_x;
@@ -60,6 +83,11 @@ class SimSpacePoint {
   float m_varianceZ;
   // Index of the corresponding measurement
   Index m_measurementIndex;
+	
+	const std::vector<float> m_topStripVector;
+	const std::vector<float> m_bottomStripVector;
+	const std::vector<float> m_stripCenterDistance;
+	const std::vector<float> m_stripCenterPosition;
 };
 
 constexpr bool operator==(const SimSpacePoint& lhs, const SimSpacePoint& rhs) {

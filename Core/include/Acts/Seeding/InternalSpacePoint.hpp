@@ -14,6 +14,7 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <vector>
 
 namespace Acts {
 template <typename SpacePoint>
@@ -27,6 +28,11 @@ class InternalSpacePoint {
   InternalSpacePoint(const SpacePoint& sp, const Acts::Vector3& globalPos,
                      const Acts::Vector2& offsetXY,
                      const Acts::Vector2& variance);
+	
+	InternalSpacePoint(const SpacePoint& sp, const Acts::Vector3& globalPos,
+										 const Acts::Vector2& offsetXY,
+										 const Acts::Vector2& variance, const std::vector<float> sp_topStripVector, const std::vector<float> sp_bottomStripVector, const
+										 std::vector<float> sp_stripCenterDistance, const std::vector<float> sp_stripCenterPosition);
 
   InternalSpacePoint(const InternalSpacePoint<SpacePoint>& sp);
   ~InternalSpacePoint() = default;
@@ -47,9 +53,14 @@ class InternalSpacePoint {
   void setCotTheta(float& cotTheta) const { m_cotTheta = cotTheta; }
 	float& deltaR() const { return m_deltaR; }
 	void setDeltaR(const float& deltaR) const { m_deltaR = deltaR; }
+	
+	const std::vector<float>& topStripVector() const { return m_topStripVector; }
+	const std::vector<float>& bottomStripVector() const { return m_bottomStripVector; }
+	const std::vector<float>& stripCenterDistance() const { return m_stripCenterDistance; }
+	const std::vector<float>& stripCenterPosition() const { return m_stripCenterPosition; }
 
-  //	const float& curvature() const {return m_cotTheta; }
-  //	void curvature(float& cotTheta) const { m_cotTheta = cotTheta;}
+  	const float& curvature() const {return m_cotTheta; }
+  	void curvature(float& cotTheta) const { m_cotTheta = cotTheta;}
 
   const SpacePoint& sp() const { return m_sp; }
   float& quality() const { return m_quality; }
@@ -72,6 +83,11 @@ class InternalSpacePoint {
 	mutable float m_deltaR;  //
   const SpacePoint& m_sp;    // external space point
   mutable float m_quality;   // quality of the best seed containing this SP
+	
+	std::vector<float> m_topStripVector;
+	std::vector<float> m_bottomStripVector;
+	std::vector<float> m_stripCenterDistance;
+	std::vector<float> m_stripCenterPosition;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -90,6 +106,11 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_varianceR = variance.x();
   m_varianceZ = variance.y();
   m_quality = -100000.;
+	
+	m_topStripVector = sp.topStripVector();
+	m_bottomStripVector = sp.bottomStripVector();
+	m_stripCenterDistance = sp.stripCenterDistance();
+	m_stripCenterPosition = sp.stripCenterPosition();
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -107,8 +128,14 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_varianceR = sp.m_varianceR;
   m_varianceZ = sp.m_varianceZ;
   m_cotTheta = sp.m_cotTheta;
-			m_deltaR = sp.deltaR;
+	m_deltaR = sp.deltaR;
   m_quality = sp.m_quality;
+			
+	m_topStripVector = sp.m_topStripVector;
+	m_bottomStripVector = sp.m_bottomStripVector;
+	m_stripCenterDistance = sp.m_stripCenterDistance;
+	m_stripCenterPosition = sp.m_stripCenterPosition;
+
 }
 
 }  // end of namespace Acts
