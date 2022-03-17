@@ -75,6 +75,13 @@ struct SeedfinderConfig {
   SeedConfirmationRange centralSeedConfirmationRange;
   // parameters for forward seed confirmation
   SeedConfirmationRange forwardSeedConfirmationRange;
+
+	// enable cotTheta cut
+	bool cotThetaMaxCut = true;
+	
+	// enable delta z cut
+	bool deltaZCut = false;
+	float deltaZMax = 900;
 	
 	// enable cut on the compatibility between interaction point and SPs
 	bool interactionPointCut = false;

@@ -12,6 +12,7 @@
 #include <numeric>
 #include <type_traits>
 
+
 namespace Acts {
 
 template <typename external_spacepoint_t, typename platform_t>
@@ -152,13 +153,16 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         continue;
       }
       // ratio Z/R (forward angle) of space point duplet
-      float cotTheta = (topSP->z() - zM) / deltaR;
+			float deltaZ = topSP->z() - zM;
+      float cotTheta = deltaZ / deltaR;
       //			topSP->setCotTheta(cotTheta);
-      if (std::fabs(cotTheta) > m_config.cotThetaMax) {
-        // std::cout << "|Seeds| !!! fabs(cotTheta) > cotThetaMax == TRUE !!!"
-        // << std::endl;
-        continue;
-      }
+			if (m_config.cotThetaMaxCut) {
+	      if (std::fabs(cotTheta) > m_config.cotThetaMax) {
+  	      // std::cout << "|Seeds| !!! fabs(cotTheta) > cotThetaMax == TRUE !!!"
+    	    // << std::endl;
+      	  continue;
+      	}
+			}
       // check if duplet origin on z axis within collision region
       float zOrigin = zM - rM * cotTheta;
       // std::cout << "|Seeds| zM - rM * cotTheta " << zM << " - " << rM << " *
@@ -170,6 +174,12 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         // collisionRegionMax == TRUE !!!" << std::endl;
         continue;
       }
+			
+			if (m_config.deltaZCut) {
+				if (std::abs(deltaZ) > m_config.deltaZMax) {
+					continue;
+				}
+			}
       // cut on the max curvature between top SP and interaction point
       // first transform the space point coordinates into a frame such that the
       // central space point SPm is in the origin of the frame and the x axis
@@ -252,19 +262,23 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         continue;
       }
       // ratio Z/R (forward angle) of space point duplet
-      float cotTheta = (zM - bottomSP->z()) / deltaR;
+			float deltaZ = zM - bottomSP->z();
+      float cotTheta = deltaZ / deltaR;
+			std::cout << "|Seeds| cotTheta: " << cotTheta << " cotThetaMax: " << m_config.cotThetaMax << std::endl;
       //			bottomSP->setCotTheta(cotTheta);
-      if (std::fabs(cotTheta) > m_config.cotThetaMax) {
-        //				//std::cout << "|Seeds| cotTheta: " <<
-        // cotTheta << " cotThetaMax: " << m_config.cotThetaMax << std::endl;
-        // std::cout << "|Seeds| !!! fabs(cotTheta) > cotThetaMax == TRUE !!!"
-        // << std::endl;
-        continue;
-      }
+			if (m_config.cotThetaMaxCut) {
+	      if (std::fabs(cotTheta) > m_config.cotThetaMax) {
+  	      //				//std::cout << "|Seeds| cotTheta: " <<
+    	    // cotTheta << " cotThetaMax: " << m_config.cotThetaMax << std::endl;
+      	  // std::cout << "|Seeds| !!! fabs(cotTheta) > cotThetaMax == TRUE !!!"
+        	// << std::endl;
+        	continue;
+      	}
+			}
       // check if duplet origin on z axis within collision region
+			std::cout << "|Seeds| zM - rM * cotTheta " << zM << " - " << rM << " * " << cotTheta << std::endl;
       float zOrigin = zM - rM * cotTheta;
-      //			//std::cout << "|Seeds| zM - rM * cotTheta " <<
-      // zM << " - " << rM << " * " << cotTheta << std::endl;
+      //
       //        //std::cout << "|Seeds| zOrigin: " << zOrigin << "
       //        collisionRegionMin: " << m_config.collisionRegionMin <<
       //        std::endl;
@@ -274,6 +288,12 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         // collisionRegionMax == TRUE !!!" << std::endl;
         continue;
       }
+			
+			if (m_config.deltaZCut) {
+				if (std::abs(deltaZ) > m_config.deltaZMax) {
+					continue;
+				}
+			}
       // cut on the max curvature between bottom SP and interaction point
       // first transform the space point coordinates into a frame such that the
       // central space point SPm is in the origin of the frame and the x axis
@@ -352,12 +372,13 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       for (size_t t = 0; t < numTopSP; t++) {
         auto lb = state.linCircleBottom[b];
         auto lt = state.linCircleTop[t];
-        std::cout << std::endl;
-        std::cout << "----> rM: " << rM << " rB: " << lb.r << " rT: " << lt.r
-                  << std::endl;
-        std::cout << " xB: " << lb.x << " yB: " << lb.y << " xB: " << lb.y
-                  << " xT: " << lt.x << " yT: " << lt.y << " xT: " << lt.y
-                  << std::endl;
+				std::cout << std::endl;
+				std::cout << "--> rM: " << rM << " rB: " << state.compatBottomSP[b]->radius() << " rT: " << state.compatTopSP[t]->radius()
+				<< std::endl;
+				std::cout << "xB: " << state.compatBottomSP[b]->x() << " yB: " << state.compatBottomSP[b]->y() << " zB: " << state.compatBottomSP[b]->z()
+				<< " xT: " << state.compatTopSP[t]->x() << " yT: " << state.compatTopSP[t]->y() << " zT: " << state.compatTopSP[t]->z()
+				<< std::endl;
+
       }
     }
 
@@ -374,7 +395,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       float Ub = lb.U;
       float ErB = lb.Er;
       float iDeltaRB = lb.iDeltaR;
-
+			
+			std:: cout << " iSinTheta " << 1/std::sqrt((1. + cotThetaB * cotThetaB)) << " iSinTheta2 " << (1. + cotThetaB * cotThetaB) << " cotThetaB " << cotThetaB << std::endl;
+			
       // 1+(cot^2(theta)) = 1/sin^2(theta)
       float iSinTheta2 = (1. + cotThetaB * cotThetaB);
       // calculate max scattering for min momentum at the seed's theta angle
@@ -399,17 +422,27 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       for (size_t t = t0; t < numTopSP; t++) {
         auto lt = state.linCircleTop[t];
 
+				float cotThetaT = lt.cotTheta;
+				float iDeltaRT = lt.iDeltaR;
+				
         std::cout << std::endl;
-        std::cout << "--> rM: " << rM << " rB: " << lb.r << " rT: " << lt.r
+        std::cout << "--> rM: " << rM << " rB: " << state.compatBottomSP[b]->radius() << " rT: " << state.compatTopSP[t]->radius()
                   << std::endl;
-        std::cout << "xB: " << lb.x << " yB: " << lb.y << " zB: " << lb.z
-                  << " xT: " << lt.x << " yT: " << lt.y << " zT: " << lt.z
+        std::cout << "xB: " << state.compatBottomSP[b]->x() << " yB: " << state.compatBottomSP[b]->y() << " zB: " << state.compatBottomSP[b]->z()
+                  << " xT: " << state.compatTopSP[t]->x() << " yT: " << state.compatTopSP[t]->y() << " zT: " << state.compatTopSP[t]->z()
                   << std::endl;
         std::cout << "|Seeds Map| SP: rM, rB, rT, zM, zB, zT: " << rM << " "
-                  << lb.r << " " << lt.r << " " << zM << " " << lb.z << " "
-                  << lt.z << std::endl;
+                  << state.compatBottomSP[b]->radius() << " " << state.compatTopSP[t]->radius() << " " << zM << " " << state.compatBottomSP[b]->z() << " "
+                  << state.compatTopSP[t]->z() << std::endl;
 
         nSeeds_test1 += 1;
+				
+				float rMCoord;
+				float ub;
+				float vb;
+				float ut;
+				float vt;
+				float cotThetaBB;
 				
 				if (true) {
 				
@@ -420,39 +453,52 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 					}
 					// A and B are evaluated as a function of the circumference parameters
 					// x_0 and y_0
-					float A = (lt.V - Vb) / dU;
+					float A0 = (lt.V - Vb) / dU;
 					
 					// middle
-					float Sx = lb.Sx;
-					float Sy = lb.Sy;
-					float Ce = lb.Ce;
-					float Cn = Ce * std::sqrt(1 + A * A);
-					float dn[3] = {Sx - Sy * A, Sx * A + Sy, Cn};
-		
+					float iSinTheta = std::sqrt(iSinTheta2);
+					float Ce = cotThetaB / iSinTheta;
+					float Sx = spM->x() / (iSinTheta * spM->radius());
+					float Sy = spM->y() / (iSinTheta * spM->radius());
+					float Cn = Ce * std::sqrt(1 + A0 * A0);
+					float dn[3] = {Sx - Sy * A0, Sx * A0 + Sy, Cn};
+					
 					float rTestM[3];
 					if (!coordinates(dn, rTestM, spM))
 						continue;
-				
+
+					std:: cout << " iSinTheta " << 1/iSinTheta << " iSinTheta2 " << iSinTheta2 << " cotThetaB " << cotThetaB << std::endl;
+					std::cout << lb.x << " " << lb.y << " " << lb.iDeltaR << std::endl;
+					std::cout << lt.x << " " << lt.y << " " << lt.iDeltaR << std::endl;
+					std::cout << Ce << " " << Sx << " " << Sy << " " << Cn  << " " << A0 << " " << lt.U << " " << Ub << " " << lt.V << " " << Vb << std::endl;
+//					std::cout << rTestM[0] << " " << rTestM[1] << " " << rTestM[2] << std::endl;
+					
 					// bottom
-					float B0 = 2. * (Vb - A * Ub);
+					float B0 = 2. * (Vb - A0 * Ub);
 					float Cb = 1. - B0 * lb.y;
-					float Sb = A + B0 * lb.x;
+					float Sb = A0 + B0 * lb.x;
 					float db[3] = {Sx * Cb - Sy * Sb, Sx * Sb + Sy * Cb, Cn};
 				
 					auto spB = state.compatBottomSP[b];
 					float rTestB[3];
-					if (!coordinates(dn, rTestB, spB))
+					if (!coordinates(db, rTestB, spB))
 						continue;
+					
+					std::cout << B0 << " " << Cb << " " << Sb << std::endl;
+//					std::cout << rTestB[0] << " " << rTestB[1] << " " << rTestB[2] << std::endl;
 				
 					// top
-					float Ct = 1. - B0 * lb.y;
-					float St = A + B0 * lb.x;
+					float Ct = 1. - B0 * lt.y;
+					float St = A0 + B0 * lt.x;
 					float dt[3] = {Sx * Ct - Sy * St, Sx * St + Sy * Ct, Cn};
 				
 					auto spT = state.compatTopSP[t];
 					float rTestT[3];
-					if (!coordinates(dn, rTestT, spT))
+					if (!coordinates(dt, rTestT, spT))
 						continue;
+					
+					std::cout << Ct << " " << St << std::endl;
+//					std::cout << rTestT[0] << " " << rTestT[1] << " " << rTestT[2] << std::endl;
 
 					float xB = rTestB[0] - rTestM[0];
 					float yB = rTestB[1] - rTestM[1];
@@ -463,36 +509,47 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 					
 					float iDeltaRB2 = 1. / (xB * xB + yB * yB);
 					iDeltaRB = std::sqrt(iDeltaRB2);
-					lb.iDeltaR = iDeltaRB;
+//					lb.iDeltaR = iDeltaRB;
 					
 					float iDeltaRT2 = 1. / (xT * xT + yT * yT);
-					lt.iDeltaR = std::sqrt(iDeltaRT2);
+					iDeltaRT = std::sqrt(iDeltaRT2);
+//					lt.iDeltaR = std::sqrt(iDeltaRT2);
 					
-					cotThetaB = - zB * iDeltaRB;
-					lb.cotTheta = cotThetaB;
-					lt.cotTheta = zT * lt.iDeltaR;
+					cotThetaBB = - zB * iDeltaRB;
+					cotThetaT = zT * iDeltaRT;
+//					lb.cotTheta = cotThetaB;
+//					lt.cotTheta = zT * lt.iDeltaR;
+					std::cout << xB << " " << yB  << " " << zB << " " << xT << " " << yT << " " << zT << " " << iDeltaRB2 << " " << iDeltaRT2 << " " << lb.cotTheta << " " << cotThetaT << std::endl;
 					
-					float Rn = std::sqrt(rTestM[0] * rTestM[0] + rTestM[1] * rTestM[1]);
-					float Ax = rTestM[0] / Rn;
-					float Ay = rTestM[1] / Rn;
+					rMCoord = std::sqrt(rTestM[0] * rTestM[0] + rTestM[1] * rTestM[1]);
+					float Ax = rTestM[0] / rMCoord;
+					float Ay = rTestM[1] / rMCoord;
 					
-					Ub = (xB * Ax + yB * Ay) * iDeltaRB2;
-					Vb = (yB * Ax - xB * Ay) * iDeltaRB2;
-					lb.U = Ub;
-					lb.V = Vb;
-					lt.U = (xT * Ax + yT * Ay) * iDeltaRT2;
-					lt.V = (yT * Ax - xT * Ay) * iDeltaRT2;
+					ub = (xB * Ax + yB * Ay) * iDeltaRB2;
+					vb = (yB * Ax - xB * Ay) * iDeltaRB2;
+//					lb.U = Ub;
+//					lb.V = Vb;
+					ut = (xT * Ax + yT * Ay) * iDeltaRT2;
+					vt = (yT * Ax - xT * Ay) * iDeltaRT2;
+					
+					std::cout << rM << " " << Ax << " " << Ay << std::endl;
+
 				}
 				
 
+				float cotTheta2;
+				if (m_config.arithmeticAverageCotTheta) {
+					cotTheta2 = std::pow((cotThetaBB + cotThetaT)/2, 2);
+				} else {
+					cotTheta2 = cotThetaBB * cotThetaT;
+				}
         // add errors of spB-spM and spM-spT pairs and add the correlation term
         // for errors on spM
         float error2 = lt.Er + ErB +
-                       2 * (cotThetaB * lt.cotTheta * varianceRM + varianceZM) *
+                       2 * (cotTheta2 * varianceRM + varianceZM) *
                            iDeltaRB * lt.iDeltaR;
-
-        float deltaCotTheta = cotThetaB - lt.cotTheta;
-				if (m_config.arithmeticAverageCotTheta) deltaCotTheta = (cotThetaB + lt.cotTheta)/2;
+				
+        float deltaCotTheta = cotThetaBB - cotThetaT;
         float deltaCotTheta2 = deltaCotTheta * deltaCotTheta;
         float error;
         float dCotThetaMinusError2;
@@ -501,34 +558,34 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           // compare with scattering
           std::cout << "|Seeds| dT: " << deltaCotTheta2 << " - " << lt.Er + ErB
                     << " - "
-                    << 2 * (cotThetaB * lt.cotTheta * varianceRM + varianceZM) *
+                    << 2 * (cotThetaBB * cotThetaT * varianceRM + varianceZM) *
                            iDeltaRB * lt.iDeltaR
                     << std::endl;
           std::cout << "|Seeds| Ert + Erb: " << lt.Er << " + " << ErB
                     << std::endl;
-          std::cout << "|Seeds| 3ºterm: " << 2 << " * (" << cotThetaB << " * "
-                    << lt.cotTheta << " * " << varianceRM << " + " << varianceZM
+          std::cout << "|Seeds| 3ºterm: " << 2 << " * (" << cotThetaBB << " * "
+                    << cotThetaT << " * " << varianceRM << " + " << varianceZM
                     << ") * " << iDeltaRB << " * " << lt.iDeltaR << std::endl;
-          std::cout << "|Seeds| ICSA: " << iSinTheta2 << " * "
+          std::cout << "|Seeds| ICSA: " << scatteringInRegion2 << " * "
                     << 134 * .05 * 9. * (1. / std::abs(m_config.minPt)) *
                            (1. / std::abs(m_config.minPt))
                     << std::endl;
-          std::cout << "|Seeds| cotThetaB: " << cotThetaB
-                    << " cotThetaT: " << lt.cotTheta << " DT: " << deltaCotTheta
+          std::cout << "|Seeds| cotThetaB: " << cotThetaBB
+                    << " cotThetaT: " << cotThetaT << " DT: " << deltaCotTheta
                     << std::endl;
           std::cout << "|Seeds| m_config.pTPerHelixRadius "
                     << m_config.pTPerHelixRadius << std::endl;
           if (deltaCotTheta2 - error2 > scatteringInRegion2) {
-            // break if cotThetaB < lt.cotTheta because the SP are sorted by
+            // break if cotThetaBB < cotThetaT because the SP are sorted by
             // cotTheta
-            if (cotThetaB - lt.cotTheta < 0) {
+            if (cotThetaBB - cotThetaT < 0) {
               std::cout
                   << "** BREAK:  deltaCotTheta2 - error2 > scatteringInRegion2"
                   << std::endl;
               break;
             }
-            // since cotThetaB > lt.cotTheta and the SP are sorted by cotTheta,
-            // the next bottom SP is expected to have cotThetaB > lt.cotTheta as
+            // since cotThetaB > cotThetaT and the SP are sorted by cotTheta,
+            // the next bottom SP is expected to have cotThetaB > cotThetaT as
             // well and deltaCotTheta2 - error2 > sigmaSquaredScatteringMinPt
             t0 = t + 1;
             std::cout
@@ -567,6 +624,20 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 				float S2 = 1. + A * A;
 				float B = Vb - A * Ub;
 				float B2 = B * B;
+				
+				if (true) {
+					dU = ut - ub;
+					if (dU == 0.) {
+						continue;
+					}
+					A = (vt - vb) / dU;
+					S2 = 1. + A * A;
+					B = vb - A * ub;
+					B2 = B * B;
+				}
+				
+				std::cout << "test IM: A " << A << " lt.V " << lt.V << " Vb " << Vb << " lt.U " << lt.U << " Ub " << Ub << " B " << B << std::endl;
+
 				
 				// sqrt(S2)/B = 2 * helixradius
 				// calculated radius must not be smaller than minimum radius
@@ -611,7 +682,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         // if deltaTheta larger than allowed scattering for calculated pT, skip
         if (m_config.enableCutsForSortedSP) {
           if (deltaCotTheta2 - error2 > p2scatterSigma) {
-            if (cotThetaB - lt.cotTheta < 0) {
+            if (cotThetaBB - cotThetaT < 0) {
               std::cout << "** BREAK:  deltaCotTheta2 - error2 > p2scatterSigma"
                         << std::endl;
               break;
@@ -633,14 +704,19 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         // function
         // (in contrast to having to solve a quadratic function in x/y plane)
         float Im = std::abs((A - B * rM) * rM);
+				
+				if (true) {
+					Im = std::abs((A - B * rMCoord) * rMCoord);
+				}
+				std::cout << "|test ImpactPar|" << A << " " << B << " " << rM << " " << Im<< std::endl;
 
         if (Im <= m_config.impactMax) {
           nSeeds += 1;
 
           std::cout << std::endl;
-          std::cout << "|Seeds Map| Seeds: rM, rB, rT, zM, zB, zT: " << rM
-                    << " " << lb.r << " " << lt.r << " " << zM << " " << lb.z
-                    << " " << lt.z << std::endl;
+          std::cout << "|Seeds Map| Seeds: rM, rB, rT, zM, zB, zT: " << rM << " "
+					<< state.compatBottomSP[b]->radius() << " " << state.compatTopSP[t]->radius() << " " << zM << " " << state.compatBottomSP[b]->z() << " "
+					<< state.compatTopSP[t]->z() << std::endl;
 
           state.topSpVec.push_back(state.compatTopSP[t]);
           // inverse diameter is signed depending if the curvature is
@@ -655,13 +731,16 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             B2 = 1e-8;
             pT = m_config.pTPerHelixRadius * std::sqrt(S2 / B2) / 2.;
           }
-
+					if (cotTheta2 < 1e-8) cotTheta2 = 1e-8;
+					if(state.compatTopSP[t]->z() < 0) cotTheta2 = -cotTheta2;
+					
           // evaluate eta and pT of the seed
-          float theta = std::atan(1. / std::sqrt(cotThetaB * lt.cotTheta));
+					float	theta = std::atan(1. / std::sqrt(cotTheta2));
+					
           float eta = -std::log(std::tan(0.5 * theta));
           state.etaVec.push_back(eta);
           state.ptVec.push_back(pT);
-          state.cotThetaVec.push_back(lt.cotTheta);
+          state.cotThetaVec.push_back(cotThetaT);
 
 
           // std::cout << "ACEPTED" << std::endl;
@@ -709,22 +788,22 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 }
 
 template <typename sp_range_t>
-bool coordinates(const float* dn, float* rTest, sp_range_t sp)
-	{
+bool coordinates(const float* d, float* rTest, sp_range_t sp)
+{
 	
 	std::cout << "|check strip coord| " << std::endl;
-	std::cout << "|check strip coord| " << sp->bottomStripVector()[0] << " " << sp->bottomStripVector()[1] << " " << sp->bottomStripVector()[2] << std::endl;
 	std::cout << "|check strip coord| " << sp->topStripVector()[0] << " " << sp->topStripVector()[1] << " " << sp->topStripVector()[2] << std::endl;
+	std::cout << "|check strip coord| " << sp->bottomStripVector()[0] << " " << sp->bottomStripVector()[1] << " " << sp->bottomStripVector()[2] << std::endl;
 	std::cout << "|check strip coord| " << sp->stripCenterDistance()[0] << " " << sp->stripCenterDistance()[1] << " " << sp->stripCenterDistance()[2] << std::endl;
 	std::cout << "|check strip coord| " << sp->stripCenterPosition()[0] << " " << sp->stripCenterPosition()[1] << " " << sp->stripCenterPosition()[2] << std::endl;
-	std::cout << "|check strip coord| " << dn[0] << " " << dn[1] << " " << dn[2] << std::endl;
+	std::cout << "|check strip coord| " << d[0] << " " << d[1] << " " << d[2] << std::endl;
 	
 	
-	float d0[3] = {sp->bottomStripVector()[1]*dn[2]-sp->bottomStripVector()[2]*dn[1], sp->bottomStripVector()[2]*dn[0]-sp->bottomStripVector()[0]*dn[2], sp->bottomStripVector()[0]*dn[1]-sp->bottomStripVector()[1]*dn[0]};
+	float d0[3] = {sp->bottomStripVector()[1]*d[2]-sp->bottomStripVector()[2]*d[1], sp->bottomStripVector()[2]*d[0]-sp->bottomStripVector()[0]*d[2], sp->bottomStripVector()[0]*d[1]-sp->bottomStripVector()[1]*d[0]};
 	float bd0   =  sp->topStripVector()[0]*d0[0]+sp->topStripVector()[1]*d0[1]+sp->topStripVector()[2]*d0[2];       if(     bd0==0.          ) return false;
 	float s0    =-(sp->stripCenterDistance()[0]*d0[0]+sp->stripCenterDistance()[1]*d0[1]+sp->stripCenterDistance()[2]*d0[2])/bd0;  if(s0 < -.05 || s0 > 1.05) return false;
 	
-	float d1[3] = {sp->topStripVector()[1]*dn[2]-sp->topStripVector()[2]*dn[1], sp->topStripVector()[2]*dn[0]-sp->topStripVector()[0]*dn[2], sp->topStripVector()[0]*dn[1]-sp->topStripVector()[1]*dn[0]};
+	float d1[3] = {sp->topStripVector()[1]*d[2]-sp->topStripVector()[2]*d[1], sp->topStripVector()[2]*d[0]-sp->topStripVector()[0]*d[2], sp->topStripVector()[0]*d[1]-sp->topStripVector()[1]*d[0]};
 	float bd1   =  sp->bottomStripVector()[0]*d1[0]+sp->bottomStripVector()[1]*d1[1]+sp->bottomStripVector()[2]*d1[2];       if(       bd1==0.        ) return false;
 	float s1    = (sp->stripCenterDistance()[0]*d1[0]+sp->stripCenterDistance()[1]*d1[1]+sp->stripCenterDistance()[2]*d1[2])/bd1;  if(s1 < -.05 || s1 > 1.05) return false;
 	

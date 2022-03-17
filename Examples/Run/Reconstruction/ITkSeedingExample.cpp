@@ -28,6 +28,7 @@
 #include "ActsExamples/Utilities/Paths.hpp"
 
 #include <memory>
+#include <limits>
 
 #include <boost/program_options.hpp>
 
@@ -39,6 +40,8 @@
 // TODO: enable curvature sorting in SeedFilter, seedConf in seedFilter
 // TODO: interactionPointCut and arithmeticAverageCotTheta
 // TODO: extendCollections
+// TODO: deltaZCut and cotThetaMaxCut
+// TODO: check cotTheta2 < 1e-8 in seedfinder
 
 //#include "../../Tests/UnitTests/Core/Seeding/ATLASCuts.hpp"
 #include "Acts/Seeding/SeedFilter.hpp"
@@ -142,7 +145,7 @@ int main(int argc, char* argv[]) {
 	// cut on the compatibility between interaction point and SPs
 	seedingCfg.seedFinderConfig.interactionPointCut = false; // pixel: true, strip: false
 	
-	seedingCfg.gridConfig.cotThetaMax = 900; // pixel: 27.2899 , strip: 900 // 4.0 eta ---> 27.2899 = 1/np.tan(2*np.arctan(np.exp(-4)))
+	seedingCfg.gridConfig.cotThetaMax = 27.2899; // pixel: 27.2899 (4.0 eta) ---> 27.2899 = 1/np.tan(2*np.arctan(np.exp(-4)))
   seedingCfg.seedFinderConfig.cotThetaMax = seedingCfg.gridConfig.cotThetaMax;
 
 	// number of standard deviations of Coulomb scattering angle that should be considered
@@ -152,6 +155,13 @@ int main(int argc, char* argv[]) {
 
 	// use arithmetic average in the calculation of the squared error on the difference in tan(theta)
 	seedingCfg.seedFinderConfig.arithmeticAverageCotTheta = true; // pixel: false (uses geometric average), strip: true (uses arithmetic average)
+	
+	// enable cotTheta cut
+	seedingCfg.seedFinderConfig.cotThetaMaxCut = false; // pixel: true , strip: false
+	
+	// enable delta z cut
+	seedingCfg.seedFinderConfig.deltaZCut = true; // pixel: false , strip: true
+	seedingCfg.seedFinderConfig.deltaZMax = 900._mm;
 	
   seedingCfg.gridConfig.minPt = 900._MeV;
   seedingCfg.seedFinderConfig.minPt = seedingCfg.gridConfig.minPt;
@@ -164,7 +174,7 @@ int main(int argc, char* argv[]) {
   seedingCfg.gridConfig.impactMax = 20._mm; // pixel: 2 mm, strip: 20 mm
   seedingCfg.seedFinderConfig.impactMax = seedingCfg.gridConfig.impactMax;
 	
-	seedingCfg.seedFinderConfig.maxPtScattering = 1000000._GeV;
+	seedingCfg.seedFinderConfig.maxPtScattering = std::numeric_limits<double>::infinity();
   
 	// enable non equidistant binning in z, in case the binning is not defined the edges are evaluated automatically using equidistant binning
   seedingCfg.gridConfig.zBinEdges = {-3000., -2500., -1400., -925., -450., -250., 

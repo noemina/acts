@@ -28,7 +28,8 @@ LinCircle transformCoordinates(
   float deltaZ = sp.z() - zM;
   float x = deltaX * cosPhiM + deltaY * sinPhiM;
   float y = deltaY * cosPhiM - deltaX * sinPhiM;
-  float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
+//  float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
+	float iDeltaR2 = 1. / (x * x + y * y);
   float iDeltaR = std::sqrt(iDeltaR2);
   int bottomFactor = 1 * (int(!bottom)) - 1 * (int(bottom));
   float cot_theta = deltaZ * iDeltaR * bottomFactor;
@@ -79,7 +80,8 @@ void transformCoordinates(
     float x = deltaX * cosPhiM + deltaY * sinPhiM;
     float y = deltaY * cosPhiM - deltaX * sinPhiM;
     // 1/(length of M -> SP)
-    float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
+//    float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
+		float iDeltaR2 = 1. / (x * x + y * y);
     float iDeltaR = std::sqrt(iDeltaR2);
     //
     int bottomFactor = 1 * (int(!bottom)) - 1 * (int(bottom));
@@ -103,21 +105,13 @@ void transformCoordinates(
     l.Er = ((varianceZM + sp->varianceZ()) +
             (cot_theta * cot_theta) * (varianceRM + sp->varianceR())) *
            iDeltaR2;
+		
+		std::cout << "l.x " << x << " l.y " << y << " l.iDeltaR2 " << iDeltaR2 << " l.U " << x * iDeltaR2 << " l.V " << y * iDeltaR2 << " l.cotTheta " << cot_theta << std::endl;
 
-    l.x = sp->x();
-    l.y = sp->y();
-    l.z = sp->z();
-    l.r = sp->radius();
-		
-		float iSinTheta2 = (1. + cot_theta * cot_theta);
-		l.Sx = cot_theta / iSinTheta2;
-		l.Sy = cosPhiM / iSinTheta2;
-		l.Ce = sinPhiM / iSinTheta2;
-		
-//		l.topStripVector = sp->topStripVector();
-//		l.bottomStripVector = sp->bottomStripVector();
-//		l.stripCenterDistance = sp->stripCenterDistance();
-//		l.stripCenterPosition = sp->stripCenterPosition();
+    l.x = x;
+    l.y = y;
+//    l.z = sp->z();
+//    l.r = sp->radius();
 		
     linCircleVec.push_back(l);
     sp->setCotTheta(cot_theta);
