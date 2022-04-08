@@ -11,22 +11,12 @@
 #include "Acts/Definitions/Algebra.hpp"
 #include "Acts/Definitions/Common.hpp"
 #include "ActsExamples/EventData/Index.hpp"
+#include "Acts/Seeding/InternalSpacePoint.hpp"
 
 #include <cmath>
 #include <vector>
 
 namespace ActsExamples {
-
-struct DoubleMeasurementDetails {
-	float topHalfStripLength;
-	float bottomHalfStripLength;
-	Acts::Vector3 topStripDirection;
-	Acts::Vector3 bottomStripDirection;
-	Acts::Vector3 stripCenterDistance;
-	Acts::Vector3 bottomStripCenterPosition;
-	bool validDoubleMeasurementDetails = false;
-};
-
 /// Space point representation of a measurement suitable for track seeding.
 class SimSpacePoint {
  public:
@@ -48,13 +38,13 @@ class SimSpacePoint {
         m_varianceRho(varRho),
 				m_varianceZ(varZ),
       	m_measurementIndex(measurementIndex) {
-		m_doubleMeasurement.topHalfStripLength = sp_topHalfStripLength;
-		m_doubleMeasurement.bottomHalfStripLength = sp_bottomHalfStripLength;
-		m_doubleMeasurement.topStripDirection = sp_topStripDirection;
-		m_doubleMeasurement.bottomStripDirection = sp_bottomStripDirection;
-		m_doubleMeasurement.stripCenterDistance = sp_stripCenterDistance;
-		m_doubleMeasurement.bottomStripCenterPosition = sp_bottomStripCenterPosition;
-		m_doubleMeasurement.validDoubleMeasurementDetails = true;
+		m_topHalfStripLength = sp_topHalfStripLength;
+		m_bottomHalfStripLength = sp_bottomHalfStripLength;
+		m_topStripDirection = sp_topStripDirection;
+		m_bottomStripDirection = sp_bottomStripDirection;
+		m_stripCenterDistance = sp_stripCenterDistance;
+		m_bottomStripCenterPosition = sp_bottomStripCenterPosition;
+		m_validDoubleMeasurementDetails = true;
     EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(position_t, 3);
   }
 	
@@ -68,13 +58,13 @@ class SimSpacePoint {
 	m_varianceRho(varRho),
 	m_varianceZ(varZ),
 	m_measurementIndex(measurementIndex) {
-		m_doubleMeasurement.topHalfStripLength = 0;
-		m_doubleMeasurement.bottomHalfStripLength = 0;
-		m_doubleMeasurement.topStripDirection = {0,0,0};
-		m_doubleMeasurement.bottomStripDirection = {0,0,0};
-		m_doubleMeasurement.stripCenterDistance = {0,0,0};
-		m_doubleMeasurement.bottomStripCenterPosition = {0,0,0};
-		m_doubleMeasurement.validDoubleMeasurementDetails = false;
+		m_topHalfStripLength = 0;
+		m_bottomHalfStripLength = 0;
+		m_topStripDirection = {0,0,0};
+		m_bottomStripDirection = {0,0,0};
+		m_stripCenterDistance = {0,0,0};
+		m_bottomStripCenterPosition = {0,0,0};
+		m_validDoubleMeasurementDetails = false;
 		EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(position_t, 3);
 	}
 
@@ -88,7 +78,15 @@ class SimSpacePoint {
 
   constexpr Index measurementIndex() const { return m_measurementIndex; }
 
-	const DoubleMeasurementDetails doubleMeasurement() const { return m_doubleMeasurement; }
+//	const Acts::DoubleMeasurementDetails doubleMeasurement() const { return m_doubleMeasurement; }
+	
+	constexpr float topHalfStripLength() const { return m_topHalfStripLength; }
+	constexpr float bottomHalfStripLength() const { return m_bottomHalfStripLength; }
+	Acts::Vector3 topStripDirection() const { return m_topStripDirection; }
+	Acts::Vector3 bottomStripDirection() const { return m_bottomStripDirection; }
+	Acts::Vector3 stripCenterDistance() const { return m_stripCenterDistance; }
+	Acts::Vector3 bottomStripCenterPosition() const { return m_bottomStripCenterPosition; }
+	constexpr bool validDoubleMeasurementDetails() const { return m_validDoubleMeasurementDetails; }
 	
  private:
   // Global position
@@ -102,7 +100,20 @@ class SimSpacePoint {
   // Index of the corresponding measurement
   Index m_measurementIndex;
 
-	DoubleMeasurementDetails m_doubleMeasurement;
+	// half of the length of the top strip
+	float m_topHalfStripLength;
+	// half of the length of the bottom strip
+	float m_bottomHalfStripLength;
+	// direction of the top strip
+	Acts::Vector3 m_topStripDirection;
+	// direction of the bottom strip
+	Acts::Vector3 m_bottomStripDirection;
+	// distance between the center of the two strips
+	Acts::Vector3 m_stripCenterDistance;
+	// position of the center of the bottom strip
+	Acts::Vector3 m_bottomStripCenterPosition;
+	//
+	bool m_validDoubleMeasurementDetails;
 };
 
 constexpr bool operator==(const SimSpacePoint& lhs, const SimSpacePoint& rhs) {

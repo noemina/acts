@@ -477,13 +477,20 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           float iSinTheta = std::sqrt(iSinTheta2);
           float cosTheta = cotThetaB / iSinTheta;
 					float rotationTermsUVtoXY[2] = {spM->x() / (iSinTheta * spM->radius()), spM->y() / (iSinTheta * spM->radius())};
-//          float Sx = spM->x() / (iSinTheta * spM->radius());
-//          float Sy = spM->y() / (iSinTheta * spM->radius());
-//          float Cn = cosTheta * std::sqrt(1 + A0 * A0);
 					// position of Middle SP converted from UV to XY assuming cotTheta evaluated from the Bottom and Middle SPs
-          double positionMiddle[3] = {rotationTermsUVtoXY[0] - rotationTermsUVtoXY[1] * A0,
-												 							rotationTermsUVtoXY[0] * A0 + rotationTermsUVtoXY[1],
-												 							cosTheta * std::sqrt(1 + A0 * A0)};
+					double positionMiddle[3] = {rotationTermsUVtoXY[0] - rotationTermsUVtoXY[1] * A0,
+																			rotationTermsUVtoXY[0] * A0 + rotationTermsUVtoXY[1],
+																			cosTheta * std::sqrt(1 + A0 * A0)};
+					
+					// remove this:
+					float Ce = cotThetaB / iSinTheta;
+          float Sx = spM->x() / (iSinTheta * spM->radius());
+          float Sy = spM->y() / (iSinTheta * spM->radius());
+          float Cn = cosTheta * std::sqrt(1 + A0 * A0);
+					double dn[3] = {rotationTermsUVtoXY[0] - rotationTermsUVtoXY[1] * A0,
+						rotationTermsUVtoXY[0] * A0 + rotationTermsUVtoXY[1],
+						cosTheta * std::sqrt(1 + A0 * A0)};
+
 
           double rTestM[3];
           if (!coordinates(dn, rTestM, spM))
