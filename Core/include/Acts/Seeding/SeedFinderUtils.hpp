@@ -16,7 +16,7 @@ namespace Acts {
 struct LinCircle {
   float Zo;
   float cotTheta;
-//  float topDeltaR;
+  //  float topDeltaR;
   float iDeltaR;
   float Er;
   float U;
@@ -24,12 +24,12 @@ struct LinCircle {
 
   float x;
   float y;
-//  float z;
-//  float r;
-	
-//	float Sx;
-//	float Sy;
-//	float Ce;
+  //  float z;
+  //  float r;
+
+  //	float Sx;
+  //	float Sy;
+  //	float Ce;
 };
 
 /// @brief Transform two spacepoints to a u-v space circle.

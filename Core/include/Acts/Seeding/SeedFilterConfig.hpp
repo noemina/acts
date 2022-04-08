@@ -25,6 +25,9 @@ struct SeedFilterConfig {
   float impactWeightFactor = 1.;
   // seed weight increased by this value if a compatible seed has been found.
   float compatSeedWeight = 200.;
+  // the zOrigin is multiplied by this factor and subtracted from
+  // weight
+  float zOriginSeedWeight = 0.;
   // minimum distance between compatible seeds to be considered for weight boost
   float deltaRMin = 5. * Acts::UnitConstants::mm;
   // in dense environments many seeds may be found per middle space point.
@@ -44,24 +47,24 @@ struct SeedFilterConfig {
   SeedConfirmationRange centralSeedConfirmationRange;
   // contains parameters for forward seed confirmation
   SeedConfirmationRange forwardSeedConfirmationRange;
-	// minimum radius for bottom SP in seed confirmation
-	float seedConfMinBottomRadius = 60. * Acts::UnitConstants::mm;
-	// maximum zOrigin in seed confirmation
-	float seedConfMaxZOrigin = 150. * Acts::UnitConstants::mm;
-	// minimum impact parameter for seed confirmation
-	float minImpactSeedConf = 1. * Acts::UnitConstants::mm;
-	
-	// delete
-	std::string inputCollectionTest = "pixel";
+  // minimum radius for bottom SP in seed confirmation
+  float seedConfMinBottomRadius = 60. * Acts::UnitConstants::mm;
+  // maximum zOrigin in seed confirmation
+  float seedConfMaxZOrigin = 150. * Acts::UnitConstants::mm;
+  // minimum impact parameter for seed confirmation
+  float minImpactSeedConf = 1. * Acts::UnitConstants::mm;
+
+  // delete
+  std::string inputCollectionTest = "pixel";
 
   SeedFilterConfig toInternalUnits() const {
     using namespace Acts::UnitLiterals;
     SeedFilterConfig config = *this;
     config.deltaRMin /= 1_mm;
     config.deltaInvHelixDiameter /= 1. / 1_mm;
-		config.seedConfMinBottomRadius /= 1_mm;
-		config.seedConfMaxZOrigin /= 1_mm;
-		config.minImpactSeedConf /= 1_mm;
+    config.seedConfMinBottomRadius /= 1_mm;
+    config.seedConfMaxZOrigin /= 1_mm;
+    config.minImpactSeedConf /= 1_mm;
 
     return config;
   }

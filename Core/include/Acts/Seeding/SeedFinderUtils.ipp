@@ -28,8 +28,8 @@ LinCircle transformCoordinates(
   float deltaZ = sp.z() - zM;
   float x = deltaX * cosPhiM + deltaY * sinPhiM;
   float y = deltaY * cosPhiM - deltaX * sinPhiM;
-//  float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
-	float iDeltaR2 = 1. / (x * x + y * y);
+  //  float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
+  float iDeltaR2 = 1. / (x * x + y * y);
   float iDeltaR = std::sqrt(iDeltaR2);
   int bottomFactor = 1 * (int(!bottom)) - 1 * (int(bottom));
   float cot_theta = deltaZ * iDeltaR * bottomFactor;
@@ -49,7 +49,7 @@ template <typename external_spacepoint_t>
 void transformCoordinates(
     std::vector<const InternalSpacePoint<external_spacepoint_t>*>& vec,
     const InternalSpacePoint<external_spacepoint_t>& spM, bool bottom,
-    bool enableCutsForSortedSP, std::vector<LinCircle>& linCircleVec) {
+    bool cotThetaSorting, std::vector<LinCircle>& linCircleVec) {
   float xM = spM.x();
   float yM = spM.y();
   float zM = spM.z();
@@ -60,12 +60,12 @@ void transformCoordinates(
   float sinPhiM = yM / rM;
 
   //	// sort the SP in order of cotTheta
-  //	if (enableCutsForSortedSP) {
+  //	if (cotThetaSorting) {
   //		std::sort(vec.begin(), vec.end(),
   //							[](const
-  //InternalSpacePoint<external_spacepoint_t>* a, 								 const
-  //InternalSpacePoint<external_spacepoint_t>* b) -> bool { 			return
-  //(a->cotTheta() < b->cotTheta());
+  // InternalSpacePoint<external_spacepoint_t>* a,
+  // const InternalSpacePoint<external_spacepoint_t>* b) -> bool {
+  // return (a->cotTheta() < b->cotTheta());
   //		});
   //	}
 
@@ -80,8 +80,8 @@ void transformCoordinates(
     float x = deltaX * cosPhiM + deltaY * sinPhiM;
     float y = deltaY * cosPhiM - deltaX * sinPhiM;
     // 1/(length of M -> SP)
-//    float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
-		float iDeltaR2 = 1. / (x * x + y * y);
+    //    float iDeltaR2 = 1. / (deltaX * deltaX + deltaY * deltaY);
+    float iDeltaR2 = 1. / (x * x + y * y);
     float iDeltaR = std::sqrt(iDeltaR2);
     //
     int bottomFactor = 1 * (int(!bottom)) - 1 * (int(bottom));
@@ -93,44 +93,48 @@ void transformCoordinates(
     // location on z-axis of this SP-duplet
     l.Zo = zM - rM * cot_theta;
     l.iDeltaR = iDeltaR;
-			// transformation of circle equation (x,y) into linear equation (u,v)
-        // x^2 + y^2 - 2x_0*x - 2y_0*y = 0
-        // is transformed into
-        // 1 - 2x_0*u - 2y_0*v = 0
-        // using the following m_U and m_V
-        // (u = A + B*v); A and B are created later on
-		l.U = x * iDeltaR2;
+    // transformation of circle equation (x,y) into linear equation (u,v)
+    // x^2 + y^2 - 2x_0*x - 2y_0*y = 0
+    // is transformed into
+    // 1 - 2x_0*u - 2y_0*v = 0
+    // using the following m_U and m_V
+    // (u = A + B*v); A and B are created later on
+    l.U = x * iDeltaR2;
     l.V = y * iDeltaR2;
     // error term for sp-pair without correlation of middle space point
     l.Er = ((varianceZM + sp->varianceZ()) +
             (cot_theta * cot_theta) * (varianceRM + sp->varianceR())) *
            iDeltaR2;
-		
-		std::cout << "l.x " << x << " l.y " << y << " l.iDeltaR2 " << iDeltaR2 << " l.U " << x * iDeltaR2 << " l.V " << y * iDeltaR2 << " l.cotTheta " << cot_theta << std::endl;
+
+    std::cout << "l.x " << x << " l.y " << y << " l.iDeltaR2 " << iDeltaR2
+              << " l.U " << x * iDeltaR2 << " l.V " << y * iDeltaR2
+              << " l.cotTheta " << cot_theta << std::endl;
 
     l.x = x;
     l.y = y;
-//    l.z = sp->z();
-//    l.r = sp->radius();
-		
+    //    l.z = sp->z();
+    //    l.r = sp->radius();
+
     linCircleVec.push_back(l);
     sp->setCotTheta(cot_theta);
-		
-		if (bottom == false) {
-//			l.topDeltaR = std::sqrt((x * x) + (y * y) + (deltaZ * deltaZ));
-			sp->setDeltaR(std::sqrt((x * x) + (y * y) + (deltaZ * deltaZ)));
-//			std::cout << "TEST " << l.topDeltaR << std::endl;
-		}
+
+    if (bottom == false) {
+      //			l.topDeltaR = std::sqrt((x * x) + (y * y) +
+      //(deltaZ * deltaZ));
+      sp->setDeltaR(std::sqrt((x * x) + (y * y) + (deltaZ * deltaZ)));
+      //			std::cout << "TEST " << l.topDeltaR <<
+      // std::endl;
+    }
   }
 
   // sort the SP in order of cotTheta
-  if (enableCutsForSortedSP) {
+  if (cotThetaSorting) {
     //		std::sort(vec.begin(), vec.end(),
-    //							[&linCircleVec, &vec](const
-    //InternalSpacePoint<external_spacepoint_t>* a, 															const
-    //InternalSpacePoint<external_spacepoint_t>* b) { 			return
-    //linCircleVec[std::find(vec.begin(), vec.end(), a)].cotTheta <
-    //linCircleVec[std::find(vec.begin(), vec.end(), b)].cotTheta;
+    //							[&linCircleVec,
+    //&vec](const InternalSpacePoint<external_spacepoint_t>* a,
+    // const InternalSpacePoint<external_spacepoint_t>* b) {
+    // return linCircleVec[std::find(vec.begin(), vec.end(), a)].cotTheta <
+    // linCircleVec[std::find(vec.begin(), vec.end(), b)].cotTheta;
     //		});
 
     std::vector<size_t> idx(vec.size());
@@ -150,8 +154,10 @@ void transformCoordinates(
     //		std::iota(idx.begin(), idx.end(), 0);
     //
     //		std::sort(idx.begin(), idx.end(),
-    //							[&linCircleVec](size_t i1, size_t i2)
-    //{ 			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+    //							[&linCircleVec](size_t
+    // i1, size_t i2) { 			return linCircleVec[i1].cotTheta
+    // <
+    // linCircleVec[i2].cotTheta;
     //		});
     //
     //		for (size_t i = 0; i<vec.size();i++) {
@@ -171,8 +177,9 @@ void transformCoordinates(
     //			}
     //		}
 
-    //		std::sort(vec.begin(), vec.end(), [&linCircleVec](size_t i1, size_t
-    //i2) { 			return linCircleVec[i1].cotTheta < linCircleVec[i2].cotTheta;
+    //		std::sort(vec.begin(), vec.end(), [&linCircleVec](size_t i1,
+    // size_t i2) { 			return linCircleVec[i1].cotTheta <
+    // linCircleVec[i2].cotTheta;
     //		});
 
     std::sort(linCircleVec.begin(), linCircleVec.end(),

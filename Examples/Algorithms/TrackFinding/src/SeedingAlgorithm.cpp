@@ -42,7 +42,7 @@ ActsExamples::SeedingAlgorithm::SeedingAlgorithm(
   }
 
   if (m_cfg.gridConfig.rMax != m_cfg.seedFinderConfig.rMax) {
-    throw std::invalid_argument("Inconsistent config rMax");
+		ACTS_WARNING("Inconsistent config rMax: using different values in gridConfig and seedFinderConfig. Ignore this warning if values are intentional")
   }
 
   if (m_cfg.seedFilterConfig.deltaRMin != m_cfg.seedFinderConfig.deltaRMin) {
@@ -77,14 +77,18 @@ ActsExamples::SeedingAlgorithm::SeedingAlgorithm(
   if (m_cfg.gridConfig.bFieldInZ != m_cfg.seedFinderConfig.bFieldInZ) {
     throw std::invalid_argument("Inconsistent config bFieldInZ");
   }
+				
+	if (m_cfg.seedFinderConfig.cotThetaSorting == false and m_cfg.seedFinderConfig.enableCutsForSortedSP == true) {
+		throw std::invalid_argument("enableCutsForSortedSP cannot be true if cotThetaSorting is set to false");
+	}
 
-  if (m_cfg.gridConfig.zBinEdges.size() - 1 != m_cfg.zBinNeighborsTop.size() &&
+  if (m_cfg.gridConfig.zBinEdges.size() - 1 != m_cfg.zBinNeighborsTop.size() and
       m_cfg.zBinNeighborsTop.empty() == false) {
     throw std::invalid_argument("Inconsistent config zBinNeighborsTop");
   }
 
   if (m_cfg.gridConfig.zBinEdges.size() - 1 !=
-          m_cfg.zBinNeighborsBottom.size() &&
+          m_cfg.zBinNeighborsBottom.size() and
       m_cfg.zBinNeighborsBottom.empty() == false) {
     throw std::invalid_argument("Inconsistent config zBinNeighborsBottom");
   }
@@ -305,14 +309,14 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
 		
 		float eta = -std::log(std::tan(0.5 * std::atan(1. / std::sqrt(cotThetaBt * cotThetaBb))));
 		
-		std::cout << "|Seeds Map| pT_filter, eta_filter, dScore_filter, curvature_filter, Im_filter: " << std::setprecision(10) << pT/1000 << " " << eta << " " << 0/10 << " " << B / std::sqrt(S2) << " " << Im << std::endl;
+		std::cout << "|Seeds Map " << inputCollectionTest << "| pT_filter, eta_filter, dScore_filter, curvature_filter, Im_filter: " << std::setprecision(10) << pT/1000 << " " << eta << " " << 0/10 << " " << B / std::sqrt(S2) << " " << Im << std::endl;
 		
 		// *******************
   }
 
 	
 	
-	std::cout << "|Seeds Map| seeds.size() " << seeds.size() << std::endl;
+	std::cout << "|Seeds Map " << inputCollectionTest << "| seeds.size() " << seeds.size() << std::endl;
 	
   ACTS_DEBUG("Created " << seeds.size() << " track seeds from "
                         << spacePointPtrs.size() << " space points");

@@ -67,7 +67,7 @@ struct SeedfinderConfig {
   std::vector<std::vector<float>> rRangeMiddleSP;
   bool useVariableMiddleSPRange = true;
   float deltaRMiddleMinSPRange = 10. * Acts::UnitConstants::mm;
-	float deltaRMiddleMaxSPRange = 10. * Acts::UnitConstants::mm;
+  float deltaRMiddleMaxSPRange = 10. * Acts::UnitConstants::mm;
 
   // seed confirmation
   bool seedConfirmation = true;
@@ -76,27 +76,29 @@ struct SeedfinderConfig {
   // parameters for forward seed confirmation
   SeedConfirmationRange forwardSeedConfirmationRange;
 
-	// enable cotTheta cut
-	bool cotThetaMaxCut = true;
-	
-	// enable delta z cut
-	bool deltaZCut = false;
-	float deltaZMax = 900;
-	
-	// enable cut on the compatibility between interaction point and SPs
-	bool interactionPointCut = false;
+  // enable cotTheta cut
+  bool cotThetaMaxCut = true;
 
-	// use arithmetic average in the calculation of the squared error on the difference in tan(theta)
-	bool arithmeticAverageCotTheta = false;
-	
+  // enable delta z cut
+  bool deltaZCut = false;
+  float deltaZMax = 900;
+
+  // enable cut on the compatibility between interaction point and SPs
+  bool interactionPointCut = false;
+
+  // use arithmetic average in the calculation of the squared error on the
+  // difference in tan(theta)
+  bool arithmeticAverageCotTheta = false;
+
   // non equidistant binning in z
   std::vector<float> zBinEdges;
-	
-	// delete
-	std::string inputCollectionTest = "pixel";
 
-  // sort the SP in transformCoordinates method and enables compatibility cuts
-  // based on the sorting of cotTheta
+  // delete
+  std::string inputCollectionTest = "pixel";
+
+  // sort the SP in transformCoordinates method based on cotTheta
+  bool cotThetaSorting = false;
+	// enables compatibility cuts based on the sorting of cotTheta
   bool enableCutsForSortedSP = true;
 
   //=======
@@ -207,12 +209,12 @@ struct SeedfinderConfig {
     config.minPt /= 1_MeV;
     config.deltaRMin /= 1_mm;
     config.deltaRMax /= 1_mm;
-		config.deltaRMinTopSP /= 1_mm;
-		config.deltaRMaxTopSP /= 1_mm;
-		config.deltaRMinBottomSP /= 1_mm;
-		config.deltaRMaxBottomSP /= 1_mm;
-		config.deltaRMiddleMaxSPRange /= 1_mm;
-		config.deltaRMiddleMinSPRange /= 1_mm;
+    config.deltaRMinTopSP /= 1_mm;
+    config.deltaRMaxTopSP /= 1_mm;
+    config.deltaRMinBottomSP /= 1_mm;
+    config.deltaRMaxBottomSP /= 1_mm;
+    config.deltaRMiddleMaxSPRange /= 1_mm;
+    config.deltaRMiddleMinSPRange /= 1_mm;
     config.impactMax /= 1_mm;
     config.maxPtScattering /= 1_MeV;  // correct?
     config.collisionRegionMin /= 1_mm;

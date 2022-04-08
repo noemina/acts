@@ -17,6 +17,16 @@
 
 namespace ActsExamples {
 
+struct DoubleMeasurementDetails {
+	float topHalfStripLength;
+	float bottomHalfStripLength;
+	Acts::Vector3 topStripDirection;
+	Acts::Vector3 bottomStripDirection;
+	Acts::Vector3 stripCenterDistance;
+	Acts::Vector3 bottomStripCenterPosition;
+	bool validDoubleMeasurementDetails = false;
+};
+
 /// Space point representation of a measurement suitable for track seeding.
 class SimSpacePoint {
  public:
@@ -29,18 +39,22 @@ class SimSpacePoint {
   /// @param measurementIndex Index of the underlying measurement
   template <typename position_t>
   SimSpacePoint(const Eigen::MatrixBase<position_t>& pos, float varRho,
-	float varZ, Index measurementIndex, const std::vector<float> topStripVector, const std::vector<float> bottomStripVector, const std::vector<float> stripCenterDistance, const std::vector<float> stripCenterPosition)
+								float varZ, Index measurementIndex, const float& sp_topHalfStripLength, const float& sp_bottomHalfStripLength, const Acts::Vector3& sp_topStripDirection, const Acts::Vector3& sp_bottomStripDirection, const
+								Acts::Vector3& sp_stripCenterDistance, const Acts::Vector3& sp_bottomStripCenterPosition)
       : m_x(pos[Acts::ePos0]),
         m_y(pos[Acts::ePos1]),
         m_z(pos[Acts::ePos2]),
         m_rho(std::hypot(m_x, m_y)),
         m_varianceRho(varRho),
-        m_varianceZ(varZ),
-        m_measurementIndex(measurementIndex),
-	      m_topStripVector(topStripVector),
-				m_bottomStripVector(bottomStripVector),
-				m_stripCenterDistance(stripCenterDistance),
-				m_stripCenterPosition(stripCenterPosition) {
+				m_varianceZ(varZ),
+      	m_measurementIndex(measurementIndex) {
+		m_doubleMeasurement.topHalfStripLength = sp_topHalfStripLength;
+		m_doubleMeasurement.bottomHalfStripLength = sp_bottomHalfStripLength;
+		m_doubleMeasurement.topStripDirection = sp_topStripDirection;
+		m_doubleMeasurement.bottomStripDirection = sp_bottomStripDirection;
+		m_doubleMeasurement.stripCenterDistance = sp_stripCenterDistance;
+		m_doubleMeasurement.bottomStripCenterPosition = sp_bottomStripCenterPosition;
+		m_doubleMeasurement.validDoubleMeasurementDetails = true;
     EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(position_t, 3);
   }
 	
@@ -54,6 +68,13 @@ class SimSpacePoint {
 	m_varianceRho(varRho),
 	m_varianceZ(varZ),
 	m_measurementIndex(measurementIndex) {
+		m_doubleMeasurement.topHalfStripLength = 0;
+		m_doubleMeasurement.bottomHalfStripLength = 0;
+		m_doubleMeasurement.topStripDirection = {0,0,0};
+		m_doubleMeasurement.bottomStripDirection = {0,0,0};
+		m_doubleMeasurement.stripCenterDistance = {0,0,0};
+		m_doubleMeasurement.bottomStripCenterPosition = {0,0,0};
+		m_doubleMeasurement.validDoubleMeasurementDetails = false;
 		EIGEN_STATIC_ASSERT_VECTOR_SPECIFIC_SIZE(position_t, 3);
 	}
 
@@ -67,10 +88,7 @@ class SimSpacePoint {
 
   constexpr Index measurementIndex() const { return m_measurementIndex; }
 
-	const std::vector<float> topStripVector() const { return m_topStripVector; }
-	const std::vector<float> bottomStripVector() const { return m_bottomStripVector; }
-	const std::vector<float> stripCenterDistance() const { return m_stripCenterDistance; }
-	const std::vector<float> stripCenterPosition() const { return m_stripCenterPosition; }
+	const DoubleMeasurementDetails doubleMeasurement() const { return m_doubleMeasurement; }
 	
  private:
   // Global position
@@ -83,11 +101,8 @@ class SimSpacePoint {
   float m_varianceZ;
   // Index of the corresponding measurement
   Index m_measurementIndex;
-	
-	const std::vector<float> m_topStripVector;
-	const std::vector<float> m_bottomStripVector;
-	const std::vector<float> m_stripCenterDistance;
-	const std::vector<float> m_stripCenterPosition;
+
+	DoubleMeasurementDetails m_doubleMeasurement;
 };
 
 constexpr bool operator==(const SimSpacePoint& lhs, const SimSpacePoint& rhs) {

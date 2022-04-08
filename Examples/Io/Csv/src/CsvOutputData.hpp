@@ -217,16 +217,25 @@ struct SpacePointData {
 	float sp_x, sp_y, sp_z, sp_radius;
 	float sp_covr, sp_covz;
 	
-	std::vector<float> sp_topStripVector = std::vector<float>(3);
-	std::vector<float> sp_bottomStripVector = std::vector<float>(3);
-	std::vector<float> sp_stripCenterDistance = std::vector<float>(3); // distance between the center of the two strips
-	std::vector<float> sp_stripCenterPosition = std::vector<float>(3); // position of the center of the first strip
+	// half of the length of the top strip
+	float sp_topHalfStripLength;
+	// half of the length of the bottom strip
+	float sp_bottomHalfStripLength;
+	// direction of the top strip
+	Acts::Vector3 sp_topStripDirection;
+	// direction of the bottom strip
+	Acts::Vector3 sp_bottomStripDirection;
+	// distance between the center of the two strips
+	Acts::Vector3 sp_stripCenterDistance;
+	// position of the center of the bottom strip
+	Acts::Vector3 sp_bottomStripCenterPosition;
 	
 	DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_x, sp_y, sp_z, sp_radius,
-								 sp_covr, sp_covz, sp_topStripVector[0], sp_topStripVector[1], sp_topStripVector[2],
-								 sp_bottomStripVector[0], sp_bottomStripVector[1], sp_bottomStripVector[2],
+								 sp_covr, sp_covz, sp_topHalfStripLength, sp_bottomHalfStripLength,
+								 sp_topStripDirection[0], sp_topStripDirection[1], sp_topStripDirection[2],
+								 sp_bottomStripDirection[0], sp_bottomStripDirection[1], sp_bottomStripDirection[2],
 								 sp_stripCenterDistance[0], sp_stripCenterDistance[1], sp_stripCenterDistance[2],
-								 sp_stripCenterPosition[0], sp_stripCenterPosition[1], sp_stripCenterPosition[2]);
+								 sp_bottomStripCenterPosition[0], sp_bottomStripCenterPosition[1], sp_bottomStripCenterPosition[2]);
 };
 
 struct SurfaceGridData {

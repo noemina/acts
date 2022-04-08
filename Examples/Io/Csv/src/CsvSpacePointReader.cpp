@@ -69,11 +69,16 @@ ActsExamples::ProcessCode ActsExamples::CsvSpacePointReader::read(
 				m_cfg.inputCollection == "overlap") {
 			if (m_cfg.extendCollection) {
 				std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
-				std::cout << " topStripVector " << data.sp_topStripVector[0] << std::endl;
-				spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id, data.sp_topStripVector, data.sp_bottomStripVector, data.sp_stripCenterDistance, data.sp_stripCenterPosition);
+//				std::cout << " topStripVector " << data.sp_topStripDirection[0] << std::endl;
+				Acts::Vector3 topStripDirection(data.sp_topStripDirection[0], data.sp_topStripDirection[1], data.sp_topStripDirection[2]);
+				Acts::Vector3 bottomStripDirection(data.sp_bottomStripDirection[0], data.sp_bottomStripDirection[1], data.sp_bottomStripDirection[2]);
+				Acts::Vector3 stripCenterDistance(data.sp_stripCenterDistance[0], data.sp_stripCenterDistance[1], data.sp_stripCenterDistance[2]);
+				Acts::Vector3 bottomStripCenterPosition(data.sp_bottomStripCenterPosition[0], data.sp_bottomStripCenterPosition[1], data.sp_bottomStripCenterPosition[2]);
+				
+				spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id, data.sp_topHalfStripLength, data.sp_bottomHalfStripLength, topStripDirection, bottomStripDirection, stripCenterDistance, bottomStripCenterPosition);
 			} else {
-				std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
-      	spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id);
+				 std::cout << "evtSP " << ctx.eventNumber << " " << data.sp_x << " " <<  data.sp_y << " " <<  data.sp_z << " " << data.sp_covr << std::endl;
+      	 spacePoints.emplace_back(globalPos, data.sp_covr, data.sp_covz, data.measurement_id);
 			}
 		}
     else {
