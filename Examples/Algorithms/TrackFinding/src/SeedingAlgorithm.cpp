@@ -50,7 +50,7 @@ ActsExamples::SeedingAlgorithm::SeedingAlgorithm(
   }
 
   if (m_cfg.gridConfig.deltaRMax != m_cfg.seedFinderConfig.deltaRMax) {
-    throw std::invalid_argument("Inconsistent config deltaRMax");
+//    throw std::invalid_argument("Inconsistent config deltaRMax");
   }
 
   if (m_cfg.gridConfig.zMin != m_cfg.seedFinderConfig.zMin) {
@@ -75,7 +75,7 @@ ActsExamples::SeedingAlgorithm::SeedingAlgorithm(
   }
 
   if (m_cfg.gridConfig.bFieldInZ != m_cfg.seedFinderConfig.bFieldInZ) {
-    throw std::invalid_argument("Inconsistent config bFieldInZ");
+//    throw std::invalid_argument("Inconsistent config bFieldInZ");
   }
 				
 	if (m_cfg.seedFinderConfig.cotThetaSorting == false and m_cfg.seedFinderConfig.enableCutsForSortedSP == true) {

@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include <memory>
+#include <iomanip> /// for set precision
 
 template <typename SpacePoint>
 std::unique_ptr<Acts::SpacePointGrid<SpacePoint>>
@@ -35,6 +36,7 @@ Acts::SpacePointGridCreator::createGrid(
     float xOuter = maxR2 / (2 * minHelixRadius);
     float yOuter = std::sqrt(maxR2 - xOuter * xOuter);
     float outerAngle = std::atan(xOuter / yOuter);
+
     // intersection of helix and max detector radius minus maximum R distance
     // from middle SP to top SP
     float innerAngle = 0;
@@ -68,7 +70,7 @@ Acts::SpacePointGridCreator::createGrid(
     // Each individual bin should be approximately a fraction (depending on this
     // number) of the maximum expected azimutal deflection.
 
-    std::cout << "deltaPhi =" << deltaPhi << std::endl;
+    std::cout << "deltaPhi =" << std::setprecision(10) << deltaPhi << std::endl;
     std::cout << "outerAngle= " << outerAngle << " innerAngle= " << innerAngle
               << std::endl;
     std::cout << "deltaAngleWithMaxD0= " << deltaAngleWithMaxD0
@@ -79,8 +81,8 @@ Acts::SpacePointGridCreator::createGrid(
   Acts::detail::Axis<detail::AxisType::Equidistant,
                      detail::AxisBoundaryType::Closed>
       phiAxis(
-          0, 2 * M_PI,
-          phiBins);  // ********************* mudar (-MPI, MPI) para (0, 2MPI)
+          0, 2*M_PI,
+          phiBins);  // ********************* mudar (-MPI, MPI) para (0, 2MPI) faz diferença??
 
   std::cout << "Phi axis (-" << M_PI << "," << M_PI
             << ") number of bins: " << phiBins << std::endl;

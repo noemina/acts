@@ -28,9 +28,8 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
     std::vector<const InternalSpacePoint<external_spacepoint_t>*>& topSpVec,
     std::vector<float>& invHelixDiameterVec,
     std::vector<float>& impactParametersVec, std::vector<float>& cotThetaVec,
-    float zOrigin, int& nQualitySeeds,
-    std::back_insert_iterator<std::vector<std::pair<
-        float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>>
+    float zOrigin, int& nQualitySeeds, int& nSeeds,
+    std::vector<std::pair<float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>&
         outIt) const {
   std::cout << " tedt QQ" << nQualitySeeds << std::endl;
 
@@ -46,8 +45,10 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
   }
 
   size_t minWeightSeedIndex = 0;
+//	size_t minWeightSeedIndexQuality = 0;
   bool minWeightSeed = false;
   float weightMin = -1.e20;
+//	float weightMinQuality = 1.e20;
 
   int i_n = -1;  // delete
   int j_n = -1;  // delete
@@ -313,13 +314,63 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
       }
 
       if (deltaSeedConf) {
-        // fill high quality seed
-        ++nQualitySeeds;
-              std::cout << "|seed filter 1| dN = true " << nQualitySeeds << " "
-                        << minWeightSeedIndex << std::endl;
-        outIt = std::make_pair(
-            weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(
-                        bottomSP, middleSP, *topSpVec[i], zOrigin, true));
+					
+				if (nQualitySeeds < 5) {
+
+//					if (weight < weightMinQuality) {
+//						// store minimum weight of high quality seeds
+//						weightMinQuality = weight;
+//						minWeightSeedIndexQuality = nQualitySeeds;
+//					}
+					
+					// fill high quality seed
+					++nQualitySeeds;
+
+					std::cout << "|seed filter 1| dN = true " << nQualitySeeds << " "
+					<< minWeightSeedIndex << std::endl;
+					
+					outIt.push_back(std::make_pair(weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(
+																		bottomSP, middleSP, *topSpVec[i], zOrigin, true)));
+
+				} else {
+					// else check if there is lower quality to remove**
+					
+					//***
+//					auto it = outIt.begin();
+//					for (; it < outIt.end(); ++it) {
+//						float bestSeedQuality = (*it).first;
+//						std::cout << "|test outIt| " << bestSeedQuality << std::endl;
+//					}
+					
+					std::vector<std::pair<float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>> qualitySeedContainer(outIt);
+					std::copy_if(outIt.begin(), outIt.end(), std::back_inserter(qualitySeedContainer), [](auto it){(it).second->qualitySeed() == true;});
+//					std::erase_if(qualitySeedContainer.begin(), qualitySeedContainer.end(), [](std::pair<float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>* itSeed){itSeed.second->qualitySeed() == true;});
+					
+//					auto it2 = qualitySeedContainer.begin();
+//					for (; it2 < qualitySeedContainer.end(); ++it2) {
+//						float bestSeedQuality = (*it2).first;
+//						std::cout << "|test qualitySeedContainer| " << bestSeedQuality << std::endl;
+//					}
+//
+					auto minWeightSeed = std::lower_bound(outIt.begin(), outIt.end(), [](std::pair<float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>& it1, std::pair<float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>& it2) {it1.first < it2.first;});
+//
+//					std::cout << "|test minWeightSeed| " << (*minWeightSeed).first << std::endl;
+//
+//					if (weight > (*minWeightSeed).first) {
+//
+//						std::cout << "|seed filter 1| dN = true " << nQualitySeeds << " "
+//						<< minWeightSeedIndex << std::endl;
+//
+////						outIt.erase((*minWeightSeed).second);
+////						outIt.push_back(std::make_pair(weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(
+////																		bottomSP, middleSP, *topSpVec[i], zOrigin, true)));
+//					}
+				}
+				
+//				outIt.push_back(std::make_pair(weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(
+//																																																					 bottomSP, middleSP, *topSpVec[i], zOrigin, true)));
+
+
       } else if (weight > weightMin) {
         // store index of lower quality seeds with a weight greater than the
         // minimum
@@ -332,20 +383,44 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_2SpFixed(
       }
     } else {
       // keep the normal behavior without seed quality confirmation
-      outIt = std::make_pair(
+      outIt.push_back(std::make_pair(
           weight, std::make_unique<const InternalSeed<external_spacepoint_t>>(
-                      bottomSP, middleSP, *topSpVec[i], zOrigin, false));
+                      bottomSP, middleSP, *topSpVec[i], zOrigin, false)));
     }
   }
   // if no high quality seed was found for a certain middle+bottom SP pair,
   // lower quality seeds can be accepted
   if (m_cfg.seedConfirmation and minWeightSeed and !nQualitySeeds) {
-    outIt = std::make_pair(
-        weightMin,
-        std::make_unique<const InternalSeed<external_spacepoint_t>>(
-            bottomSP, middleSP, *topSpVec[minWeightSeedIndex], zOrigin, false));
-		std::cout << "|seed filter 1| newOneSeed test " << nQualitySeeds << " "
-		<< minWeightSeedIndex << " " << weightMin << std::endl;
+		
+		if (nSeeds < 5) {
+			
+			// fill high quality seed
+			++nSeeds;
+
+			outIt.push_back(std::make_pair(weightMin,std::make_unique<const InternalSeed<external_spacepoint_t>>(
+										  bottomSP, middleSP, *topSpVec[minWeightSeedIndex], zOrigin, false)));
+			
+			std::cout << "|seed filter 1| newOneSeed test " << nQualitySeeds << " "
+			<< minWeightSeedIndex << " " << weightMin << std::endl;
+			
+		}
+//		else if (weight > weightMin) {
+//			// else check if there is lower quality to remove**
+//
+//			std::cout << "|seed filter 1| newOneSeed test " << nQualitySeeds << " "
+//			<< minWeightSeedIndex << " " << weightMin << std::endl;
+//
+//			outIt.erase(outIt.begin()+minWeightSeedIndex);
+//			outIt.push_back(std::make_pair(weightMin,std::make_unique<const InternalSeed<external_spacepoint_t>>(
+//											bottomSP, middleSP, *topSpVec[minWeightSeedIndex], zOrigin, false)));
+//		}
+		
+//    outIt.push_back(std::make_pair(
+//        weightMin,
+//        std::make_unique<const InternalSeed<external_spacepoint_t>>(
+//            bottomSP, middleSP, *topSpVec[minWeightSeedIndex], zOrigin, false)));
+//		std::cout << "|seed filter 1| newOneSeed test " << nQualitySeeds << " "
+//		<< minWeightSeedIndex << " " << weightMin << std::endl;
   }
 }
 
@@ -356,7 +431,7 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_1SpFixed(
     std::vector<std::pair<
         float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>&
         seedsPerSpM, int& nQualitySeeds,
-    std::back_insert_iterator<std::vector<Seed<external_spacepoint_t>>> outIt)
+		std::back_insert_iterator<std::vector<Seed<external_spacepoint_t>>> outIt)
     const {
   // sort by weight and iterate only up to configured max number of seeds per
   // middle SP
@@ -405,18 +480,38 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_1SpFixed(
   for (; it < itBegin + seedsPerSpM.size(); ++it) {
     float bestSeedQuality = (*it).first;
 		
-		if (nQualitySeeds > 0 and (*it).second->nQualitySeeds() == false) {
+		// continue if higher-quality seeds were found
+		if (nQualitySeeds > 0 and (*it).second->qualitySeed() == false) {
 			std::cout << "|set quality| continue w = " << bestSeedQuality << std::endl;
 			continue;
 		}
 		
-		if ((*it).second->nQualitySeeds() == false) {
-			++maxNoQ;
-			if (maxNoQ > maxSeeds) continue;
-		} else {
-			++maxQ;
-			if (maxQ > maxSeeds) continue;
-		}
+//		if ((*it).second->qualitySeed() == false) {
+//			// if low quality seed, find the minimum weight**
+////			auto l = std::find_if(seedsPerSpM.begin(), seedsPerSpM.end(), [](auto itSeed){(*it).second->qualitySeed() == false});
+//			++maxNoQ;
+//			// if number of low q seeds is > than limit**
+//			if (maxNoQ > maxSeeds) {
+//				continue;
+//			}
+////			} else if (bestSeedQuality > (*l).first) {
+////				// else check if there is lower quality to remove**
+////				--maxNoQ;
+////				outIt.erase(l);
+////			}
+//		} else {
+//			// if high quality seed, find the minimum weight**
+////			auto l = std::find_if(seedsPerSpM.begin(), seedsPerSpM.end(), [](auto itSeed){(*it).second->qualitySeed() == true});
+//			++maxQ;
+//			if (maxQ > maxSeeds) {
+//				continue;
+//			}
+////			} else if (bestSeedQuality > (*l).first) {
+////				// else check if there is lower quality to remove**
+////				--maxNoQ;
+////				outIt.erase(l);
+////			}
+//		}
 			
 		std::cout << "|set quality| w = " << bestSeedQuality << " "
                   << (*it).second->sp[0]->x() << " " <<
