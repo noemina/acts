@@ -34,123 +34,126 @@
 #include "RecInput.hpp"
 
 ActsExamples::CsvSimHitReader::Config setupSimHitReading(
-																												 const ActsExamples::Options::Variables& vars,
-																												 ActsExamples::Sequencer& sequencer) {
-	using namespace ActsExamples;
-	
-	// Read some standard options
-	auto logLevel = Options::readLogLevel(vars);
-	
-	// Read truth hits from CSV files
-	auto simHitReaderCfg = Options::readCsvSimHitReaderConfig(vars);
-	simHitReaderCfg.inputStem = "hits";
-	simHitReaderCfg.outputSimHits = "hits";
-	sequencer.addReader(
-											std::make_shared<CsvSimHitReader>(simHitReaderCfg, logLevel));
-	
-	return simHitReaderCfg;
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer) {
+  using namespace ActsExamples;
+
+  // Read some standard options
+  auto logLevel = Options::readLogLevel(vars);
+
+  // Read truth hits from CSV files
+  auto simHitReaderCfg = Options::readCsvSimHitReaderConfig(vars);
+  simHitReaderCfg.inputStem = "hits";
+  simHitReaderCfg.outputSimHits = "hits";
+  sequencer.addReader(
+      std::make_shared<CsvSimHitReader>(simHitReaderCfg, logLevel));
+
+  return simHitReaderCfg;
 }
 
 ActsExamples::CsvParticleReader::Config setupParticleReading(
-																														 const ActsExamples::Options::Variables& vars,
-																														 ActsExamples::Sequencer& sequencer) {
-	using namespace ActsExamples;
-	
-	// Read some standard options
-	auto logLevel = Options::readLogLevel(vars);
-	
-	// Read particles (initial states) and clusters from CSV files
-	auto particleReader = Options::readCsvParticleReaderConfig(vars);
-	particleReader.inputStem = "particles_initial";
-	particleReader.outputParticles = "particles_initial";
-	sequencer.addReader(
-											std::make_shared<CsvParticleReader>(particleReader, logLevel));
-	
-	return particleReader;
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer) {
+  using namespace ActsExamples;
+
+  // Read some standard options
+  auto logLevel = Options::readLogLevel(vars);
+
+  // Read particles (initial states) and clusters from CSV files
+  auto particleReader = Options::readCsvParticleReaderConfig(vars);
+  particleReader.inputStem = "particles_initial";
+  particleReader.outputParticles = "particles_initial";
+  sequencer.addReader(
+      std::make_shared<CsvParticleReader>(particleReader, logLevel));
+
+  return particleReader;
 }
 
 ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
-																																 const ActsExamples::Options::Variables& vars,
-																																 ActsExamples::Sequencer& sequencer,
-																																 const std::string& inputCollectionName, bool extendCollection) {
-	using namespace ActsExamples;
-	
-	// Read some standard options
-	auto logLevel = Options::readLogLevel(vars);
-	
-	// Read truth hits from CSV files
-	auto spacePointReaderCfg = Options::readCsvSpacePointReaderConfig(vars);
-	spacePointReaderCfg.inputStem = "spacepoints";
-	spacePointReaderCfg.inputCollection = inputCollectionName;
-	// read extend SP parameters
-	spacePointReaderCfg.extendCollection = extendCollection; // pixel: false, strip: true
-	
-	sequencer.addReader(
-											std::make_shared<CsvSpacePointReader>(spacePointReaderCfg, logLevel));
-	
-	return spacePointReaderCfg;
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer, const std::string& inputCollectionName,
+    bool extendCollection) {
+  using namespace ActsExamples;
+
+  // Read some standard options
+  auto logLevel = Options::readLogLevel(vars);
+
+  // Read truth hits from CSV files
+  auto spacePointReaderCfg = Options::readCsvSpacePointReaderConfig(vars);
+  spacePointReaderCfg.inputStem = "spacepoints";
+  spacePointReaderCfg.inputCollection = inputCollectionName;
+  // read extend SP parameters
+  spacePointReaderCfg.extendCollection =
+      extendCollection;  // pixel: false, strip: true
+
+  sequencer.addReader(
+      std::make_shared<CsvSpacePointReader>(spacePointReaderCfg, logLevel));
+
+  return spacePointReaderCfg;
 }
 
-//ActsExamples::DigitizationConfig setupDigitization(
-//																									 const ActsExamples::Options::Variables& vars,
-//																									 ActsExamples::Sequencer& sequencer,
-//																									 std::shared_ptr<const ActsExamples::RandomNumbers> rnd,
-//																									 std::shared_ptr<const Acts::TrackingGeometry> trackingGeometry,
-//																									 const std::string& inputSimHits) {
+// ActsExamples::DigitizationConfig setupDigitization(
+//																									 const
+//ActsExamples::Options::Variables& vars, 																									 ActsExamples::Sequencer& sequencer,
+//																									 std::shared_ptr<const
+//ActsExamples::RandomNumbers> rnd, 																									 std::shared_ptr<const
+//Acts::TrackingGeometry> trackingGeometry, 																									 const std::string& inputSimHits) {
 //	using namespace ActsExamples;
-//	
+//
 //	// Read some standard options
 //	auto logLevel = Options::readLogLevel(vars);
-//	
+//
 //	auto digiCfg = ActsExamples::DigitizationConfig(
-//																									vars, ActsExamples::readDigiConfigFromJson(
+//																									vars,
+//ActsExamples::readDigiConfigFromJson(
 //																																														 vars["digi-config-file"].as<std::string>()));
 //	// Common options for digitization
 //	digiCfg.inputSimHits = inputSimHits;
 //	digiCfg.randomNumbers = rnd;
 //	digiCfg.trackingGeometry = trackingGeometry;
 //	sequencer.addAlgorithm(
-//												 ActsExamples::createDigitizationAlgorithm(digiCfg, logLevel));
-//	
+//												 ActsExamples::createDigitizationAlgorithm(digiCfg,
+//logLevel));
+//
 //	if (not vars["dump-digi-config"].as<std::string>().empty()) {
 //		writeDigiConfigToJson(digiCfg.digitizationConfigs,
 //													vars["dump-digi-config"].as<std::string>());
 //	}
-//	
+//
 //	return digiCfg;
 //}
 
 ActsExamples::ParticleSmearing::Config setupParticleSmearing(
-																														 const ActsExamples::Options::Variables& vars,
-																														 ActsExamples::Sequencer& sequencer,
-																														 std::shared_ptr<const ActsExamples::RandomNumbers> rnd,
-																														 const std::string& inputParticles) {
-	using namespace ActsExamples;
-	using namespace Acts::UnitLiterals;
-	
-	// Read some standard options
-	auto logLevel = Options::readLogLevel(vars);
-	
-	// Create smeared particles states
-	ParticleSmearing::Config particleSmearingCfg;
-	particleSmearingCfg.inputParticles = inputParticles;
-	particleSmearingCfg.outputTrackParameters = "smearedparameters";
-	particleSmearingCfg.randomNumbers = rnd;
-	// Gaussian sigmas to smear particle parameters
-	particleSmearingCfg.sigmaD0 = 20_um;
-	particleSmearingCfg.sigmaD0PtA = 30_um;
-	particleSmearingCfg.sigmaD0PtB = 0.3 / 1_GeV;
-	particleSmearingCfg.sigmaZ0 = 20_um;
-	particleSmearingCfg.sigmaZ0PtA = 30_um;
-	particleSmearingCfg.sigmaZ0PtB = 0.3 / 1_GeV;
-	particleSmearingCfg.sigmaPhi = 1_degree;
-	particleSmearingCfg.sigmaTheta = 1_degree;
-	particleSmearingCfg.sigmaPRel = 0.01;
-	particleSmearingCfg.sigmaT0 = 1_ns;
-	particleSmearingCfg.initialVarInflation =
-	vars["fit-initial-variance-inflation"].template as<Options::Reals<6>>();
-	sequencer.addAlgorithm(
-												 std::make_shared<ParticleSmearing>(particleSmearingCfg, logLevel));
-	
-	return particleSmearingCfg;
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer,
+    std::shared_ptr<const ActsExamples::RandomNumbers> rnd,
+    const std::string& inputParticles) {
+  using namespace ActsExamples;
+  using namespace Acts::UnitLiterals;
+
+  // Read some standard options
+  auto logLevel = Options::readLogLevel(vars);
+
+  // Create smeared particles states
+  ParticleSmearing::Config particleSmearingCfg;
+  particleSmearingCfg.inputParticles = inputParticles;
+  particleSmearingCfg.outputTrackParameters = "smearedparameters";
+  particleSmearingCfg.randomNumbers = rnd;
+  // Gaussian sigmas to smear particle parameters
+  particleSmearingCfg.sigmaD0 = 20_um;
+  particleSmearingCfg.sigmaD0PtA = 30_um;
+  particleSmearingCfg.sigmaD0PtB = 0.3 / 1_GeV;
+  particleSmearingCfg.sigmaZ0 = 20_um;
+  particleSmearingCfg.sigmaZ0PtA = 30_um;
+  particleSmearingCfg.sigmaZ0PtB = 0.3 / 1_GeV;
+  particleSmearingCfg.sigmaPhi = 1_degree;
+  particleSmearingCfg.sigmaTheta = 1_degree;
+  particleSmearingCfg.sigmaPRel = 0.01;
+  particleSmearingCfg.sigmaT0 = 1_ns;
+  particleSmearingCfg.initialVarInflation =
+      vars["fit-initial-variance-inflation"].template as<Options::Reals<6>>();
+  sequencer.addAlgorithm(
+      std::make_shared<ParticleSmearing>(particleSmearingCfg, logLevel));
+
+  return particleSmearingCfg;
 }

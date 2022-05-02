@@ -31,8 +31,8 @@
 ///
 /// @return config for sim hits csv reader
 ActsExamples::CsvSimHitReader::Config setupSimHitReading(
-																												 const ActsExamples::Options::Variables& vars,
-																												 ActsExamples::Sequencer& sequencer);
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer);
 
 /// Setup sim particle csv reader
 ///
@@ -41,8 +41,8 @@ ActsExamples::CsvSimHitReader::Config setupSimHitReading(
 ///
 /// @return config for sim particles csv reader
 ActsExamples::CsvParticleReader::Config setupParticleReading(
-																														 const ActsExamples::Options::Variables& vars,
-																														 ActsExamples::Sequencer& sequencer);
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer);
 
 /// Setup space point csv reader
 ///
@@ -51,9 +51,9 @@ ActsExamples::CsvParticleReader::Config setupParticleReading(
 ///
 /// @return config for space points csv reader
 ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
-																																 const ActsExamples::Options::Variables& vars,
-																																 ActsExamples::Sequencer& sequencer,
-																																 const std::string& inputCollectionName = "", bool extendCollection = false);
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer,
+    const std::string& inputCollectionName = "", bool extendCollection = false);
 
 /// Setup sim hit smearing
 ///
@@ -65,11 +65,11 @@ ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
 ///
 /// @return config for hit smearing
 ActsExamples::DigitizationConfig setupDigitization(
-																									 const ActsExamples::Options::Variables& vars,
-																									 ActsExamples::Sequencer& sequencer,
-																									 std::shared_ptr<const ActsExamples::RandomNumbers> randomNumbers,
-																									 std::shared_ptr<const Acts::TrackingGeometry> trackingGeometry,
-																									 const std::string& inputSimHits);
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer,
+    std::shared_ptr<const ActsExamples::RandomNumbers> randomNumbers,
+    std::shared_ptr<const Acts::TrackingGeometry> trackingGeometry,
+    const std::string& inputSimHits);
 
 /// Setup particle smearing
 ///
@@ -81,7 +81,7 @@ ActsExamples::DigitizationConfig setupDigitization(
 ///
 /// @return config for particle smearing
 ActsExamples::ParticleSmearing::Config setupParticleSmearing(
-																														 const ActsExamples::Options::Variables& vars,
-																														 ActsExamples::Sequencer& sequencer,
-																														 std::shared_ptr<const ActsExamples::RandomNumbers> randomNumbers,
-																														 const std::string& inputParticles);
+    const ActsExamples::Options::Variables& vars,
+    ActsExamples::Sequencer& sequencer,
+    std::shared_ptr<const ActsExamples::RandomNumbers> randomNumbers,
+    const std::string& inputParticles);

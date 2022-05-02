@@ -9,13 +9,12 @@
 #pragma once
 
 #include "Acts/Seeding/BinFinder.hpp"
+#include "Acts/Seeding/IExperimentCuts.hpp"
 #include "Acts/Seeding/SeedFilterConfig.hpp"
 #include "Acts/Seeding/SeedfinderConfig.hpp"
 #include "Acts/Seeding/SpacePointGrid.hpp"
-#include "Acts/Seeding/BinFinder.hpp"
 #include "ActsExamples/EventData/SimSpacePoint.hpp"
 #include "ActsExamples/Framework/BareAlgorithm.hpp"
-#include "Acts/Seeding/IExperimentCuts.hpp"
 
 #include <string>
 #include <vector>
@@ -41,12 +40,12 @@ class SeedingAlgorithm final : public BareAlgorithm {
     Acts::SeedFilterConfig seedFilterConfig;
     Acts::SeedfinderConfig<SimSpacePoint> seedFinderConfig;
     Acts::SpacePointGridConfig gridConfig;
-		
-		Acts::IExperimentCuts<SimSpacePoint>* expCuts = 0;
-    
+
+    Acts::IExperimentCuts<SimSpacePoint>* expCuts = 0;
+
     // vector containing the map of z bins in the top and bottom layers
-		std::vector<std::pair<int, int> > zBinNeighborsTop;
-		std::vector<std::pair<int, int> > zBinNeighborsBottom;
+    std::vector<std::pair<int, int> > zBinNeighborsTop;
+    std::vector<std::pair<int, int> > zBinNeighborsBottom;
   };
 
   /// Construct the seeding algorithm.

@@ -8,9 +8,9 @@
 
 #include "Acts/Utilities/detail/Axis.hpp"
 
+#include <iomanip>  /// for set precision
 #include <iostream>
 #include <memory>
-#include <iomanip> /// for set precision
 
 template <typename SpacePoint>
 std::unique_ptr<Acts::SpacePointGrid<SpacePoint>>
@@ -24,8 +24,8 @@ Acts::SpacePointGridCreator::createGrid(
   if (config.bFieldInZ == 0) {
     phiBins = 100;
   } else {
-//    config.rMax = 1000;
-//    config.deltaRMax = 600;
+    //    config.rMax = 1000;
+    //    config.deltaRMax = 600;
 
     // calculate circle intersections of helix and max detector radius
     float minHelixRadius =
@@ -61,7 +61,8 @@ Acts::SpacePointGridCreator::createGrid(
     // number of consecutive phi bins in the seed making step. So each
     // individual bin should cover 1/config.numPhiNeighbors of the maximum
     // expected azimutal deflection
-    float deltaPhi = (outerAngle - innerAngle + deltaAngleWithMaxD0) / config.phiBinDeflectionCoverage;
+    float deltaPhi = (outerAngle - innerAngle + deltaAngleWithMaxD0) /
+                     config.phiBinDeflectionCoverage;
     // divide 2pi by angle delta to get number of phi-bins
     // size is always 2pi even for regions of interest
     phiBins = std::ceil(2 * M_PI / deltaPhi);
@@ -80,9 +81,9 @@ Acts::SpacePointGridCreator::createGrid(
 
   Acts::detail::Axis<detail::AxisType::Equidistant,
                      detail::AxisBoundaryType::Closed>
-      phiAxis(
-          0, 2*M_PI,
-          phiBins);  // ********************* mudar (-MPI, MPI) para (0, 2MPI) faz diferença??
+      phiAxis(0, 2 * M_PI,
+              phiBins);  // ********************* mudar (-MPI, MPI) para (0,
+                         // 2MPI) faz diferença??
 
   std::cout << "Phi axis (-" << M_PI << "," << M_PI
             << ") number of bins: " << phiBins << std::endl;

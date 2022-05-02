@@ -48,7 +48,8 @@ class SeedFilter {
       std::vector<float>& invHelixDiameterVec,
       std::vector<float>& impactParametersVec, std::vector<float>& cotThetaVec,
       float zOrigin, int& nOneSeedsQ, int& nOneSeeds,
-      std::vector<std::pair<float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>&
+      std::vector<std::pair<
+          float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>&
           outIt) const;
 
   /// Filter seeds once all seeds for one middle space point have been created
@@ -58,7 +59,8 @@ class SeedFilter {
   virtual void filterSeeds_1SpFixed(
       std::vector<std::pair<
           float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>&
-          seedsPerSpM, int& nOneSeedsQ,
+          seedsPerSpM,
+      int& nOneSeedsQ,
       std::back_insert_iterator<std::vector<Seed<external_spacepoint_t>>> outIt)
       const;
   const SeedFilterConfig getSeedFilterConfig() const { return m_cfg; }

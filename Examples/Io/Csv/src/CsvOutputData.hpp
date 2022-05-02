@@ -199,7 +199,7 @@ struct LayerVolumeData {
                  max_v0, min_v1, max_v1, min_v2, max_v2);
 };
 
-//struct SpacePointData {
+// struct SpacePointData {
 //  /// Event-unique measurement identifier. Each value can appear at most once.
 //  uint64_t measurement_id;
 //  /// Space point information
@@ -211,31 +211,35 @@ struct LayerVolumeData {
 //};
 
 struct SpacePointData {
-	/// Event-unique measurement identifier. Each value can appear at most once.
-	uint64_t measurement_id;
-	/// Space point information
-	float sp_x, sp_y, sp_z, sp_radius;
-	float sp_covr, sp_covz;
-	
-	// half of the length of the top strip
-	float sp_topHalfStripLength;
-	// half of the length of the bottom strip
-	float sp_bottomHalfStripLength;
-	// direction of the top strip
-	Acts::Vector3 sp_topStripDirection;
-	// direction of the bottom strip
-	Acts::Vector3 sp_bottomStripDirection;
-	// distance between the center of the two strips
-	Acts::Vector3 sp_stripCenterDistance;
-	// position of the center of the bottom strip
-	Acts::Vector3 sp_bottomStripCenterPosition;
-	
-	DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_x, sp_y, sp_z, sp_radius,
-								 sp_covr, sp_covz, sp_topHalfStripLength, sp_bottomHalfStripLength,
-								 sp_topStripDirection[0], sp_topStripDirection[1], sp_topStripDirection[2],
-								 sp_bottomStripDirection[0], sp_bottomStripDirection[1], sp_bottomStripDirection[2],
-								 sp_stripCenterDistance[0], sp_stripCenterDistance[1], sp_stripCenterDistance[2],
-								 sp_bottomStripCenterPosition[0], sp_bottomStripCenterPosition[1], sp_bottomStripCenterPosition[2]);
+  /// Event-unique measurement identifier. Each value can appear at most once.
+  uint64_t measurement_id;
+  /// Space point information
+  float sp_x, sp_y, sp_z, sp_radius;
+  float sp_covr, sp_covz;
+
+  // half of the length of the top strip
+  float sp_topHalfStripLength;
+  // half of the length of the bottom strip
+  float sp_bottomHalfStripLength;
+  // direction of the top strip
+  Acts::Vector3 sp_topStripDirection;
+  // direction of the bottom strip
+  Acts::Vector3 sp_bottomStripDirection;
+  // distance between the center of the two strips
+  Acts::Vector3 sp_stripCenterDistance;
+  // position of the center of the bottom strip
+  Acts::Vector3 sp_bottomStripCenterPosition;
+
+  DFE_NAMEDTUPLE(SpacePointData, measurement_id, sp_x, sp_y, sp_z, sp_radius,
+                 sp_covr, sp_covz, sp_topHalfStripLength,
+                 sp_bottomHalfStripLength, sp_topStripDirection[0],
+                 sp_topStripDirection[1], sp_topStripDirection[2],
+                 sp_bottomStripDirection[0], sp_bottomStripDirection[1],
+                 sp_bottomStripDirection[2], sp_stripCenterDistance[0],
+                 sp_stripCenterDistance[1], sp_stripCenterDistance[2],
+                 sp_bottomStripCenterPosition[0],
+                 sp_bottomStripCenterPosition[1],
+                 sp_bottomStripCenterPosition[2]);
 };
 
 struct SurfaceGridData {
