@@ -160,9 +160,7 @@ void addOutput(Context& ctx) {
     ACTS_PYTHON_STRUCT_END();
   }
 
-  {
-
-  }
+  {}
 
   {
     using Writer = ActsExamples::TrackFitterPerformanceWriter;

@@ -23,7 +23,7 @@ struct SeedConfirmationRange {
   float rMaxSeedConf;
   size_t nTopForLargeR;
   size_t nTopForSmallR;
-
+	
   SeedConfirmationRange(float zMin = std::numeric_limits<float>::min(),
                         float zMax = std::numeric_limits<float>::max(),
                         float rMax = std::numeric_limits<float>::max(),
@@ -98,7 +98,7 @@ struct SeedfinderConfig {
 
   // sort the SP in transformCoordinates method based on cotTheta
   bool cotThetaSorting = false;
-	// enables compatibility cuts based on the sorting of cotTheta
+  // enables compatibility cuts based on the sorting of cotTheta
   bool enableCutsForSortedSP = true;
 
   //=======

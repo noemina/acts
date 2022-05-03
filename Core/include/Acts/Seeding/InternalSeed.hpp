@@ -23,16 +23,17 @@ class InternalSeed {
  public:
   InternalSeed(const InternalSpacePoint<SpacePoint>& s0,
                const InternalSpacePoint<SpacePoint>& s1,
-               const InternalSpacePoint<SpacePoint>& s2, float z, bool qualitySeed);
+               const InternalSpacePoint<SpacePoint>& s2, float z,
+               bool qualitySeed);
   InternalSeed& operator=(const InternalSeed& seed);
 
   const std::array<const InternalSpacePoint<SpacePoint>*, 3> sp;
   float z() const { return m_z; }
-	float qualitySeed() const { return m_qualitySeed; }
+  float qualitySeed() const { return m_qualitySeed; }
 
  protected:
   float m_z;
-	float m_qualitySeed;
+  float m_qualitySeed;
 };
 
 /// @cond
@@ -46,7 +47,7 @@ inline InternalSeed<SpacePoint>& InternalSeed<SpacePoint>::operator=(
     const InternalSeed<SpacePoint>& seed) {
   m_z = seed.m_z;
   sp = seed.sp;
-	m_qualitySeed = seed.m_qualitySeed;
+  m_qualitySeed = seed.m_qualitySeed;
   return (*this);
 }
 
@@ -57,7 +58,7 @@ inline InternalSeed<SpacePoint>::InternalSeed(
     const InternalSpacePoint<SpacePoint>& s2, float z, bool qualitySeed)
     : sp({&s0, &s1, &s2}) {
   m_z = z;
-	m_qualitySeed = qualitySeed;
+  m_qualitySeed = qualitySeed;
 }
 
 // template <typename SpacePoint>

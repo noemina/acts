@@ -154,7 +154,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       }
       // ratio Z/R (forward angle) of space point duplet
       float deltaZ = topSP->z() - zM;
-      float cotTheta = deltaZ / deltaR;
+			float iDeltaR = 1 / deltaR;
+      float cotTheta = deltaZ * iDeltaR;
       //			topSP->setCotTheta(cotTheta);
       if (m_config.cotThetaMaxCut) {
         if (std::fabs(cotTheta) > m_config.cotThetaMax) {
@@ -187,10 +188,11 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       // transformation we also perform a rotation in order to keep the
       // curvature of the circle tangent to the x axis
       if (m_config.interactionPointCut) {
-        float xVal = (topSP->x() - spM->x()) * (spM->x() / rM) +
-                     (topSP->y() - spM->y()) * (spM->y() / rM);
-        float yVal = (topSP->y() - spM->y()) * (spM->x() / rM) -
-                     (topSP->x() - spM->x()) * (spM->y() / rM);
+				float irM = 1 / rM;
+        float xVal = (topSP->x() - spM->x()) * spM->x() * irM +
+                     (topSP->y() - spM->y()) * spM->y() * irM;
+        float yVal = (topSP->y() - spM->y()) * spM->x() * irM -
+                     (topSP->x() - spM->x()) * spM->y() * irM;
         std::cout << std::abs(rM) << " * " << std::abs(yVal) << " > "
                   << -m_config.impactMax << " * " << xVal << std::endl;
         if (std::abs(rM * yVal) > m_config.impactMax * xVal) {
@@ -264,7 +266,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       }
       // ratio Z/R (forward angle) of space point duplet
       float deltaZ = zM - bottomSP->z();
-      float cotTheta = deltaZ / deltaR;
+			float iDeltaR = 1 / deltaR;
+			float cotTheta = deltaZ * iDeltaR;
       std::cout << "|Seeds| cotTheta: " << cotTheta
                 << " cotThetaMax: " << m_config.cotThetaMax << std::endl;
       //			bottomSP->setCotTheta(cotTheta);
@@ -304,10 +307,11 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       // transformation we also perform a rotation in order to keep the
       // curvature of the circle tangent to the x axis
       if (m_config.interactionPointCut) {
-        float xVal = (bottomSP->x() - spM->x()) * (spM->x() / rM) +
-                     (bottomSP->y() - spM->y()) * (spM->y() / rM);
-        float yVal = (bottomSP->y() - spM->y()) * (spM->x() / rM) -
-                     (bottomSP->x() - spM->x()) * (spM->y() / rM);
+				float irM = 1 / rM;
+        float xVal = (bottomSP->x() - spM->x()) * spM->x() * irM +
+                     (bottomSP->y() - spM->y()) * spM->y() * irM;
+        float yVal = (bottomSP->y() - spM->y()) * spM->x() * irM -
+                     (bottomSP->x() - spM->x()) * spM->y() * irM;
         // std::cout << std::abs(rM) << " * " << std::abs(yVal) << " > " <<
         // -m_config.impactMax << " * " << xVal << std::endl;
         if (std::abs(rM * yVal) > -m_config.impactMax * xVal) {

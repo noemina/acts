@@ -53,6 +53,12 @@ struct SeedFilterConfig {
   float seedConfMaxZOrigin = 150. * Acts::UnitConstants::mm;
   // minimum impact parameter for seed confirmation
   float minImpactSeedConf = 1. * Acts::UnitConstants::mm;
+	
+	// maximum number of lower quality seeds in seed confirmation
+	float maxSeedsPerSpMConf = 5;
+	// maximum number of quality seeds in seed confirmation
+	float maxQualitySeedsPerSpMConf = 5;
+
 
   // delete
   std::string inputCollectionTest = "pixel";

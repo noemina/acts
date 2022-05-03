@@ -20,13 +20,13 @@
 namespace Acts {
 
 struct DoubleMeasurementDetails {
-	float topHalfStripLength;
-	float bottomHalfStripLength;
-	Acts::Vector3 topStripDirection;
-	Acts::Vector3 bottomStripDirection;
-	Acts::Vector3 stripCenterDistance;
-	Acts::Vector3 bottomStripCenterPosition;
-	bool validDoubleMeasurementDetails = false;
+  float topHalfStripLength;
+  float bottomHalfStripLength;
+  Acts::Vector3 topStripDirection;
+  Acts::Vector3 bottomStripDirection;
+  Acts::Vector3 stripCenterDistance;
+  Acts::Vector3 bottomStripCenterPosition;
+  bool validDoubleMeasurementDetails = false;
 };
 
 template <typename SpacePoint>
@@ -127,14 +127,16 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_varianceR = variance.x();
   m_varianceZ = variance.y();
   m_quality = -100000.;
-	
-	m_doubleMeasurement.topHalfStripLength = sp.topHalfStripLength();
-	m_doubleMeasurement.bottomHalfStripLength = sp.bottomHalfStripLength();
-	m_doubleMeasurement.topStripDirection = sp.topStripDirection();
-	m_doubleMeasurement.bottomStripDirection = sp.bottomStripDirection();
-	m_doubleMeasurement.stripCenterDistance = sp.stripCenterDistance();
-	m_doubleMeasurement.bottomStripCenterPosition = sp.bottomStripCenterPosition();
-	m_doubleMeasurement.validDoubleMeasurementDetails = sp.validDoubleMeasurementDetails();
+
+  m_doubleMeasurement.topHalfStripLength = sp.topHalfStripLength();
+  m_doubleMeasurement.bottomHalfStripLength = sp.bottomHalfStripLength();
+  m_doubleMeasurement.topStripDirection = sp.topStripDirection();
+  m_doubleMeasurement.bottomStripDirection = sp.bottomStripDirection();
+  m_doubleMeasurement.stripCenterDistance = sp.stripCenterDistance();
+  m_doubleMeasurement.bottomStripCenterPosition =
+      sp.bottomStripCenterPosition();
+  m_doubleMeasurement.validDoubleMeasurementDetails =
+      sp.validDoubleMeasurementDetails();
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -155,13 +157,15 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
   m_deltaR = sp.deltaR;
   m_quality = sp.m_quality;
 
-	m_doubleMeasurement.topHalfStripLength = sp.topHalfStripLength();
-	m_doubleMeasurement.bottomHalfStripLength = sp.bottomHalfStripLength();
-	m_doubleMeasurement.topStripDirection = sp.topStripDirection();
-	m_doubleMeasurement.bottomStripDirection = sp.bottomStripDirection();
-	m_doubleMeasurement.stripCenterDistance = sp.stripCenterDistance();
-	m_doubleMeasurement.bottomStripCenterPosition = sp.bottomStripCenterPosition();
-	m_doubleMeasurement.validDoubleMeasurementDetails = sp.validDoubleMeasurementDetails();
+  m_doubleMeasurement.topHalfStripLength = sp.topHalfStripLength();
+  m_doubleMeasurement.bottomHalfStripLength = sp.bottomHalfStripLength();
+  m_doubleMeasurement.topStripDirection = sp.topStripDirection();
+  m_doubleMeasurement.bottomStripDirection = sp.bottomStripDirection();
+  m_doubleMeasurement.stripCenterDistance = sp.stripCenterDistance();
+  m_doubleMeasurement.bottomStripCenterPosition =
+      sp.bottomStripCenterPosition();
+  m_doubleMeasurement.validDoubleMeasurementDetails =
+      sp.validDoubleMeasurementDetails();
 }
 
 }  // end of namespace Acts

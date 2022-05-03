@@ -21,8 +21,9 @@ LinCircle transformCoordinates(
   float rM = spM.radius();
   float varianceZM = spM.varianceZ();
   float varianceRM = spM.varianceR();
-  float cosPhiM = xM / rM;
-  float sinPhiM = yM / rM;
+	float irM = 1 / rM;    // **** this makes any difference ???
+  float cosPhiM = xM * irM;
+  float sinPhiM = yM * irM;
   float deltaX = sp.x() - xM;
   float deltaY = sp.y() - yM;
   float deltaZ = sp.z() - zM;

@@ -29,40 +29,40 @@ namespace ActsExamples {
 
 /// Algorithm that turns simulated hits into measurements by truth smearing.
 class SmearingAlgorithm final : public BareAlgorithm {
-public:
-	/// Construct the smearing algorithm.
-	///
-	/// @param cfg is the algorithm configuration
-	/// @param lvl is the logging level
-	SmearingAlgorithm(DigitizationConfig cfg, Acts::Logging::Level lvl);
-	
-	/// Build measurement from simulation hits at input.
-	///
-	/// @param ctx is the algorithm context with event information
-	/// @return a process code indication success or failure
-	ProcessCode execute(const AlgorithmContext& ctx) const final override;
-	
-private:
-	// support up to 4d measurements
-	using Smearer =
-	std::variant<ActsFatras::BoundParametersSmearer<RandomEngine, 1u>,
-	ActsFatras::BoundParametersSmearer<RandomEngine, 2u>,
-	ActsFatras::BoundParametersSmearer<RandomEngine, 3u>,
-	ActsFatras::BoundParametersSmearer<RandomEngine, 4u>>;
-	
-	DigitizationConfig m_cfg;
-	Acts::GeometryHierarchyMap<Smearer> m_smearers;
-	
-	/// Construct a fixed-size smearer from a configuration.
-	template <size_t kSize>
-	static Smearer makeSmearer(const SmearingConfig& cfg) {
-		ActsFatras::BoundParametersSmearer<RandomEngine, kSize> impl;
-		for (size_t i = 0; i < kSize; ++i) {
-			impl.indices[i] = cfg.at(i).index;
-			impl.smearFunctions[i] = cfg.at(i).smearFunction;
-		}
-		return impl;
-	}
+ public:
+  /// Construct the smearing algorithm.
+  ///
+  /// @param cfg is the algorithm configuration
+  /// @param lvl is the logging level
+  SmearingAlgorithm(DigitizationConfig cfg, Acts::Logging::Level lvl);
+
+  /// Build measurement from simulation hits at input.
+  ///
+  /// @param ctx is the algorithm context with event information
+  /// @return a process code indication success or failure
+  ProcessCode execute(const AlgorithmContext& ctx) const final override;
+
+ private:
+  // support up to 4d measurements
+  using Smearer =
+      std::variant<ActsFatras::BoundParametersSmearer<RandomEngine, 1u>,
+                   ActsFatras::BoundParametersSmearer<RandomEngine, 2u>,
+                   ActsFatras::BoundParametersSmearer<RandomEngine, 3u>,
+                   ActsFatras::BoundParametersSmearer<RandomEngine, 4u>>;
+
+  DigitizationConfig m_cfg;
+  Acts::GeometryHierarchyMap<Smearer> m_smearers;
+
+  /// Construct a fixed-size smearer from a configuration.
+  template <size_t kSize>
+  static Smearer makeSmearer(const SmearingConfig& cfg) {
+    ActsFatras::BoundParametersSmearer<RandomEngine, kSize> impl;
+    for (size_t i = 0; i < kSize; ++i) {
+      impl.indices[i] = cfg.at(i).index;
+      impl.smearFunctions[i] = cfg.at(i).smearFunction;
+    }
+    return impl;
+  }
 };
 
 }  // namespace ActsExamples

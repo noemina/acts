@@ -94,18 +94,18 @@ ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
 
 // ActsExamples::DigitizationConfig setupDigitization(
 //																									 const
-//ActsExamples::Options::Variables& vars, 																									 ActsExamples::Sequencer& sequencer,
-//																									 std::shared_ptr<const
-//ActsExamples::RandomNumbers> rnd, 																									 std::shared_ptr<const
-//Acts::TrackingGeometry> trackingGeometry, 																									 const std::string& inputSimHits) {
-//	using namespace ActsExamples;
+// ActsExamples::Options::Variables& vars,
+// ActsExamples::Sequencer& sequencer, 																									 std::shared_ptr<const
+// ActsExamples::RandomNumbers> rnd,
+// std::shared_ptr<const Acts::TrackingGeometry> trackingGeometry,
+// const std::string& inputSimHits) { 	using namespace ActsExamples;
 //
 //	// Read some standard options
 //	auto logLevel = Options::readLogLevel(vars);
 //
 //	auto digiCfg = ActsExamples::DigitizationConfig(
 //																									vars,
-//ActsExamples::readDigiConfigFromJson(
+// ActsExamples::readDigiConfigFromJson(
 //																																														 vars["digi-config-file"].as<std::string>()));
 //	// Common options for digitization
 //	digiCfg.inputSimHits = inputSimHits;
@@ -113,7 +113,7 @@ ActsExamples::CsvSpacePointReader::Config setupSpacePointReading(
 //	digiCfg.trackingGeometry = trackingGeometry;
 //	sequencer.addAlgorithm(
 //												 ActsExamples::createDigitizationAlgorithm(digiCfg,
-//logLevel));
+// logLevel));
 //
 //	if (not vars["dump-digi-config"].as<std::string>().empty()) {
 //		writeDigiConfigToJson(digiCfg.digitizationConfigs,
