@@ -89,8 +89,8 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
   // space points with delta r < rbin size can be out of order
   for (auto& rbin : rBins) {
     for (auto& isp : rbin) {
-      //      			std::cout << "|a|" << isp->radius() <<
-      //       std::endl;
+
+			std::cout << "|a|" << isp->radius() << std::endl;
 
       Acts::Vector2 spLocation(isp->phi(), isp->z());
       std::vector<
