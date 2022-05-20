@@ -63,7 +63,20 @@ class SeedFilter {
       int& nOneSeedsQ,
       std::back_insert_iterator<std::vector<Seed<external_spacepoint_t>>> outIt)
       const;
-  const SeedFilterConfig getSeedFilterConfig() const { return m_cfg; }
+  
+	virtual void checkReplaceSeeds(
+				const InternalSpacePoint<external_spacepoint_t>& bottomSP,
+				const InternalSpacePoint<external_spacepoint_t>& middleSP,
+				const InternalSpacePoint<external_spacepoint_t>& topSp,
+				float zOrigin,
+				bool isQualitySeed,
+				float weight,
+				std::vector<std::pair<
+				float, std::unique_ptr<const InternalSeed<external_spacepoint_t>>>>& outIt)
+	const;
+
+	
+	const SeedFilterConfig getSeedFilterConfig() const { return m_cfg; }
   const IExperimentCuts<external_spacepoint_t>* getExperimentCuts() const {
     return m_experimentCuts;
   }

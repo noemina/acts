@@ -58,7 +58,12 @@ struct SeedFilterConfig {
 	float maxSeedsPerSpMConf = 5;
 	// maximum number of quality seeds in seed confirmation
 	float maxQualitySeedsPerSpMConf = 5;
+	
+//	float numSeedIncrement = 2;
+//	float seedWeightIncrement = 10000;
 
+	float numSeedIncrement = 1000000000;
+	float seedWeightIncrement = 0;
 
   // delete
   std::string inputCollectionTest = "pixel";

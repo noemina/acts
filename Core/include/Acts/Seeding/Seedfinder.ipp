@@ -406,19 +406,20 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     for (size_t b = 0; b < numBotSP; b++) {
       auto lb = state.linCircleBottom[b];
       float Zob = lb.Zo;
-      float cotThetaB = lb.cotTheta;
+//      float cotThetaB = lb.cotTheta;
+			float cotThetaBB = lb.cotTheta;
       float Vb = lb.V;
       float Ub = lb.U;
       float ErB = lb.Er;
       float iDeltaRB = lb.iDeltaR;
 
       std::cout << " iSinTheta^-1 "
-                << 1 / std::sqrt((1. + cotThetaB * cotThetaB)) << " iSinTheta2 "
-                << (1. + cotThetaB * cotThetaB) << " cotThetaB " << cotThetaB
+                << 1 / std::sqrt((1. + cotThetaBB * cotThetaBB)) << " iSinTheta2 "
+                << (1. + cotThetaBB * cotThetaBB) << " cotThetaB " << cotThetaBB
                 << std::endl;
 
       // 1+(cot^2(theta)) = 1/sin^2(theta)
-      float iSinTheta2 = (1. + cotThetaB * cotThetaB);
+      float iSinTheta2 = (1. + cotThetaBB * cotThetaBB);
       // calculate max scattering for min momentum at the seed's theta angle
       // scaling scatteringAngle^2 by sin^2(theta) to convert pT^2 to p^2
       // accurate would be taking 1/atan(thetaBottom)-1/atan(thetaTop) <
@@ -437,25 +438,26 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       state.topSpVec.clear();
       state.curvatures.clear();
       state.impactParameters.clear();
+			
+
 
       float iSinTheta = std::sqrt(iSinTheta2);
-      float iSinTheta_test =
-          1 / std::sqrt(iSinTheta2);  // problema com divisão??
-      float cosTheta = cotThetaB * iSinTheta_test;
-      float Ce = cotThetaB * iSinTheta_test;
+      float sinTheta = 1 / std::sqrt(iSinTheta2);  // problema com divisão??
+      float cosTheta = cotThetaBB * sinTheta;
+      float Ce = cotThetaBB * sinTheta;
 
-      std::cout << "Ce = cotThetaB * iSinTheta^-1 " << Ce << " " << cotThetaB
+      std::cout << "Ce = cotThetaB * iSinTheta^-1 " << Ce << " " << cotThetaBB
                 << " " << 1 / iSinTheta << std::endl;
 
-      float Sx = spM->x() * iSinTheta_test / (spM->radius());
-      float Sy = spM->y() * iSinTheta_test / (spM->radius());
+      float Sx = spM->x() * sinTheta / (spM->radius());
+      float Sy = spM->y() * sinTheta / (spM->radius());
 
       //			state.topDeltaR.clear();
       for (size_t t = t0; t < numTopSP; t++) {
         auto lt = state.linCircleTop[t];
 
         float cotThetaT = lt.cotTheta;
-        float iDeltaRT = lt.iDeltaR;
+//        float iDeltaRT = lt.iDeltaR;
 
         std::cout << std::endl;
         std::cout << "--> rM: " << rM
@@ -478,7 +480,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         float rMCoord;
         float ub;
         float vb;
-        float cotThetaBB;
+
         float ut;
         float vt;
 
@@ -511,23 +513,22 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           //iSinTheta;
           //          float Sx = spM->x() / (iSinTheta * spM->radius());
           //          float Sy = spM->y() / (iSinTheta * spM->radius());
-          float Cn = cosTheta * std::sqrt(1 + A0 * A0);
+          float Cn = cosTheta * std::sqrt(1. + A0 * A0);
           double dn[3] = {Sx - Sy * A0, Sx * A0 + Sy, Cn};
-          ;
 
           double rTestM[3];
           if (!coordinates(dn, rTestM, spM))
             continue;
 
           std::cout << " iSinTheta^-1 " << 1 / iSinTheta << " iSinTheta2 "
-                    << iSinTheta2 << " cotThetaB " << cotThetaB << " cosTheta "
+                    << iSinTheta2 << " cotThetaBB " << cotThetaBB << " cosTheta "
                     << cosTheta << " A0 " << A0 << std::endl;
           std::cout << lb.x << " " << lb.y << " " << lb.iDeltaR << std::endl;
           std::cout << lt.x << " " << lt.y << " " << lt.iDeltaR << std::endl;
           std::cout << Ce << " " << Sx << " " << Sy << " " << Cn << " " << A0
                     << " " << lt.U << " " << Ub << " " << lt.V << " " << Vb
                     << std::endl;
-          std::cout << rTestM[0] << " " << rTestM[1] << " " << rTestM[2]
+          std::cout << "rTest: " << rTestM[0] << " " << rTestM[1] << " " << rTestM[2]
                     << std::endl;
 
           // bottom
@@ -542,7 +543,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             continue;
 
           std::cout << B0 << " " << Cb << " " << Sb << std::endl;
-          std::cout << rTestB[0] << " " << rTestB[1] << " " << rTestB[2]
+          std::cout << "rTest: " << rTestB[0] << " " << rTestB[1] << " " << rTestB[2]
                     << std::endl;
 
           // top
@@ -556,7 +557,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             continue;
 
           std::cout << Ct << " " << St << std::endl;
-          std::cout << rTestT[0] << " " << rTestT[1] << " " << rTestT[2]
+          std::cout << "rTest: " << rTestT[0] << " " << rTestT[1] << " " << rTestT[2]
                     << std::endl;
 
           float xB = rTestB[0] - rTestM[0];
@@ -567,16 +568,16 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           float zT = rTestT[2] - rTestM[2];
 
           float iDeltaRB2 = 1. / (xB * xB + yB * yB);
-          iDeltaRB = std::sqrt(iDeltaRB2);
+//          iDeltaRB = std::sqrt(iDeltaRB2);                 // ***** <======
           //					lb.iDeltaR = iDeltaRB;
 
           float iDeltaRT2 = 1. / (xT * xT + yT * yT);
-          iDeltaRT = std::sqrt(iDeltaRT2);
+//          iDeltaRT = std::sqrt(iDeltaRT2);
           //					lt.iDeltaR =
           // std::sqrt(iDeltaRT2);
 
-          cotThetaBB = -zB * iDeltaRB;
-          cotThetaT = zT * iDeltaRT;
+          cotThetaBB = -zB * std::sqrt(iDeltaRB2);
+          cotThetaT = zT * std::sqrt(iDeltaRT2);
           //					lb.cotTheta = cotThetaB;
           //					lt.cotTheta = zT * lt.iDeltaR;
           std::cout << xB << " " << yB << " " << zB << " " << xT << " " << yT
@@ -589,19 +590,19 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
           ub = (xB * Ax + yB * Ay) * iDeltaRB2;
           vb = (yB * Ax - xB * Ay) * iDeltaRB2;
-          //					lb.U = Ub;
-          //					lb.V = Vb;
           ut = (xT * Ax + yT * Ay) * iDeltaRT2;
           vt = (yT * Ax - xT * Ay) * iDeltaRT2;
 
           std::cout << rM << " " << Ax << " " << Ay << std::endl;
 
         } else {
-          cotThetaBB = cotThetaB;
+//          cotThetaBB = cotThetaB;
         }
 
         float cotTheta2;
+				float cotTheta;
         if (m_config.arithmeticAverageCotTheta) {
+					cotTheta = (cotThetaBB + cotThetaT) / 2;
           cotTheta2 = std::pow((cotThetaBB + cotThetaT) / 2, 2);
         } else {
           cotTheta2 = cotThetaBB * cotThetaT;
@@ -699,21 +700,21 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           B2 = B * B;
         }
 
-        std::cout << "test IM: A " << A << " lt.V " << lt.V << " Vb " << Vb
-                  << " lt.U " << lt.U << " Ub " << Ub << " B " << B;
-        //        std::cout << "test IM: A " << A << " lt.V " << vt << " Vb " <<
-        //        vb
-        //                  << " lt.U " << ut << " Ub " << ub << " B " << B
-        //                  << std::endl;
+//        std::cout << "test IM: A " << A << " lt.V " << lt.V << " Vb " << Vb
+//                  << " lt.U " << lt.U << " Ub " << Ub << " B " << B;
+                std::cout << "test IM: A " << A << " lt.V " << vt << " Vb " <<
+                vb
+                          << " lt.U " << ut << " Ub " << ub << " B " << B
+                          << std::endl;
 
         // sqrt(S2)/B = 2 * helixradius
         // calculated radius must not be smaller than minimum radius
         std::cout << "|Seeds| S2: " << S2 << " B2: " << B2
-                  << " minHelixDiameter2: " << m_config.minHelixDiameter2
+                  << " minHelixDiameter2: " << m_config.minHelixDiameter2 << " dT " << (deltaCotTheta2 - error2)
                   << std::endl;
         std::cout << "|Seeds| Vb - A * Ub: " << Vb << " - " << A << " * " << Ub
                   << std::endl;
-        std::cout << "|Seeds| dT*S2" << (deltaCotTheta2 - error2) * S2
+        std::cout << "|Seeds| dT * S2 " << (deltaCotTheta2 - error2) * S2
                   << " CSA: "
                   << iSinTheta2 * 134 * .05 * 9 * 2 * 2 /
                          (m_config.pTPerHelixRadius * m_config.pTPerHelixRadius)
@@ -749,6 +750,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         // if deltaTheta larger than allowed scattering for calculated pT, skip
         if (m_config.cotThetaSorting) {
           if (deltaCotTheta2 - error2 > p2scatterSigma) {
+						std::cout << " deltaCotTheta2, error2, p2scatterSigma: " << deltaCotTheta2 << " " << error2 << " " << p2scatterSigma << std::endl;
             if (m_config.enableCutsForSortedSP) {
               if (cotThetaBB - cotThetaT < 0) {
                 std::cout
@@ -778,11 +780,11 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         if (spM->validDoubleMeasurementDetails() == true) {
           Im = std::abs((A - B * rMCoord) * rMCoord);
         }
-        std::cout << "|test ImpactPar|" << A << " " << B << " " << rM << " "
-                  << Im << std::endl;
-        //				std::cout << "|test ImpactPar|" << A << " " <<
-        //B << " " << rMCoord << " "
-        //                  << Im << std::endl;
+//        std::cout << "|test ImpactPar|" << A << " " << B << " " << rM << " "
+//                  << Im << std::endl;
+        				std::cout << "|test ImpactPar|" << A << " " <<
+        B << " " << rMCoord << " "
+                          << Im << std::endl;
 
         if (Im <= m_config.impactMax) {
           nSeeds += 1;
@@ -811,8 +813,6 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             B2 = 1e-8;
             pT = m_config.pTPerHelixRadius * std::sqrt(S2 / B2) / 2.;
           }
-          if (cotTheta2 < 1e-8)
-            cotTheta2 = 1e-8;
 
           std::cout << "|test cotTheta2 geometric| " << cotThetaBB << " "
                     << cotThetaT << std::endl;
@@ -835,13 +835,17 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
                                         (cotThetaBB + cotThetaT) / 2, 2)))))
               << std::endl;
 
-          cotTheta2 = std::sqrt(cotTheta2);
-          if (state.compatTopSP[t]->z() < 0) {
-            cotTheta2 = -cotTheta2;
-          }
+//          cotTheta = std::sqrt(cotTheta2);
+          
+					if (std::abs(cotTheta) < 1e-8)
+						cotTheta = 1e-8;
 
+					if (state.compatTopSP[t]->z() < 0) {
+							cotTheta = -cotTheta;
+					}
+					
           // evaluate eta and pT of the seed
-          float theta = std::atan(1. / cotTheta2);
+          float theta = std::atan(1. / cotTheta);
 
           float eta = -std::log(std::tan(0.5 * theta));
           state.etaVec.push_back(eta);
@@ -909,7 +913,7 @@ bool coordinates(const double* d, double* rTest, sp_range_t sp) {
   // return bool that says if SP is conpatible with being inside the detector
   // element
 
-  std::cout << "|check strip coord| " << std::endl;
+  std::cout << "|check strip coord| " << sp->topHalfStripLength() << std::endl;
   std::cout << "|check strip coord| " << sp->topStripDirection()[0] << " "
             << sp->topStripDirection()[1] << " " << sp->topStripDirection()[2]
             << std::endl;
@@ -924,13 +928,49 @@ bool coordinates(const double* d, double* rTest, sp_range_t sp) {
             << sp->bottomStripCenterPosition()[2] << std::endl;
   std::cout << "|check strip coord| " << d[0] << " " << d[1] << " " << d[2]
             << std::endl;
-
-  // m_b0 = topHalfStripLength * topStripDirection
-  // m_b1 = bottomHalfStripLength * bottomStripDirection
+//5.514911175
+	// m_b1 = bottomHalfStripLength * bottomStripDirection
+	// m_b0 = topHalfStripLength * topStripDirection
   // m_r0 = bottomStripCenterPosition
   // m_dr = stripCenterDistance
+	
+	// cross product between top strip vector and spacepointPosition
+	double d1[3] = {
+		(sp->topHalfStripLength() * sp->topStripDirection()[1]) * d[2] -
+		(sp->topHalfStripLength() * sp->topStripDirection()[2]) * d[1],
+		(sp->topHalfStripLength() * sp->topStripDirection()[2]) * d[0] -
+		(sp->topHalfStripLength() * sp->topStripDirection()[0]) * d[2],
+		(sp->topHalfStripLength() * sp->topStripDirection()[0]) * d[1] -
+		(sp->topHalfStripLength() * sp->topStripDirection()[1]) * d[0]};
 
-  // cross product between bottom strip vector and spacepointPosition
+	std::cout << "|check strip coord| " << (sp->topHalfStripLength() * sp->topStripDirection()[0]) << " " << (sp->topHalfStripLength() * sp->topStripDirection()[1]) << " " << (sp->topHalfStripLength() * sp->topStripDirection()[2]) << std::endl;
+
+	std::cout << "|check strip coord d1: | " << d[0] << " " << d[1] << " " << d[2] << std::endl;
+	
+	std::cout << "|check strip coord d1: | " << d1[0] << " " << d1[1] << " " << d1[2] << std::endl;
+	
+	// scalar product between bottom strip vector and d1
+	double bd1 =
+	(sp->bottomHalfStripLength() * sp->bottomStripDirection()[0]) * d1[0] +
+	(sp->bottomHalfStripLength() * sp->bottomStripDirection()[1]) * d1[1] +
+	(sp->bottomHalfStripLength() * sp->bottomStripDirection()[2]) * d1[2];
+	// if vectors are perpendicular, spacepointPosition is not compatible with
+	// strip directions
+	//  if (bd1 == 0.)
+	//    return false;
+
+	// compatibility check using distance between strips to evaluate
+	// spacepointPosition is inside the bottom detector element
+	double s1 = (sp->stripCenterDistance()[0] * d1[0] +
+							 sp->stripCenterDistance()[1] * d1[1] +
+							 sp->stripCenterDistance()[2] * d1[2]);
+	if (std::abs(s1) > std::abs(bd1) * 1.1)  // -> define tolerance parameter
+		return false;
+	
+	std::cout << "|check strip coord s1 bd1: | " << s1 << " " << bd1 << std::endl;
+	
+	
+	// cross product between bottom strip vector and spacepointPosition
   double d0[3] = {
       (sp->bottomHalfStripLength() * sp->bottomStripDirection()[1]) * d[2] -
           (sp->bottomHalfStripLength() * sp->bottomStripDirection()[2]) * d[1],
@@ -938,6 +978,8 @@ bool coordinates(const double* d, double* rTest, sp_range_t sp) {
           (sp->bottomHalfStripLength() * sp->bottomStripDirection()[0]) * d[2],
       (sp->bottomHalfStripLength() * sp->bottomStripDirection()[0]) * d[1] -
           (sp->bottomHalfStripLength() * sp->bottomStripDirection()[1]) * d[0]};
+	
+	std::cout << "|check strip coord d0: | " << d0[0] << " " << d0[1] << " " << d0[2] << std::endl;
 
   // scalar product between top strip vector and d0
   double bd0 = (sp->topHalfStripLength() * sp->topStripDirection()[0]) * d0[0] +
@@ -950,43 +992,28 @@ bool coordinates(const double* d, double* rTest, sp_range_t sp) {
 
   // compatibility check using distance between strips to evaluate
   // spacepointPosition is inside the top detector element
-  double s0 = -(sp->stripCenterDistance()[0] * d0[0] +
+  double s0 = (sp->stripCenterDistance()[0] * d0[0] +
                 sp->stripCenterDistance()[1] * d0[1] +
                 sp->stripCenterDistance()[2] * d0[2]);
-  if (std::abs(s0) > std::abs(bd0) * 1.1)
+	
+//	double s0 = (sp->stripCenterDistance()[0] * ((sp->bottomHalfStripLength() * sp->bottomStripDirection()[1]) * d[2] -
+//							 (sp->bottomHalfStripLength() * sp->bottomStripDirection()[2]) * d[1]) +
+//							 sp->stripCenterDistance()[1] * ((sp->bottomHalfStripLength() * sp->bottomStripDirection()[2]) * d[0] -
+//							 (sp->bottomHalfStripLength() * sp->bottomStripDirection()[0]) * d[2]) +
+//							 sp->stripCenterDistance()[2] * ((sp->bottomHalfStripLength() * sp->bottomStripDirection()[0]) * d[1] -
+//							 (sp->bottomHalfStripLength() * sp->bottomStripDirection()[1]) * d[0]));
+	
+  if (std::abs(s0) > std::abs(bd1) * 1.1)
     return false;
+	
+	std::cout << "|check strip coord s0 bd0: | " << s0 << " " << bd1 << std::endl;
 
-  // cross product between top strip vector and spacepointPosition
-  double d1[3] = {
-      (sp->topHalfStripLength() * sp->topStripDirection()[1]) * d[2] -
-          (sp->topHalfStripLength() * sp->topStripDirection()[2]) * d[1],
-      (sp->topHalfStripLength() * sp->topStripDirection()[2]) * d[0] -
-          (sp->topHalfStripLength() * sp->topStripDirection()[0]) * d[2],
-      (sp->topHalfStripLength() * sp->topStripDirection()[0]) * d[1] -
-          (sp->topHalfStripLength() * sp->topStripDirection()[1]) * d[0]};
-
-  // scalar product between bottom strip vector and d1
-  double bd1 =
-      (sp->bottomHalfStripLength() * sp->bottomStripDirection()[0]) * d1[0] +
-      (sp->bottomHalfStripLength() * sp->bottomStripDirection()[1]) * d1[1] +
-      (sp->bottomHalfStripLength() * sp->bottomStripDirection()[2]) * d1[2];
-  // if vectors are perpendicular, spacepointPosition is not compatible with
-  // strip directions
-  //  if (bd1 == 0.)
-  //    return false;
-
-  // compatibility check using distance between strips to evaluate
-  // spacepointPosition is inside the bottom detector element
-  double s1 = (sp->stripCenterDistance()[0] * d1[0] +
-               sp->stripCenterDistance()[1] * d1[1] +
-               sp->stripCenterDistance()[2] * d1[2]);
-  if (std::abs(s1) > std::abs(bd1) * 1.1)  // -> define tolerance parameter
-    return false;
-
-  s0 = s0 / bd0;
+  s0 = s0 / bd1;
   // if arive here spacepointPosition is compatible with strip directions and
   // detector elements
 
+	std::cout << "|check strip coord s0/bd0 | " << s0 << std::endl;
+	
   // spacepointPosition corected with respect to the top strip direction and the
   // distance between the strips
   rTest[0] = sp->bottomStripCenterPosition()[0] +

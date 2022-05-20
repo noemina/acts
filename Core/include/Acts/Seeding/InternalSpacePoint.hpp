@@ -144,28 +144,6 @@ inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
 /////////////////////////////////////////////////////////////////////////////////
 
 template <typename SpacePoint>
-inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(
-    const InternalSpacePoint<SpacePoint>& sp)
-    : m_sp(sp.sp()) {
-  m_x = sp.m_x;
-  m_y = sp.m_y;
-  m_z = sp.m_z;
-  m_r = sp.m_r;
-  m_varianceR = sp.m_varianceR;
-  m_varianceZ = sp.m_varianceZ;
-  m_cotTheta = sp.m_cotTheta;
-  m_deltaR = sp.deltaR;
-  m_quality = sp.m_quality;
-
-  m_doubleMeasurement.topHalfStripLength = sp.topHalfStripLength();
-  m_doubleMeasurement.bottomHalfStripLength = sp.bottomHalfStripLength();
-  m_doubleMeasurement.topStripDirection = sp.topStripDirection();
-  m_doubleMeasurement.bottomStripDirection = sp.bottomStripDirection();
-  m_doubleMeasurement.stripCenterDistance = sp.stripCenterDistance();
-  m_doubleMeasurement.bottomStripCenterPosition =
-      sp.bottomStripCenterPosition();
-  m_doubleMeasurement.validDoubleMeasurementDetails =
-      sp.validDoubleMeasurementDetails();
-}
+inline InternalSpacePoint<SpacePoint>::InternalSpacePoint(const InternalSpacePoint<SpacePoint>& sp) = default;
 
 }  // end of namespace Acts

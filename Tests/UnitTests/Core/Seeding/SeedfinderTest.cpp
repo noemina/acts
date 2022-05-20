@@ -138,12 +138,10 @@ int main(int argc, char** argv) {
   config.beamPos = {-.5_mm, -.5_mm};
   config.impactMax = 10._mm;
 
-  config.numPhiNeighbors = 1;
+  int numPhiNeighbors = 1;
 
   config.useVariableMiddleSPRange = false;
   Acts::Extent rRangeSPExtent;
-
-  int numPhiNeighbors = 1;
 
   std::vector<std::pair<int, int>> zBinNeighborsTop;
   std::vector<std::pair<int, int>> zBinNeighborsBottom;
