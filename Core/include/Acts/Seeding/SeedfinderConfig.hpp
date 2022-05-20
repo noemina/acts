@@ -97,7 +97,7 @@ struct SeedfinderConfig {
   std::string inputCollectionTest = "pixel";
 
   // sort the SP in transformCoordinates method based on cotTheta
-  bool cotThetaSorting = false;
+  bool cotThetaSorting = true;
   // enables compatibility cuts based on the sorting of cotTheta
   bool enableCutsForSortedSP = true;
 
