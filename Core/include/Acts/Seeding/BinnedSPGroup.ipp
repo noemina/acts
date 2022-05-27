@@ -68,6 +68,9 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
       continue;
     }
     rBins[rIndex].push_back(std::move(isp));
+
+    std::cout << "CHECK RINDEX = " << spX << ", " << spY << ", " << spZ << " --> " << rIndex << std::endl;
+
   }
 
   // if requested, it is possible to force sorting in R for each (z, phi) grid
@@ -92,8 +95,9 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
       std::vector<std::unique_ptr<InternalSpacePoint<external_spacepoint_t>>>&
           bin = grid->atPosition(spLocation);
       bin.push_back(std::move(isp));
+      auto localbin = grid->localBinsFromPosition(spLocation);
       float radius = std::sqrt(bin.back()->x()*bin.back()->x() + bin.back()->y()*bin.back()->y());
-      std::cout << "CHECKING SORTING " << bin.back()->x() << ", " << bin.back()->y() << ", " << bin.back()->z() << ", " << radius << std::endl;
+      std::cout << "CHECKING SORTING : " << localbin[0] << " - " << localbin[1] << "--> " << bin.back()->x() << ", " << bin.back()->y() << ", " << bin.back()->z() << ", " << radius << std::endl;
     }
   }
   m_binnedSP = std::move(grid);
