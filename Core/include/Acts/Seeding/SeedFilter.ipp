@@ -296,8 +296,6 @@ void SeedFilter<external_spacepoint_t>::filterSeeds_1SpFixed(
     (*it).second->sp[1]->setQuality(bestSeedQuality);
     (*it).second->sp[2]->setQuality(bestSeedQuality);
 
-    std::cout << "Checking Seed quality = " << bestSeedQuality << std::endl;
-
     outIt = Seed<external_spacepoint_t>{
         (*it).second->sp[0]->sp(), (*it).second->sp[1]->sp(),
         (*it).second->sp[2]->sp(), (*it).second->z(), bestSeedQuality};
