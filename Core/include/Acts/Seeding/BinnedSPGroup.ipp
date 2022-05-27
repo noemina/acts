@@ -92,6 +92,8 @@ Acts::BinnedSPGroup<external_spacepoint_t>::BinnedSPGroup(
       std::vector<std::unique_ptr<InternalSpacePoint<external_spacepoint_t>>>&
           bin = grid->atPosition(spLocation);
       bin.push_back(std::move(isp));
+      float radius = std::sqrt(bin.back()->x()*bin.back()->x() + bin.back()->y()*bin.back()->y());
+      std::cout << "CHECKING SORTING " << bin.back()->x() << ", " << bin.back()->y() << ", " << bin.back()->z() << ", " << radius << std::endl;
     }
   }
   m_binnedSP = std::move(grid);
