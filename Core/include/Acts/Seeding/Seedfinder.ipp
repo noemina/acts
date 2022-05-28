@@ -44,6 +44,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     sp_range_t bottomSPs, sp_range_t middleSPs, sp_range_t topSPs,
     Extent rRangeSPExtent) const {
   for (auto spM : middleSPs) {
+
+    std::cout << "ACTS USING MIDDLE --> " << spM->radius() << std::endl;
+
     float rM = spM->radius();
     float zM = spM->z();
     float varianceRM = spM->varianceR();
@@ -88,6 +91,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
     state.compatTopSP.clear();
 
+    std::cout << "ACTS LOOPING ON TOPS ... " << std::endl;
+
     for (auto topSP : topSPs) {
       float rT = topSP->radius();
       float deltaR = rT - rM;
@@ -95,6 +100,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       if (deltaR < m_config.deltaRMinTopSP) {
         continue;
       }
+      std::cout << "ACTS TOP CANDINDATE... " << rT << std::endl;
       // if r-distance is too big, try next SP in bin
       if (deltaR > m_config.deltaRMaxTopSP) {
         continue;
@@ -152,6 +158,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           }
         }
       }
+      std::cout << "   ... ACCEPTED!! " << std::endl;
       state.compatTopSP.push_back(topSP);
     }
     if (state.compatTopSP.empty()) {
@@ -172,6 +179,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       if (deltaR > m_config.deltaRMaxBottomSP) {
         continue;
       }
+
+      std::cout << "ACTS BOTTOM CANDINDATE... " << rB << std::endl;
+
       if (deltaR < m_config.deltaRMinBottomSP) {
         continue;
       }
@@ -228,12 +238,16 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           }
         }
       }
+      std::cout << "   ... ACCEPTED!! " << std::endl;
+
       state.compatBottomSP.push_back(bottomSP);
     }
     // no bottom SP found -> try next spM
     if (state.compatBottomSP.empty()) {
       continue;
     }
+
+    std::cout << "ACTS --> Nt/Nb --> " << state.compatTopSP.size() << "/"<< state.compatBottomSP  << std::endl;
 
     state.linCircleBottom.clear();
     state.linCircleTop.clear();
