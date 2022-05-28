@@ -247,7 +247,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       continue;
     }
 
-    std::cout << "ACTS --> Nt/Nb --> " << state.compatTopSP.size() << "/"<< state.compatBottomSP  << std::endl;
+    std::cout << "ACTS --> Nt/Nb --> " << state.compatTopSP.size() << "/"<< state.compatBottomSP.size()  << std::endl;
 
     state.linCircleBottom.clear();
     state.linCircleTop.clear();
