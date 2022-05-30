@@ -197,6 +197,8 @@ void addTrackFinding(Context& ctx) {
     ACTS_PYTHON_MEMBER(cotThetaMax);
     ACTS_PYTHON_MEMBER(phiBinDeflectionCoverage);
     ACTS_PYTHON_MEMBER(impactMax);
+    ACTS_PYTHON_MEMBER(phiMin);
+    ACTS_PYTHON_MEMBER(phiMax);
     ACTS_PYTHON_MEMBER(zBinEdges);
     ACTS_PYTHON_STRUCT_END();
     patchKwargsConstructor(c);
