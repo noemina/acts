@@ -515,6 +515,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           Im = std::abs((A - B * rMxy) * rMxy);
         }
 
+        std::cout << "... BEFORE LAST CHECK ON IMPACT PARAMETER..." << std::endl;
+        std::cout << "... " << Im << "   " << m_config.impactMax << std::endl;
+
         if (Im <= m_config.impactMax) {
           state.topSpVec.push_back(state.compatTopSP[t]);
           // inverse diameter is signed depending if the curvature is
