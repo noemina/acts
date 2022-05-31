@@ -72,6 +72,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       }
     }
 
+    std::cout << "USING MIDDLE SP:" << rM << std::endl;
+
     size_t nTopSeedConf = 0;
     if (m_config.seedConfirmation == true) {
       // check if middle SP is in the central or forward region
@@ -88,6 +90,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
     }
 
     state.compatTopSP.clear();
+
+    std::cout << "CHECKING TOP SPACE POINTS..." << std::endl;
 
     for (auto topSP : topSPs) {
       float rT = topSP->radius();
@@ -164,6 +168,10 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       continue;
     }
 
+    std::cout << "... FOUND TOPS --> " << state.compatTopSP.size() << std::endl;
+
+    std::cout << "CHECKING BOTTOM SPACE POINTS..." << std::endl;
+
     state.compatBottomSP.clear();
 
     for (auto bottomSP : bottomSPs) {
@@ -238,6 +246,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       continue;
     }
 
+    std::cout << "... FOUND BOTTOMS --> " << state.compatBottomSP.size() << std::endl;
+
     state.linCircleBottom.clear();
     state.linCircleTop.clear();
 
@@ -258,6 +268,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
     size_t t0 = 0;
 
+    std::cout << "CHECKING COMPATIBILITY USING MIDDLE --> " << rM << std::endl;
+
     for (size_t b = 0; b < numBotSP; b++) {
       auto lb = state.linCircleBottom[b];
       float Zob = lb.Zo;
@@ -266,6 +278,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       float Ub = lb.U;
       float ErB = lb.Er;
       float iDeltaRB = lb.iDeltaR;
+
+      std::cout << "BOTTOM CAND 1/R --> " << iDeltaRB << std::endl;
 
       // 1+(cot^2(theta)) = 1/sin^2(theta)
       float iSinTheta2 = (1. + cotThetaB * cotThetaB);
@@ -291,7 +305,10 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
       state.curvatures.clear();
       state.impactParameters.clear();
       for (size_t t = t0; t < numTopSP; t++) {
+
         auto lt = state.linCircleTop[t];
+
+        std::cout << "TOP CAND 1/R --> " << lt.iDeltaR << std::endl;
 
         float cotThetaT = lt.cotTheta;
         float rMxy = 0.;
@@ -324,6 +341,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           double rMTransf[3];
           if (!xyzCoordinateCheck(m_config, spM, positionMiddle,
                                   m_config.toleranceParam, rMTransf)) {
+            std::cout << "CONTINUE (MIDDLE)" << std::endl;
             continue;
           }
 
@@ -340,6 +358,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           double rBTransf[3];
           if (!xyzCoordinateCheck(m_config, spB, positionBottom,
                                   m_config.toleranceParam, rBTransf)) {
+            std::cout << "CONTINUE (BOTTOM)" << std::endl;
             continue;
           }
 
@@ -355,6 +374,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           double rTTransf[3];
           if (!xyzCoordinateCheck(m_config, spT, positionTop,
                                   m_config.toleranceParam, rTTransf)) {
+            std::cout << "CONTINUE (TOP)" << std::endl;
             continue;
           }
 
@@ -508,6 +528,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           float eta = -std::log(std::tan(0.5 * theta));
           state.etaVec.push_back(eta);
           state.ptVec.push_back(pT);
+
+          std::cout << "ACCEPTING TOP..." << std::endl;
         }
       }
       if (!state.topSpVec.empty()) {
