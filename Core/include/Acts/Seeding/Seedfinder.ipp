@@ -343,6 +343,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
               cosTheta * std::sqrt(1 + A0 * A0)};
 
           double rMTransf[3];
+          std::cout << "COORDINATES MIDDLE... " << std::endl;
           if (!xyzCoordinateCheck(m_config, spM, positionMiddle,
                                   m_config.toleranceParam, rMTransf)) {
             std::cout << "CONTINUE (MIDDLE)" << std::endl;
@@ -362,6 +363,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
           auto spB = state.compatBottomSP[b];
           double rBTransf[3];
+          std::cout << "COORDINATES BOTTOM... " << std::endl;
           if (!xyzCoordinateCheck(m_config, spB, positionBottom,
                                   m_config.toleranceParam, rBTransf)) {
             std::cout << "CONTINUE (BOTTOM)" << std::endl;
@@ -380,6 +382,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
           auto spT = state.compatTopSP[t];
           double rTTransf[3];
+          std::cout << "COORDINATES TOP... " << std::endl;
           if (!xyzCoordinateCheck(m_config, spT, positionTop,
                                   m_config.toleranceParam, rTTransf)) {
             std::cout << "CONTINUE (TOP)" << std::endl;

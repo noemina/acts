@@ -160,6 +160,12 @@ bool xyzCoordinateCheck(Acts::SeedfinderConfig<external_spacepoint_t> m_config,
   const Acts::Vector3 stripCenterDistance =
       m_config.getStripCenterDistance(sp->sp());
 
+  std::cout << "CHECKING PARAMETERS: " << std::endl;
+  std::cout << "INPUT: " << spacepointPosition[0] << ", " << spacepointPosition[1] << ", " << spacepointPosition[2] << std::endl;
+  std::cout << "TOP DIR: " << topHalfStripLength * topStripDirection[0] << ", " << topHalfStripLength * topStripDirection[1] << ", " << topHalfStripLength * topStripDirection[2] << std::endl;
+  std::cout << "BOTTOM DIR: " << bottomHalfStripLength * bottomStripDirection[0] << ", " << bottomHalfStripLength * bottomStripDirection[1] << ", " << bottomHalfStripLength * bottomStripDirection[2] << std::endl;
+  std::cout << "DISTANCE: " << stripCenterDistance[0] << ", " << stripCenterDistance[2] << ", " << stripCenterDistance[2] << std::endl;
+
   // cross product between top strip vector and spacepointPosition
   double d1[3] = {
       (topHalfStripLength * topStripDirection[1]) * spacepointPosition[2] -
@@ -207,6 +213,8 @@ bool xyzCoordinateCheck(Acts::SeedfinderConfig<external_spacepoint_t> m_config,
 
   const Acts::Vector3 bottomStripCenterPosition =
       m_config.getBottomStripCenterPosition(sp->sp());
+
+  std::cout << "BOTTOM CENTER: " << bottomStripCenterPosition[0] << ", " << bottomStripCenterPosition[2] << ", " << bottomStripCenterPosition[2] << std::endl;
 
   // spacepointPosition corected with respect to the bottom strip direction and
   // the distance between the strips
