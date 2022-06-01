@@ -430,6 +430,11 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
 
         float deltaCotTheta = cotThetaB - cotThetaT;
         float deltaCotTheta2 = deltaCotTheta * deltaCotTheta;
+
+        std::cout << "checking errors : deltaCotTheta2 = " << deltaCotTheta2 << std::endl;
+        std::cout << "checking errors : error2 = " << error2 << std::endl;
+        std::cout << "checking errors : scatteringInRegion2 = " << scatteringInRegion2 << std::endl;
+
         // Apply a cut on the compatibility between the r-z slope of the two
         // seed segments. This is done by comparing the squared difference
         // between slopes, and comparing to the squared uncertainty in this
