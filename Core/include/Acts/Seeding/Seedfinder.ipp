@@ -318,11 +318,15 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         float vt = 0.;
 
         if (m_config.useDetailedDoubleMeasurementInfo) {
+          std::cout << "using detailed info... (0)" << std::endl;
+
           // protects against division by 0
           float dU = lt.U - Ub;
           if (dU == 0.) {
             continue;
           }
+
+          std::cout << "using detailed info... (1)" << std::endl;
           // A and B are evaluated as a function of the circumference parameters
           // x_0 and y_0
           float A0 = (lt.V - Vb) / dU;
@@ -345,6 +349,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             continue;
           }
 
+          std::cout << "using detailed info... (2)" << std::endl;
+
           // coordinate transformation and checks for bottom spacepoint
           float B0 = 2. * (Vb - A0 * Ub);
           float Cb = 1. - B0 * lb.y;
@@ -362,6 +368,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             continue;
           }
 
+          std::cout << "using detailed info... (3)" << std::endl;
+
           // coordinate transformation and checks for top spacepoint
           float Ct = 1. - B0 * lt.y;
           float St = A0 + B0 * lt.x;
@@ -377,6 +385,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             std::cout << "CONTINUE (TOP)" << std::endl;
             continue;
           }
+
+          std::cout << "using detailed info... (4)" << std::endl;
 
           // bottom and top coordinates in the spM reference frame
           float xB = rBTransf[0] - rMTransf[0];
@@ -402,6 +412,8 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           ut = (xT * Ax + yT * Ay) * iDeltaRT2;
           vt = (yT * Ax - xT * Ay) * iDeltaRT2;
         }
+
+        std::cout << "all fine so far..." << std::endl;
 
         // use geometric average
         float cotThetaAvg2 = cotThetaB * cotThetaT;
@@ -438,8 +450,10 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
             }
             t0 = t + 1;
           }
+          std::cout << "continue because of error evaluation..." << std::endl;
           continue;
         }
+        std::cout << "all fine so far... again" << std::endl;
 
         float dU;
         float A;
@@ -448,6 +462,7 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
         float B2;
 
         if (m_config.useDetailedDoubleMeasurementInfo) {
+          std::cout << "again with double measurement info..." << std::endl;
           dU = ut - ub;
           // protects against division by 0
           if (dU == 0.) {
@@ -471,11 +486,15 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           B2 = B * B;
         }
 
+        std::cout << "all good!" << std::endl;
+
         // sqrt(S2)/B = 2 * helixradius
         // calculated radius must not be smaller than minimum radius
         if (S2 < B2 * m_config.minHelixDiameter2) {
           continue;
         }
+
+        std::cout << "check here... (1)" << std::endl;
 
         // refinement of the cut on the compatibility between the r-z slope of
         // the two seed segments using a scattering term scaled by the actual
@@ -505,6 +524,9 @@ void Seedfinder<external_spacepoint_t, platform_t>::createSeedsForGroup(
           }
           continue;
         }
+
+        std::cout << "check here... (2)" << std::endl;
+
         // A and B allow calculation of impact params in U/V plane with linear
         // function
         // (in contrast to having to solve a quadratic function in x/y plane)
