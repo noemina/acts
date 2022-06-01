@@ -164,7 +164,7 @@ bool xyzCoordinateCheck(Acts::SeedfinderConfig<external_spacepoint_t> m_config,
   std::cout << "INPUT: " << spacepointPosition[0] << ", " << spacepointPosition[1] << ", " << spacepointPosition[2] << std::endl;
   std::cout << "TOP DIR: " << topHalfStripLength * topStripDirection[0] << ", " << topHalfStripLength * topStripDirection[1] << ", " << topHalfStripLength * topStripDirection[2] << std::endl;
   std::cout << "BOTTOM DIR: " << bottomHalfStripLength * bottomStripDirection[0] << ", " << bottomHalfStripLength * bottomStripDirection[1] << ", " << bottomHalfStripLength * bottomStripDirection[2] << std::endl;
-  std::cout << "DISTANCE: " << stripCenterDistance[0] << ", " << stripCenterDistance[2] << ", " << stripCenterDistance[2] << std::endl;
+  std::cout << "DISTANCE: " << stripCenterDistance[0] << ", " << stripCenterDistance[1] << ", " << stripCenterDistance[2] << std::endl;
 
   // cross product between top strip vector and spacepointPosition
   double d1[3] = {
