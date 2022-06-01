@@ -214,7 +214,7 @@ bool xyzCoordinateCheck(Acts::SeedfinderConfig<external_spacepoint_t> m_config,
   const Acts::Vector3 bottomStripCenterPosition =
       m_config.getBottomStripCenterPosition(sp->sp());
 
-  std::cout << "BOTTOM CENTER: " << bottomStripCenterPosition[0] << ", " << bottomStripCenterPosition[2] << ", " << bottomStripCenterPosition[2] << std::endl;
+  std::cout << "BOTTOM CENTER: " << bottomStripCenterPosition[0] << ", " << bottomStripCenterPosition[1] << ", " << bottomStripCenterPosition[2] << std::endl;
 
   // spacepointPosition corected with respect to the bottom strip direction and
   // the distance between the strips
