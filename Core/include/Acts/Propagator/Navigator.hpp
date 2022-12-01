@@ -1185,30 +1185,43 @@ class Navigator {
   template <typename propagator_state_t, typename stepper_t>
   bool resolveLayers(propagator_state_t& state,
                      const stepper_t& stepper) const {
+    std::cout << " --- ACTS --- resolveLayers (1)" << std::endl;
     const auto& logger = state.options.logger;
     ACTS_VERBOSE(volInfo(state) << "Searching for compatible layers.");
 
+    std::cout << " --- ACTS --- resolveLayers (2)" << std::endl;
     // Check if we are in the start volume
     auto startLayer =
         (state.navigation.currentVolume == state.navigation.startVolume)
             ? state.navigation.startLayer
             : nullptr;
+
+    std::cout << " --- ACTS --- resolveLayers (3)" << std::endl;
     // Create the navigation options
     // - and get the compatible layers, start layer will be excluded
     NavigationOptions<Layer> navOpts(
         state.stepping.navDir, true, m_cfg.resolveSensitive,
         m_cfg.resolveMaterial, m_cfg.resolvePassive, startLayer, nullptr);
+
+    std::cout << " --- ACTS --- resolveLayers (4)" << std::endl;
     // Set also the target surface
     navOpts.targetSurface = state.navigation.targetSurface;
+
+    std::cout << " --- ACTS --- resolveLayers (5)" << std::endl;
     navOpts.pathLimit =
         stepper.getStepSize(state.stepping, ConstrainedStep::aborter);
+
+    std::cout << " --- ACTS --- resolveLayers (6)" << std::endl;
     navOpts.overstepLimit = stepper.overstepLimit(state.stepping);
+
+    std::cout << " --- ACTS --- resolveLayers (7)" << std::endl;
     // Request the compatible layers
     state.navigation.navLayers =
         state.navigation.currentVolume->compatibleLayers(
             state.geoContext, stepper.position(state.stepping),
             stepper.direction(state.stepping), navOpts);
 
+    std::cout << " --- ACTS --- resolveLayers (8)" << std::endl;
     // Layer candidates have been found
     if (!state.navigation.navLayers.empty()) {
       // Screen output where they are
@@ -1237,13 +1250,21 @@ class Navigator {
       }
     }
 
+    std::cout << " --- ACTS --- resolveLayers (9)" << std::endl;
+
     // Set the iterator to the end of the list
     state.navigation.navLayerIter = state.navigation.navLayers.end();
 
+    std::cout << " --- ACTS --- resolveLayers (10)" << std::endl;
+
     // Screen output - no layer candidates found
     ACTS_VERBOSE(volInfo(state) << "No compatible layer candidates found.");
+
+    std::cout << " --- ACTS --- resolveLayers (11)" << std::endl;
     // Release the step size
     stepper.releaseStepSize(state.stepping);
+
+    std::cout << " --- ACTS --- resolveLayers (12)" << std::endl;
     return false;
   }
 
