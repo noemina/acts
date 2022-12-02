@@ -583,7 +583,7 @@ Acts::TrackingVolume::compatibleBoundaries(
   return bIntersections;
 }
 
-boost::container::small_vector<Acts::LayerIntersection, 10>
+std::vector<Acts::LayerIntersection>
 Acts::TrackingVolume::compatibleLayers(
     const GeometryContext& gctx, const Vector3& position,
     const Vector3& direction, const NavigationOptions<Layer>& options) const {
@@ -591,7 +591,7 @@ Acts::TrackingVolume::compatibleLayers(
         std::cout << " --- ACTS --- resolveLayers (0)" << std::endl;
 
 
-  boost::container::small_vector<Acts::LayerIntersection, 10> lIntersections;
+  std::vector<Acts::LayerIntersection> lIntersections;
 
   std::cout << " --- ACTS --- resolveLayers (1)" << std::endl;
 

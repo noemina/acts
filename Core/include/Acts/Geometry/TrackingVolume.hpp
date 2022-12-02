@@ -179,7 +179,7 @@ class TrackingVolume : public Volume {
   /// @param options The templated navigation options
   ///
   /// @return vector of compatible intersections with layers
-  boost::container::small_vector<LayerIntersection, 10> compatibleLayers(
+  std::vector<Acts::LayerIntersection> compatibleLayers(
       const GeometryContext& gctx, const Vector3& position,
       const Vector3& direction, const NavigationOptions<Layer>& options) const;
 

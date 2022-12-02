@@ -124,8 +124,8 @@ class Navigator {
       boost::container::small_vector<SurfaceIntersection, 10>;
   using NavigationSurfaceIter = NavigationSurfaces::iterator;
 
-  using NavigationLayers =
-      boost::container::small_vector<LayerIntersection, 10>;
+  using NavigationLayers = std::vector<LayerIntersection>;
+      // boost::container::small_vector<LayerIntersection, 10>;
   using NavigationLayerIter = NavigationLayers::iterator;
 
   using NavigationBoundaries =
@@ -1224,6 +1224,7 @@ class Navigator {
     std::cout << " --- ACTS --- printing direction ... " << std::endl;
     auto dir = stepper.direction(state.stepping);
     std::cout << dir[0] << dir[1] << dir[2] << std::endl;
+    std::cout << "check nav layers: " << state.navigation.navLayers.size() << std::endl;
     state.navigation.navLayers =
         state.navigation.currentVolume->compatibleLayers(
             state.geoContext, stepper.position(state.stepping),
