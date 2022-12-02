@@ -588,6 +588,9 @@ Acts::TrackingVolume::compatibleLayers(
     const GeometryContext& gctx, const Vector3& position,
     const Vector3& direction, const NavigationOptions<Layer>& options) const {
   // the layer intersections which are valid
+        std::cout << " --- ACTS --- resolveLayers (0)" << std::endl;
+
+
   boost::container::small_vector<Acts::LayerIntersection, 10> lIntersections;
 
   std::cout << " --- ACTS --- resolveLayers (1)" << std::endl;
