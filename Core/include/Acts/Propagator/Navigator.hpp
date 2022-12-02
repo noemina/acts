@@ -1217,6 +1217,13 @@ class Navigator {
     std::cout << " --- ACTS --- resolveLayers (7)" << std::endl;
     // std::cout << " --- ACTS --- " << state.stepping << std::endl;
     // Request the compatible layers
+
+    std::cout << " --- ACTS --- printing position ... " << std::endl;
+    auto pos = stepper.position(state.stepping);
+    std::cout << pos[0] << pos[1] << pos[2] << std::endl;
+    std::cout << " --- ACTS --- printing direction ... " << std::endl;
+    auto dir = stepper.direction(state.stepping);
+    std::cout << dir[0] << dir[1] << dir[2] << std::endl;
     state.navigation.navLayers =
         state.navigation.currentVolume->compatibleLayers(
             state.geoContext, stepper.position(state.stepping),
