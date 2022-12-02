@@ -1215,6 +1215,7 @@ class Navigator {
     navOpts.overstepLimit = stepper.overstepLimit(state.stepping);
 
     std::cout << " --- ACTS --- resolveLayers (7)" << std::endl;
+    // std::cout << " --- ACTS --- " << state.stepping << std::endl;
     // Request the compatible layers
     state.navigation.navLayers =
         state.navigation.currentVolume->compatibleLayers(

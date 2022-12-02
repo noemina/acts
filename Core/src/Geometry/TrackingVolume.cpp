@@ -590,47 +590,66 @@ Acts::TrackingVolume::compatibleLayers(
   // the layer intersections which are valid
   boost::container::small_vector<Acts::LayerIntersection, 10> lIntersections;
 
+  std::cout << " --- ACTS --- resolveLayers (1)" << std::endl;
+
   // the confinedLayers
   if (m_confinedLayers != nullptr) {
+    std::cout << " --- ACTS --- resolveLayers (2.1)" << std::endl;
+
     // start layer given or not - test layer
     const Layer* tLayer = options.startObject != nullptr
                               ? options.startObject
                               : associatedLayer(gctx, position);
+    std::cout << " --- ACTS --- resolveLayers (2.2)" << std::endl;
     while (tLayer != nullptr) {
       // check if the layer needs resolving
       // - resolveSensitive -> always take layer if it has a surface array
       // - resolveMaterial -> always take layer if it has material
       // - resolvePassive -> always take, unless it's a navigation layer
       // skip the start object
+      std::cout << " --- ACTS --- resolveLayers (2.2.1)" << std::endl;
       if (tLayer != options.startObject && tLayer->resolve(options)) {
         // if it's a resolveable start layer, you are by definition on it
         // layer on approach intersection
+        std::cout << " --- ACTS --- resolveLayers (2.2.2.1)" << std::endl;
         auto atIntersection =
             tLayer->surfaceOnApproach(gctx, position, direction, options);
+        std::cout << " --- ACTS --- resolveLayers (2.2.2.2)" << std::endl;
         auto path = atIntersection.intersection.pathLength;
+        std::cout << " --- ACTS --- resolveLayers (2.2.2.3)" << std::endl;
         bool withinLimit =
             (path * path <= options.pathLimit * options.pathLimit);
+        std::cout << " --- ACTS --- resolveLayers (2.2.2.4)" << std::endl;
         // Intersection is ok - take it (move to surface on appraoch)
         if (atIntersection &&
             (atIntersection.object != options.targetSurface) && withinLimit) {
+          std::cout << " --- ACTS --- resolveLayers (2.2.2.4.1)" << std::endl;
           // create a layer intersection
           lIntersections.push_back(LayerIntersection(
               atIntersection.intersection, tLayer, atIntersection.object));
+          std::cout << " --- ACTS --- resolveLayers (2.2.2.4.2)" << std::endl;
         }
+        std::cout << " --- ACTS --- resolveLayers (2.2.2.5)" << std::endl;
       }
+      std::cout << " --- ACTS --- resolveLayers (2.2.2)" << std::endl;
       // move to next one or break because you reached the end layer
       tLayer =
           (tLayer == options.endObject)
               ? nullptr
               : tLayer->nextLayer(gctx, position, options.navDir * direction);
+      std::cout << " --- ACTS --- resolveLayers (2.2.3)" << std::endl;
     }
+
+    std::cout << " --- ACTS --- resolveLayers (2.3)" << std::endl;
     // sort them accordingly to the navigation direction
     if (options.navDir == NavigationDirection::Forward) {
       std::sort(lIntersections.begin(), lIntersections.end());
     } else {
       std::sort(lIntersections.begin(), lIntersections.end(), std::greater<>());
     }
+    std::cout << " --- ACTS --- resolveLayers (2.4)" << std::endl;
   }
+  std::cout << " --- ACTS --- resolveLayers (3)" << std::endl;
   // and return
   return lIntersections;
 }
