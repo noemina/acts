@@ -1234,15 +1234,15 @@ class Navigator {
     // Layer candidates have been found
     if (!state.navigation.navLayers.empty()) {
       // Screen output where they are
-      if (logger().doPrint(Logging::INFO)) {
-        std::ostringstream os;
-        os << state.navigation.navLayers.size();
-        os << " layer candidates found at path(s): ";
-        for (auto& lc : state.navigation.navLayers) {
-          os << lc.intersection.pathLength << "  ";
-        }
-        logger.log(Logging::INFO, os.str());
-      }
+      // if (logger().doPrint(Logging::INFO)) {
+      //   std::ostringstream os;
+      //   os << state.navigation.navLayers.size();
+      //   os << " layer candidates found at path(s): ";
+      //   for (auto& lc : state.navigation.navLayers) {
+      //     os << lc.intersection.pathLength << "  ";
+      //   }
+      //   logger.log(Logging::INFO, os.str());
+      // }
       // Set the iterator to the first
       state.navigation.navLayerIter = state.navigation.navLayers.begin();
       // Setting the step size towards first
