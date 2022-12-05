@@ -621,8 +621,7 @@ Acts::TrackingVolume::compatibleLayers(
         auto path = atIntersection.intersection.pathLength;
         std::cout << " --- ACTS --- resolveLayers (2.2.2.3)" << std::endl;
         bool withinLimit =
-            (path * path <= options.pathLimit * options.pathLimit);
-        std::cout << " --- ACTS --- resolveLayers (2.2.2.4)" << std::endl;
+            std::abs(path) <= std::abs(options.pathLimit);
         // Intersection is ok - take it (move to surface on appraoch)
         if (atIntersection &&
             (atIntersection.object != options.targetSurface) && withinLimit) {
