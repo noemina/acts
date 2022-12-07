@@ -102,7 +102,7 @@ class ConstrainedStep {
   /// @param value is the new value to be updated
   /// @param type is the constraint type
   /// @param releaseStep Allow step size to increase again
-  constexpr void update(Scalar value, Type type, bool releaseStep = false) {
+  void update(Scalar value, Type type, bool releaseStep = false) {
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     std::cout << "---------- value --- " << value << std::endl;
     std::cout << "---------- type --- " << type << std::endl;
