@@ -223,14 +223,18 @@ void Acts::SurfaceMaterialMapper::mapMaterialTrack(
 void Acts::SurfaceMaterialMapper::mapInteraction(
     State& mState, RecordedMaterialTrack& mTrack) const {
   // Retrieve the recorded material from the recorded material track
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   auto& rMaterial = mTrack.second.materialInteractions;
   std::map<GeometryIdentifier, unsigned int> assignedMaterial;
   using VectorHelpers::makeVector4;
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   // Neutral curvilinear parameters
   NeutralCurvilinearTrackParameters start(makeVector4(mTrack.first.first, 0),
                                           mTrack.first.second,
                                           1 / mTrack.first.second.norm());
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   // Prepare Action list and abort list
   using MaterialSurfaceCollector = SurfaceCollector<MaterialSurface>;
   using MaterialVolumeCollector = VolumeCollector<MaterialVolume>;
@@ -238,18 +242,27 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
       ActionList<MaterialSurfaceCollector, MaterialVolumeCollector>;
   using AbortList = AbortList<EndOfWorldReached>;
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   auto propLogger = getDefaultLogger("SurfMatMapProp", Logging::INFO);
   PropagatorOptions<ActionList, AbortList> options(
       mState.geoContext, mState.magFieldContext, LoggerWrapper{*propLogger});
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   // Now collect the material layers by using the straight line propagator
   const auto& result = m_propagator.propagate(start, options).value();
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   auto mcResult = result.get<MaterialSurfaceCollector::result_type>();
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   auto mvcResult = result.get<MaterialVolumeCollector::result_type>();
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   auto mappingSurfaces = mcResult.collected;
   auto mappingVolumes = mvcResult.collected;
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   // These should be mapped onto the mapping surfaces found
   ACTS_VERBOSE("Found     " << mappingSurfaces.size()
                             << " mapping surfaces for this track.");
@@ -262,6 +275,8 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
     assignedMaterial[mSurface.surface->geometryId()] = 0;
   }
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   // Run the mapping process, i.e. take the recorded material and map it
   // onto the mapping surfaces:
   // - material steps and surfaces are assumed to be ordered along the
@@ -271,12 +286,16 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
   auto sfIter = mappingSurfaces.begin();
   auto volIter = mappingVolumes.begin();
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   // Use those to minimize the lookup
   GeometryIdentifier lastID = GeometryIdentifier();
   GeometryIdentifier currentID = GeometryIdentifier();
   Vector3 currentPos(0., 0., 0);
   float currentPathCorrection = 1.;
   auto currentAccMaterial = mState.accumulatedMaterial.end();
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // To remember the bins of this event
   using MapBin = std::pair<AccumulatedSurfaceMaterial*, std::array<size_t, 3>>;
@@ -285,6 +304,8 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
   std::map<AccumulatedSurfaceMaterial*, std::array<size_t, 3>> touchedMapBins;
   std::map<AccumulatedSurfaceMaterial*, std::shared_ptr<const ISurfaceMaterial>>
       touchedMaterialBin;
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   if (sfIter != mappingSurfaces.end() &&
       sfIter->surface->surfaceMaterial()->mappingType() ==
           Acts::MappingType::PostMapping) {
@@ -292,6 +313,8 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
         "The first mapping surface is a PostMapping one. Some material from "
         "before the PostMapping surface will be mapped onto it ");
   }
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // Assign the recorded ones, break if you hit an end
   while (rmIter != rMaterial.end() && sfIter != mappingSurfaces.end()) {
@@ -409,6 +432,8 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
     ++rmIter;
   }
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   ACTS_VERBOSE("Surfaces have following number of assigned hits :")
   for (auto& [key, value] : assignedMaterial) {
     ACTS_VERBOSE(" + Surface : " << key << " has " << value << " hits.");
@@ -424,6 +449,8 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
     }
     tmapBin.first->trackAverage(trackBins);
   }
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // After mapping this track, average the untouched but intersected bins
   if (m_cfg.emptyBinCorrection) {
@@ -454,6 +481,8 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
       }
     }
   }
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 }
 
 void Acts::SurfaceMaterialMapper::mapSurfaceInteraction(
