@@ -384,6 +384,7 @@ class StraightLineStepper {
     std::cout << "---------- p --- " << p << std::endl;
     std::cout << "---------- dtds --- " << dtds << std::endl;
     std::cout << "---------- h --- " << h << std::endl;
+    std::cout << "---------- state.stepping.stepSize --- " << state.stepping.stepSize << std::endl;
     std::cout << "---------- state.stepping.pars[eFreeTime] --- " << state.stepping.pars[eFreeTime] << std::endl;
     state.stepping.pars[eFreeTime] += h * dtds;
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
