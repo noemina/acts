@@ -103,14 +103,22 @@ class ConstrainedStep {
   /// @param type is the constraint type
   /// @param releaseStep Allow step size to increase again
   constexpr void update(Scalar value, Type type, bool releaseStep = false) {
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+    std::cout << "---------- value --- " << value << std::endl;
+    std::cout << "---------- type --- " << type << std::endl;
+    std::cout << "---------- releaseStep --- " << releaseStep << std::endl;
     if (releaseStep) {
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       release(type);
     }
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // check the current value and set it if appropriate
     // this will also allow signed values due to overstepping
     if (std::abs(value) <= std::abs(m_values[type])) {
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       m_values[type] = value * m_direction;
     }
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   }
 
   constexpr void scale(Scalar factor) {
