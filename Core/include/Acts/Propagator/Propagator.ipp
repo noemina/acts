@@ -48,13 +48,18 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
     // Propagation loop : stepping
     for (; result.steps < state.options.maxSteps; ++result.steps) {
       // Perform a propagation step - it takes the propagation state
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       Result<double> res = m_stepper.step(state);
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       if (res.ok()) {
+        std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
         // Accumulate the path length
         double s = *res;
         result.pathLength += s;
+        std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
         ACTS_VERBOSE("Step with size = " << s << " performed");
       } else {
+        std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
         ACTS_ERROR("Step failed with " << res.error() << ": "
                                        << res.error().message());
         // pass error to caller
@@ -62,13 +67,20 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
       }
       // Post-stepping:
       // navigator status call - action list - aborter list - target call
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       m_navigator.status(state, m_stepper);
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       state.options.actionList(state, m_stepper, result);
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
       if (state.options.abortList(result, state, m_stepper)) {
+        std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
         terminatedNormally = true;
         break;
       }
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       m_navigator.target(state, m_stepper);
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     }
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   } else {
