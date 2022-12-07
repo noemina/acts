@@ -380,6 +380,11 @@ class StraightLineStepper {
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     state.stepping.pars.template segment<3>(eFreePos0) += h * dir;
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+    std::cout << "---------- state.options.mass --- " << state.options.mass << std::endl;
+    std::cout << "---------- p --- " << p << std::endl;
+    std::cout << "---------- dtds --- " << dtds << std::endl;
+    std::cout << "---------- h --- " << h << std::endl;
+    std::cout << "---------- state.stepping.pars[eFreeTime] --- " << state.stepping.pars[eFreeTime] << std::endl;
     state.stepping.pars[eFreeTime] += h * dtds;
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // Propagate the jacobian
