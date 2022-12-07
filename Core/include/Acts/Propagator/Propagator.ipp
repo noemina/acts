@@ -46,6 +46,9 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
     // Propagation loop : stepping
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << "  " << result.steps << "   " << typeid(result.steps).name() << std::endl;
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << "  " << state.options.maxSteps << "   " <<typeid(state.options.maxSteps).name() << std::endl;
+
     for (; result.steps < state.options.maxSteps; ++result.steps) {
       // Perform a propagation step - it takes the propagation state
       std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
