@@ -367,31 +367,47 @@ class StraightLineStepper {
   template <typename propagator_state_t>
   Result<double> step(propagator_state_t& state) const {
     // use the adjusted step size
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     const auto h = state.stepping.stepSize.value();
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     const double p = momentum(state.stepping);
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // time propagates along distance as 1/b = sqrt(1 + m²/p²)
     const auto dtds = std::hypot(1., state.options.mass / p);
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // Update the track parameters according to the equations of motion
     Vector3 dir = direction(state.stepping);
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     state.stepping.pars.template segment<3>(eFreePos0) += h * dir;
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     state.stepping.pars[eFreeTime] += h * dtds;
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // Propagate the jacobian
     if (state.stepping.covTransport) {
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       // The step transport matrix in global coordinates
       FreeMatrix D = FreeMatrix::Identity();
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       D.block<3, 3>(0, 4) = ActsSymMatrix<3>::Identity() * h;
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       // Extend the calculation by the time propagation
       // Evaluate dt/dlambda
       D(3, 7) = h * state.options.mass * state.options.mass *
                 state.stepping.pars[eFreeQOverP] / dtds;
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       // Set the derivative factor the time
       state.stepping.derivative(3) = dtds;
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       // Update jacobian and derivative
       state.stepping.jacTransport = D * state.stepping.jacTransport;
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
       state.stepping.derivative.template head<3>() = dir;
+      std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     }
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // state the path length
     state.stepping.pathAccumulated += h;
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
     // return h
     return h;
