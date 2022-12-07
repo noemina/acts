@@ -15,6 +15,8 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
     -> Result<void> {
   const auto& logger = state.options.logger;
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   // Pre-stepping call to the navigator and action list
   ACTS_VERBOSE("Entering propagation.");
 
@@ -28,14 +30,20 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
   // start at true, if we don't begin the stepping loop we're fine.
   bool terminatedNormally = true;
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   // Pre-Stepping: abort condition check
   if (!state.options.abortList(result, state, m_stepper)) {
+
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     // Pre-Stepping: target setting
     m_navigator.target(state, m_stepper);
     // Stepping loop
     ACTS_VERBOSE("Starting stepping loop.");
 
     terminatedNormally = false;  // priming error condition
+
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
     // Propagation loop : stepping
     for (; result.steps < state.options.maxSteps; ++result.steps) {
@@ -62,9 +70,13 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
       }
       m_navigator.target(state, m_stepper);
     }
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   } else {
+    std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
     ACTS_VERBOSE("Propagation terminated without going into stepping loop.");
   }
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // if we didn't terminate normally (via aborters) set navigation break.
   // this will trigger error output in the lines below
@@ -76,9 +88,13 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
     return PropagatorError::StepCountLimitReached;
   }
 
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
+
   // Post-stepping call to the action list
   ACTS_VERBOSE("Stepping loop done.");
   state.options.actionList(state, m_stepper, result);
+
+  std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // return progress flag here, decide on SUCCESS later
   return Result<void>::success();
