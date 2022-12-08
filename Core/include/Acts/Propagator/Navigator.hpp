@@ -1011,6 +1011,8 @@ class Navigator {
 
     state.navigation.forceIntersectBoundaries=true;
     if (findBoundaries()) {
+      // resetting check
+      state.navigation.forceIntersectBoundaries=false;
       return true;
     }
 
