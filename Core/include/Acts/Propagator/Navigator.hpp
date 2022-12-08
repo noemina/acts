@@ -68,6 +68,9 @@ struct NavigationOptions {
   /// @todo could be dynamic in the future (pT dependent)
   double overstepLimit = -1 * UnitConstants::um;
 
+  /// Force intersection with boundaries
+  bool forceIntersectBoundaries = false;
+
   /// Constructor
   ///
   /// @param ndir Navigation direction prescription
@@ -214,6 +217,8 @@ class Navigator {
     bool lastHierarchySurfaceReached = false;
     /// Navigation state : a break has been detected
     bool navigationBreak = false;
+    /// Force intersection with boundaries
+    bool forceIntersectBoundaries = false;
     // The navigation stage (@todo: integrate break, target)
     Stage navigationStage = Stage::undefined;
 
@@ -932,6 +937,7 @@ class Navigator {
       navOpts.pathLimit =
           stepper.getStepSize(state.stepping, ConstrainedStep::aborter);
       navOpts.overstepLimit = stepper.overstepLimit(state.stepping);
+      navOpts.forceIntersectBoundaries = state.navigation.forceIntersectBoundaries;
 
       // Exclude the current surface in case it's a boundary
       navOpts.startObject = state.navigation.currentSurface;
@@ -1002,6 +1008,8 @@ class Navigator {
     // We have to leave the volume somehow, so try again
     state.navigation.navBoundaries.clear();
     ACTS_INFO(volInfo(state) << "Boundary navigation lost, re-targetting.");
+
+    state.navigation.forceIntersectBoundaries=true;
     if (findBoundaries()) {
       return true;
     }

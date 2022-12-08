@@ -17,6 +17,7 @@
 #include <iomanip>
 #include <limits>
 #include <sstream>
+#include <iostream>
 
 namespace Acts {
 
