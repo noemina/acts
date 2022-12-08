@@ -855,7 +855,7 @@ class Navigator {
       initializeTarget(state, stepper);
     }
     // Screen output
-    if (logger().doPrint(Logging::VERBOSE)) {
+    if (logger().doPrint(Logging::INFO)) {
       std::ostringstream os;
       os << "Last layer";
       if (state.navigation.currentVolume == state.navigation.targetVolume) {
@@ -863,7 +863,7 @@ class Navigator {
       } else {
         os << " done, target volume boundary.";
       }
-      logger.log(Logging::VERBOSE, os.str());
+      logger.log(Logging::INFO, os.str());
     }
     // Set the navigation break if necessary
     state.navigation.navigationBreak =
@@ -947,14 +947,14 @@ class Navigator {
               stepper.direction(state.stepping), navOpts,
               LoggerWrapper{logger()});
       // The number of boundary candidates
-      if (logger().doPrint(Logging::VERBOSE)) {
+      if (logger().doPrint(Logging::INFO)) {
         std::ostringstream os;
         os << state.navigation.navBoundaries.size();
         os << " boundary candidates found at path(s): ";
         for (auto& bc : state.navigation.navBoundaries) {
           os << bc.intersection.pathLength << "  ";
         }
-        logger.log(Logging::VERBOSE, os.str());
+        logger.log(Logging::INFO, os.str());
       }
       // Set the begin iterator
       state.navigation.navBoundaryIter = state.navigation.navBoundaries.begin();
@@ -1143,14 +1143,14 @@ class Navigator {
         stepper.direction(state.stepping), navOpts);
     // the number of layer candidates
     if (!state.navigation.navSurfaces.empty()) {
-      if (logger.doPrint(Logging::VERBOSE)) {
+      if (logger.doPrint(Logging::INFO)) {
         std::ostringstream os;
         os << state.navigation.navSurfaces.size();
         os << " surface candidates found at path(s): ";
         for (auto& sfc : state.navigation.navSurfaces) {
           os << sfc.intersection.pathLength << "  ";
         }
-        logger.log(Logging::VERBOSE, os.str());
+        logger.log(Logging::INFO, os.str());
       }
 
       // set the iterator
@@ -1212,14 +1212,14 @@ class Navigator {
     // Layer candidates have been found
     if (!state.navigation.navLayers.empty()) {
       // Screen output where they are
-      if (logger().doPrint(Logging::VERBOSE)) {
+      if (logger().doPrint(Logging::INFO)) {
         std::ostringstream os;
         os << state.navigation.navLayers.size();
         os << " layer candidates found at path(s): ";
         for (auto& lc : state.navigation.navLayers) {
           os << lc.intersection.pathLength << "  ";
         }
-        logger.log(Logging::VERBOSE, os.str());
+        logger.log(Logging::INFO, os.str());
       }
       // Set the iterator to the first
       state.navigation.navLayerIter = state.navigation.navLayers.begin();
