@@ -70,7 +70,7 @@ void ActsExamples::RootMaterialWriter::writeMaterial(
     m_outputFile->mkdir(tdName.c_str());
     m_outputFile->cd(tdName.c_str());
 
-    ACTS_VERBOSE("Writing out map at " << tdName);
+    ACTS_INFO("Writing out map at " << tdName);
 
     size_t bins0 = 1, bins1 = 1;
     // understand what sort of material you have in mind
@@ -178,7 +178,7 @@ void ActsExamples::RootMaterialWriter::writeMaterial(
     m_outputFile->mkdir(tdName.c_str());
     m_outputFile->cd(tdName.c_str());
 
-    ACTS_VERBOSE("Writing out map at " << tdName);
+    ACTS_INFO("Writing out map at " << tdName);
 
     // understand what sort of material you have in mind
     auto bvMaterial3D = dynamic_cast<const Acts::InterpolatedMaterialMap<

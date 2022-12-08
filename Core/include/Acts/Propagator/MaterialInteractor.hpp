@@ -90,7 +90,7 @@ struct MaterialInteractor {
 
       if (energyLoss) {
         using namespace UnitLiterals;
-        ACTS_VERBOSE(d.slab << " pdg=" << d.pdg << " mass=" << d.mass / 1_MeV
+        ACTS_INFO(d.slab << " pdg=" << d.pdg << " mass=" << d.mass / 1_MeV
                             << "MeV"
                             << " momentum=" << d.momentum / 1_GeV << "GeV"
                             << " energyloss=" << d.Eloss / 1_MeV << "MeV");

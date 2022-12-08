@@ -145,10 +145,10 @@ Result<double> MultiEigenStepperLoop<E, R, A>::step(
       removeMissedComponents(stepping);
       reweight(stepping.components);
 
-      ACTS_VERBOSE("Stepper performed "
+      ACTS_INFO("Stepper performed "
                    << m_stepLimitAfterFirstComponentOnSurface
                    << " after the first component hit a surface.");
-      ACTS_VERBOSE(
+      ACTS_INFO(
           "-> remove all components not on a surface, perform no step");
 
       stepping.stepCounterAfterFirstComponentOnSurface.reset();
@@ -215,7 +215,7 @@ Result<double> MultiEigenStepperLoop<E, R, A>::step(
 
   // Print the summary
   if (errorSteps == 0) {
-    ACTS_VERBOSE("Performed steps: " << summary(results));
+    ACTS_INFO("Performed steps: " << summary(results));
   } else {
     ACTS_WARNING("Performed steps with errors: " << summary(results));
   }

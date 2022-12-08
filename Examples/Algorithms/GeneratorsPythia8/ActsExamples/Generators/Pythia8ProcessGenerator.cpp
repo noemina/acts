@@ -33,7 +33,7 @@ ActsExamples::Pythia8Generator::Pythia8Generator(const Config& cfg,
   // disable all output by default but allow reenable via config
   m_pythia8->settings.flag("Print:quiet", true);
   for (const auto& setting : m_cfg.settings) {
-    ACTS_VERBOSE("use Pythia8 setting '" << setting << "'");
+    ACTS_INFO("use Pythia8 setting '" << setting << "'");
     m_pythia8->readString(setting.c_str());
   }
   m_pythia8->settings.mode("Beams:idA", m_cfg.pdgBeam0);
@@ -97,7 +97,7 @@ ActsExamples::SimParticleContainer ActsExamples::Pythia8Generator::operator()(
         // no matching secondary vertex exists -> create new one
         vertexPositions.emplace_back(pos4);
         particleId.setVertexSecondary(vertexPositions.size());
-        ACTS_VERBOSE("created new secondary vertex " << pos4.transpose());
+        ACTS_INFO("created new secondary vertex " << pos4.transpose());
       } else {
         particleId.setVertexSecondary(
             1u + std::distance(vertexPositions.begin(), it));

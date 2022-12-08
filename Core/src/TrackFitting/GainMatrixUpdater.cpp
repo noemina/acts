@@ -30,16 +30,16 @@ std::tuple<double, std::error_code> GainMatrixUpdater::visitMeasurement(
     typename TrackStateTraits<kMeasurementSize, true>::MeasurementCovariance
         calibratedCovariance{trackState.calibratedCovariance};
 
-    ACTS_VERBOSE("Measurement dimension: " << kMeasurementSize);
-    ACTS_VERBOSE("Calibrated measurement: " << calibrated.transpose());
-    ACTS_VERBOSE("Calibrated measurement covariance:\n"
+    ACTS_INFO("Measurement dimension: " << kMeasurementSize);
+    ACTS_INFO("Calibrated measurement: " << calibrated.transpose());
+    ACTS_INFO("Calibrated measurement covariance:\n"
                  << calibratedCovariance);
 
     const auto H = trackState.projector
                        .template topLeftCorner<kMeasurementSize, eBoundSize>()
                        .eval();
 
-    ACTS_VERBOSE("Measurement projector H:\n" << H);
+    ACTS_INFO("Measurement projector H:\n" << H);
 
     const auto K = (trackState.predictedCovariance * H.transpose() *
                     (H * trackState.predictedCovariance * H.transpose() +
@@ -47,7 +47,7 @@ std::tuple<double, std::error_code> GainMatrixUpdater::visitMeasurement(
                         .inverse())
                        .eval();
 
-    ACTS_VERBOSE("Gain Matrix K:\n" << K);
+    ACTS_INFO("Gain Matrix K:\n" << K);
 
     if (K.hasNaN()) {
       error = (direction == NavigationDirection::Forward)
@@ -60,8 +60,8 @@ std::tuple<double, std::error_code> GainMatrixUpdater::visitMeasurement(
         trackState.predicted + K * (calibrated - H * trackState.predicted);
     trackState.filteredCovariance =
         (BoundSymMatrix::Identity() - K * H) * trackState.predictedCovariance;
-    ACTS_VERBOSE("Filtered parameters: " << trackState.filtered.transpose());
-    ACTS_VERBOSE("Filtered covariance:\n" << trackState.filteredCovariance);
+    ACTS_INFO("Filtered parameters: " << trackState.filtered.transpose());
+    ACTS_INFO("Filtered covariance:\n" << trackState.filteredCovariance);
 
     // calculate filtered residual
     //
@@ -72,7 +72,7 @@ std::tuple<double, std::error_code> GainMatrixUpdater::visitMeasurement(
     //
     ParametersVector residual;
     residual = calibrated - H * trackState.filtered;
-    ACTS_VERBOSE("Residual: " << residual.transpose());
+    ACTS_INFO("Residual: " << residual.transpose());
 
     chi2 = (residual.transpose() *
             ((CovarianceMatrix::Identity() - H * K) * calibratedCovariance)
@@ -80,7 +80,7 @@ std::tuple<double, std::error_code> GainMatrixUpdater::visitMeasurement(
             residual)
                .value();
 
-    ACTS_VERBOSE("Chi2: " << chi2);
+    ACTS_INFO("Chi2: " << chi2);
     return true;  // continue execution
   });
 

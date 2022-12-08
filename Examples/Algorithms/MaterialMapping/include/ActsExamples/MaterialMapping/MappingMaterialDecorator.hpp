@@ -55,16 +55,16 @@ class MappingMaterialDecorator : public IMaterialDecorator {
   ///
   /// @param surface the non-cost surface that is decorated
   void decorate(Surface& surface) const final {
-    ACTS_VERBOSE("Processing surface: " << surface.geometryId());
+    ACTS_INFO("Processing surface: " << surface.geometryId());
     // Clear the material if registered to do so
     if (m_clearSurfaceMaterial) {
-      ACTS_VERBOSE("-> Clearing surface material");
+      ACTS_INFO("-> Clearing surface material");
       surface.assignSurfaceMaterial(nullptr);
     }
     // Try to find the surface in the map
     auto bins = m_binningMap.find(surface.geometryId().value());
     if (bins != m_binningMap.end()) {
-      ACTS_VERBOSE("-> Found material for surface, assigning");
+      ACTS_INFO("-> Found material for surface, assigning");
       surface.assignSurfaceMaterial(
           binnedSurfaceMaterial(surface.getSharedPtr()));
     }
@@ -74,16 +74,16 @@ class MappingMaterialDecorator : public IMaterialDecorator {
   ///
   /// @param volume the non-cost volume that is decorated
   void decorate(TrackingVolume& volume) const final {
-    ACTS_VERBOSE("Processing volume: " << volume.geometryId());
+    ACTS_INFO("Processing volume: " << volume.geometryId());
     // Clear the material if registered to do so
     if (m_clearVolumeMaterial) {
-      ACTS_VERBOSE("-> Clearing volume material");
+      ACTS_INFO("-> Clearing volume material");
       volume.assignVolumeMaterial(nullptr);
     }
     // Try to find the volume in the map
     auto vMaterial = m_volumeMaterialMap.find(volume.geometryId());
     if (vMaterial != m_volumeMaterialMap.end()) {
-      ACTS_VERBOSE("-> Found material for volume, assigning");
+      ACTS_INFO("-> Found material for volume, assigning");
       volume.assignVolumeMaterial(vMaterial->second);
     }
   }

@@ -63,10 +63,10 @@ ActsExamples::RootParticleReader::RootParticleReader(
 
   // add file to the input chain
   m_inputChain->Add(path.c_str());
-  ACTS_DEBUG("Adding File " << path << " to tree '" << m_cfg.treeName << "'.");
+  ACTS_INFO("Adding File " << path << " to tree '" << m_cfg.treeName << "'.");
 
   m_events = m_inputChain->GetEntries();
-  ACTS_DEBUG("The full chain has " << m_events << " entries.");
+  ACTS_INFO("The full chain has " << m_events << " entries.");
 
   // If the events are not in order, get the entry numbers for ordered events
   if (not m_cfg.orderedEvents) {
@@ -109,7 +109,7 @@ ActsExamples::RootParticleReader::~RootParticleReader() {
 
 ActsExamples::ProcessCode ActsExamples::RootParticleReader::read(
     const ActsExamples::AlgorithmContext& context) {
-  ACTS_DEBUG("Trying to read recorded particles.");
+  ACTS_INFO("Trying to read recorded particles.");
 
   // read in the particle
   if (m_inputChain != nullptr && context.eventNumber < m_events) {

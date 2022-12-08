@@ -64,16 +64,16 @@ ActsExamples::ProcessCode ActsExamples::VertexFitterAlgorithm::execute(
   Linearizer::Config ltConfig(m_cfg.bField, propagator);
   Linearizer linearizer(ltConfig);
 
-  ACTS_VERBOSE("Read from '" << m_cfg.inputTrackParameters << "'");
-  ACTS_VERBOSE("Read from '" << m_cfg.inputProtoVertices << "'");
+  ACTS_INFO("Read from '" << m_cfg.inputTrackParameters << "'");
+  ACTS_INFO("Read from '" << m_cfg.inputProtoVertices << "'");
 
   auto [inputTrackParameters, inputTrackPointers] =
       makeParameterContainers(m_cfg, ctx);
 
-  ACTS_VERBOSE("Have " << inputTrackParameters.size() << " track parameters");
+  ACTS_INFO("Have " << inputTrackParameters.size() << " track parameters");
   const auto& protoVertices =
       ctx.eventStore.get<ProtoVertexContainer>(m_cfg.inputProtoVertices);
-  ACTS_VERBOSE("Have " << protoVertices.size() << " proto vertices");
+  ACTS_INFO("Have " << protoVertices.size() << " proto vertices");
 
   std::vector<const Acts::BoundTrackParameters*> inputTrackPtrCollection;
 
@@ -132,11 +132,11 @@ ActsExamples::ProcessCode ActsExamples::VertexFitterAlgorithm::execute(
     }
 
     if (fittedVertices.empty()) {
-      ACTS_DEBUG("No fitted vertex");
+      ACTS_INFO("No fitted vertex");
     } else {
-      ACTS_DEBUG("Fitted Vertex "
+      ACTS_INFO("Fitted Vertex "
                  << fittedVertices.back().fullPosition().transpose());
-      ACTS_DEBUG(
+      ACTS_INFO(
           "Tracks at fitted Vertex: " << fittedVertices.back().tracks().size());
     }
   }

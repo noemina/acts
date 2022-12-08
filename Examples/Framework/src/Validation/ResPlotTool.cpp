@@ -21,7 +21,7 @@ void ActsExamples::ResPlotTool::book(
   PlotHelpers::Binning bPt = m_cfg.varBinning.at("Pt");
   PlotHelpers::Binning bPull = m_cfg.varBinning.at("Pull");
 
-  ACTS_DEBUG("Initialize the histograms for residual and pull plots");
+  ACTS_INFO("Initialize the histograms for residual and pull plots");
   for (unsigned int parID = 0; parID < Acts::eBoundSize; parID++) {
     std::string parName = m_cfg.paramNames.at(parID);
 
@@ -90,7 +90,7 @@ void ActsExamples::ResPlotTool::book(
 }
 
 void ActsExamples::ResPlotTool::clear(ResPlotCache& resPlotCache) const {
-  ACTS_DEBUG("Delete the hists.");
+  ACTS_INFO("Delete the hists.");
   for (unsigned int parID = 0; parID < Acts::eBoundSize; parID++) {
     std::string parName = m_cfg.paramNames.at(parID);
     delete resPlotCache.res.at(parName);
@@ -112,7 +112,7 @@ void ActsExamples::ResPlotTool::clear(ResPlotCache& resPlotCache) const {
 
 void ActsExamples::ResPlotTool::write(
     const ResPlotTool::ResPlotCache& resPlotCache) const {
-  ACTS_DEBUG("Write the hists to output file.");
+  ACTS_INFO("Write the hists to output file.");
   for (unsigned int parID = 0; parID < Acts::eBoundSize; parID++) {
     std::string parName = m_cfg.paramNames.at(parID);
     resPlotCache.res.at(parName)->Write();

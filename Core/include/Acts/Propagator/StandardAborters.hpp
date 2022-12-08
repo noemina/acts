@@ -65,12 +65,12 @@ struct PathLimitReached {
                         false);
     bool limitReached = (std::abs(distance) < std::abs(tolerance));
     if (limitReached) {
-      ACTS_VERBOSE("Target: x | "
+      ACTS_INFO("Target: x | "
                    << "Path limit reached at distance " << distance);
       // reaching the target means navigation break
       state.navigation.targetReached = true;
     } else {
-      ACTS_VERBOSE("Target: 0 | "
+      ACTS_INFO("Target: 0 | "
                    << "Target stepSize (path limit) updated to "
                    << stepper.outputStepSize(state.stepping));
     }
@@ -115,7 +115,7 @@ struct SurfaceReached {
     // surface
     if ((state.navigation.currentSurface &&
          state.navigation.currentSurface == &targetSurface)) {
-      ACTS_VERBOSE("Target: x | "
+      ACTS_INFO("Target: x | "
                    << "Target surface reached.");
       // reaching the target calls a navigation break
       state.navigation.targetReached = true;
@@ -134,12 +134,12 @@ struct SurfaceReached {
 
     // Return true if you fall below tolerance
     if (targetReached) {
-      ACTS_VERBOSE("Target: x | "
+      ACTS_INFO("Target: x | "
                    << "Target surface reached at distance (tolerance) "
                    << distance << " (" << tolerance << ")");
       // assigning the currentSurface
       state.navigation.currentSurface = &targetSurface;
-      ACTS_VERBOSE("Target: x | "
+      ACTS_INFO("Target: x | "
                    << "Current surface set to target surface  "
                    << state.navigation.currentSurface->geometryId());
 
@@ -156,7 +156,7 @@ struct SurfaceReached {
       stepper.setStepSize(state.stepping, state.stepping.navDir * distance,
                           ConstrainedStep::aborter, false);
 
-      ACTS_VERBOSE("Target: 0 | "
+      ACTS_INFO("Target: 0 | "
                    << "Target stepSize (surface) updated to "
                    << stepper.outputStepSize(state.stepping));
     }

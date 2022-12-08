@@ -113,7 +113,7 @@ ActsExamples::ProcessCode ActsExamples::DigitizationAlgorithm::execute(
     const AlgorithmContext& ctx) const {
   // Retrieve input
   const auto& simHits = ctx.eventStore.get<SimHitContainer>(m_cfg.inputSimHits);
-  ACTS_DEBUG("Loaded " << simHits.size() << " sim hits");
+  ACTS_INFO("Loaded " << simHits.size() << " sim hits");
 
   // Prepare output containers
   // need list here for stable addresses
@@ -131,7 +131,7 @@ ActsExamples::ProcessCode ActsExamples::DigitizationAlgorithm::execute(
   // Setup random number generator
   auto rng = m_cfg.randomNumbers->spawnGenerator(ctx);
 
-  ACTS_DEBUG("Starting loop over modules ...");
+  ACTS_INFO("Starting loop over modules ...");
   for (const auto& simHitsGroup : groupByModule(simHits)) {
     // Manual pair unpacking instead of using
     //   auto [moduleGeoId, moduleSimHits] : ...
@@ -153,10 +153,10 @@ ActsExamples::ProcessCode ActsExamples::DigitizationAlgorithm::execute(
 
     auto digitizerItr = m_digitizers.find(moduleGeoId);
     if (digitizerItr == m_digitizers.end()) {
-      ACTS_DEBUG("No digitizer present for module " << moduleGeoId);
+      ACTS_INFO("No digitizer present for module " << moduleGeoId);
       continue;
     } else {
-      ACTS_DEBUG("Digitizer found for module " << moduleGeoId);
+      ACTS_INFO("Digitizer found for module " << moduleGeoId);
     }
 
     // Run the digitizer. Iterate over the hits for this surface inside the
@@ -175,30 +175,30 @@ ActsExamples::ProcessCode ActsExamples::DigitizationAlgorithm::execute(
 
             // Geometric part - 0, 1, 2 local parameters are possible
             if (not digitizer.geometric.indices.empty()) {
-              ACTS_VERBOSE("Configured to geometric digitize "
+              ACTS_INFO("Configured to geometric digitize "
                            << digitizer.geometric.indices.size()
                            << " parameters.");
               auto channels = channelizing(digitizer.geometric, simHit,
                                            *surfacePtr, ctx.geoContext, rng);
               if (channels.empty()) {
-                ACTS_DEBUG(
+                ACTS_INFO(
                     "Geometric channelization did not work, skipping this hit.")
                 continue;
               }
-              ACTS_VERBOSE("Activated " << channels.size()
+              ACTS_INFO("Activated " << channels.size()
                                         << " channels for this hit.");
               dParameters = localParameters(digitizer.geometric, channels, rng);
             }
 
             // Smearing part - (optionally) rest
             if (not digitizer.smearing.indices.empty()) {
-              ACTS_VERBOSE("Configured to smear "
+              ACTS_INFO("Configured to smear "
                            << digitizer.smearing.indices.size()
                            << " parameters.");
               auto res =
                   digitizer.smearing(rng, simHit, *surfacePtr, ctx.geoContext);
               if (not res.ok()) {
-                ACTS_DEBUG("Problem in hit smearing, skipping this hit.")
+                ACTS_INFO("Problem in hit smearing, skipping this hit.")
                 continue;
               }
               const auto& [par, cov] = res.value();
@@ -211,7 +211,7 @@ ActsExamples::ProcessCode ActsExamples::DigitizationAlgorithm::execute(
 
             // Check on success - threshold could have eliminated all channels
             if (dParameters.values.empty()) {
-              ACTS_VERBOSE(
+              ACTS_INFO(
                   "Parameter digitization did not yield a measurement.")
               continue;
             }

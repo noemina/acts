@@ -28,7 +28,7 @@ std::vector<actsvg::svg::object> Acts::Svg::LayerConverter::convert(
   // The volume
   Acts::Svg::ProtoVolume volume;
   volume._name = cOptions.name;
-  ACTS_DEBUG("Processing layer: " << cOptions.name);
+  ACTS_INFO("Processing layer: " << cOptions.name);
 
   /// Convert the surface array into proto surfaces and a grid structure
   if (layer.surfaceArray() != nullptr) {

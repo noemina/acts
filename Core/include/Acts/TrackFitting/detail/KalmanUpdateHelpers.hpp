@@ -98,7 +98,7 @@ auto kalmanHandleMeasurement(
     // Set the measurement type flag
     typeFlags.set(TrackStateFlag::MeasurementFlag);
   } else {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Filtering step successful. But measurement is determined "
         "to "
         "be an outlier. Stepping state is not updated.")
@@ -152,11 +152,11 @@ auto kalmanHandleNoMeasurement(
     typeFlags.set(TrackStateFlag::MaterialFlag);
   }
   if (surface.associatedDetectorElement() != nullptr) {
-    ACTS_VERBOSE("Detected hole on " << surface.geometryId());
+    ACTS_INFO("Detected hole on " << surface.geometryId());
     // If the surface is sensitive, set the hole type flag
     typeFlags.set(TrackStateFlag::HoleFlag);
   } else if (surface.surfaceMaterial() != nullptr) {
-    ACTS_VERBOSE("Detected in-sensitive surface " << surface.geometryId());
+    ACTS_INFO("Detected in-sensitive surface " << surface.geometryId());
   }
 
   // Transport & bind the state to the current surface

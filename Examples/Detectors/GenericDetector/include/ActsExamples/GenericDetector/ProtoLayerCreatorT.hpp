@@ -210,13 +210,13 @@ ProtoLayerCreatorT<detector_element_t>::centralProtoLayers(
   for (auto& eLayers : detectorStore) {
     imodule += eLayers.size();
   }
-  ACTS_VERBOSE("Starting with identfier " << imodule);
+  ACTS_INFO("Starting with identfier " << imodule);
 
   // ----------------------- central layers -------------------------
   // the central layers
   size_t numcLayers = m_cfg.centralLayerRadii.size();
   if (numcLayers != 0u) {
-    ACTS_DEBUG("Configured to build " << numcLayers
+    ACTS_INFO("Configured to build " << numcLayers
                                       << " active central layers.");
     cpLayers.reserve(numcLayers);
     // loop through
@@ -224,7 +224,7 @@ ProtoLayerCreatorT<detector_element_t>::centralProtoLayers(
       // layer R/Z
       double layerR = m_cfg.centralLayerRadii.at(icl);
       // some screen output
-      ACTS_DEBUG("Build layer " << icl << " with target radius = " << layerR);
+      ACTS_INFO("Build layer " << icl << " with target radius = " << layerR);
 
       // prepare the Surface vector
       std::vector<std::shared_ptr<const Acts::Surface>> sVector;
@@ -244,7 +244,7 @@ ProtoLayerCreatorT<detector_element_t>::centralProtoLayers(
       size_t nCentralModules = m_cfg.centralModuleBinningSchema.at(icl).first *
                                m_cfg.centralModuleBinningSchema.at(icl).second;
 
-      ACTS_DEBUG("- number of modules "
+      ACTS_INFO("- number of modules "
                  << nCentralModules << " ( from "
                  << m_cfg.centralModuleBinningSchema.at(icl).first << " x "
                  << m_cfg.centralModuleBinningSchema.at(icl).second << " )");
@@ -407,7 +407,7 @@ ProtoLayerCreatorT<detector_element_t>::createProtoLayers(
   for (auto& eLayers : detectorStore) {
     imodule += eLayers.size();
   }
-  ACTS_VERBOSE("Starting with identfier " << imodule);
+  ACTS_INFO("Starting with identfier " << imodule);
   // the return layers
   std::vector<ProtoLayerSurfaces> epLayers;
   // create the detector store entry
@@ -416,14 +416,14 @@ ProtoLayerCreatorT<detector_element_t>::createProtoLayers(
   // pos/neg layers
   size_t numpnLayers = m_cfg.posnegLayerPositionsZ.size();
   if (numpnLayers != 0u) {
-    ACTS_DEBUG("Configured to build 2 * "
+    ACTS_INFO("Configured to build 2 * "
                << numpnLayers << " passive positive/negative side layers.");
     epLayers.reserve(numpnLayers);
 
     /// this is the loop over th elayer positions
     for (size_t ipnl = 0; ipnl < numpnLayers; ++ipnl) {
       // some screen output
-      ACTS_VERBOSE("- building layer "
+      ACTS_INFO("- building layer "
                    << ipnl << " and " << numpnLayers + ipnl << " at z = "
                    << side * m_cfg.posnegLayerPositionsZ.at(ipnl));
       /// some preparation work
@@ -434,7 +434,7 @@ ProtoLayerCreatorT<detector_element_t>::createProtoLayers(
       // now fill the vectors
       size_t ipnR = 0;
       for (auto& discModulePositions : m_cfg.posnegModulePositions.at(ipnl)) {
-        ACTS_VERBOSE("- building ring " << ipnR << " for this layer.");
+        ACTS_INFO("- building ring " << ipnR << " for this layer.");
         // now prepare all the shared stuff
         // (0) module specifications
         double moduleThickness = m_cfg.posnegModuleThickness.at(ipnl).at(ipnR);

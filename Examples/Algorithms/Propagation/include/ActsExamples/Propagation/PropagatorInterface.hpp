@@ -90,7 +90,7 @@ class ConcretePropagator : public PropagatorInterface {
       const AlgorithmContext& context, const PropagationAlgorithm::Config& cfg,
       Acts::LoggerWrapper logger, const parameters_t& startParameters,
       double pathLength = std::numeric_limits<double>::max()) const {
-    ACTS_DEBUG("Test propagation/extrapolation starts");
+    ACTS_INFO("Test propagation/extrapolation starts");
 
     PropagationOutput pOutput;
 

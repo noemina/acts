@@ -56,13 +56,13 @@ ActsExamples::RootMeasurementWriter::RootMeasurementWriter(
       std::pair<Acts::GeometryIdentifier, std::unique_ptr<DigitizationTree>>>
       dTrees;
   if (not m_cfg.boundIndices.empty()) {
-    ACTS_DEBUG("Bound indices are declared, preparing trees.");
+    ACTS_INFO("Bound indices are declared, preparing trees.");
     for (size_t ikv = 0; ikv < m_cfg.boundIndices.size(); ++ikv) {
       auto geoID = m_cfg.boundIndices.idAt(ikv);
       auto bIndices = m_cfg.boundIndices.valueAt(ikv);
       auto dTree = std::make_unique<DigitizationTree>(geoID);
       for (const auto& bIndex : bIndices) {
-        ACTS_VERBOSE("- setup branch for index: " << bIndex);
+        ACTS_INFO("- setup branch for index: " << bIndex);
         dTree->setupBoundRecBranch(bIndex);
       }
       if (not m_cfg.inputClusters.empty()) {
@@ -71,7 +71,7 @@ ActsExamples::RootMeasurementWriter::RootMeasurementWriter(
       dTrees.push_back({geoID, std::move(dTree)});
     }
   } else {
-    ACTS_DEBUG("Bound indices are not declared, no reco setup.")
+    ACTS_INFO("Bound indices are not declared, no reco setup.")
   }
 
   m_outputTrees = Acts::GeometryHierarchyMap<std::unique_ptr<DigitizationTree>>(

@@ -26,22 +26,22 @@ ActsExamples::ParticleSelector::ParticleSelector(const Config& config,
   if (m_cfg.outputParticles.empty()) {
     throw std::invalid_argument("Missing output particles collection");
   }
-  ACTS_DEBUG("selection particle rho [" << m_cfg.rhoMin << "," << m_cfg.rhoMax
+  ACTS_INFO("selection particle rho [" << m_cfg.rhoMin << "," << m_cfg.rhoMax
                                         << ")");
-  ACTS_DEBUG("selection particle |z| [" << m_cfg.absZMin << "," << m_cfg.absZMax
+  ACTS_INFO("selection particle |z| [" << m_cfg.absZMin << "," << m_cfg.absZMax
                                         << ")");
-  ACTS_DEBUG("selection particle time [" << m_cfg.timeMin << ","
+  ACTS_INFO("selection particle time [" << m_cfg.timeMin << ","
                                          << m_cfg.timeMax << ")");
-  ACTS_DEBUG("selection particle phi [" << m_cfg.phiMin << "," << m_cfg.phiMax
+  ACTS_INFO("selection particle phi [" << m_cfg.phiMin << "," << m_cfg.phiMax
                                         << ")");
-  ACTS_DEBUG("selection particle eta [" << m_cfg.etaMin << "," << m_cfg.etaMax
+  ACTS_INFO("selection particle eta [" << m_cfg.etaMin << "," << m_cfg.etaMax
                                         << ")");
-  ACTS_DEBUG("selection particle |eta| [" << m_cfg.absEtaMin << ","
+  ACTS_INFO("selection particle |eta| [" << m_cfg.absEtaMin << ","
                                           << m_cfg.absEtaMax << ")");
-  ACTS_DEBUG("selection particle pt [" << m_cfg.ptMin << "," << m_cfg.ptMax
+  ACTS_INFO("selection particle pt [" << m_cfg.ptMin << "," << m_cfg.ptMax
                                        << ")");
-  ACTS_DEBUG("remove charged particles " << m_cfg.removeCharged);
-  ACTS_DEBUG("remove neutral particles " << m_cfg.removeNeutral);
+  ACTS_INFO("remove charged particles " << m_cfg.removeCharged);
+  ACTS_INFO("remove neutral particles " << m_cfg.removeNeutral);
 }
 
 ActsExamples::ProcessCode ActsExamples::ParticleSelector::execute(
@@ -84,7 +84,7 @@ ActsExamples::ProcessCode ActsExamples::ParticleSelector::execute(
   }
   outputParticles.shrink_to_fit();
 
-  ACTS_DEBUG("event " << ctx.eventNumber << " selected "
+  ACTS_INFO("event " << ctx.eventNumber << " selected "
                       << outputParticles.size() << " from "
                       << inputParticles.size() << " particles");
 

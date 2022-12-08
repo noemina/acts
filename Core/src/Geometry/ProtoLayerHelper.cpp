@@ -49,7 +49,7 @@ std::vector<Acts::ProtoLayer> Acts::ProtoLayerHelper::protoLayers(
   // Loop over clusters and create ProtoLayer
   protoLayers.reserve(clusteredSurfaces.size());
   for (auto& clusters : clusteredSurfaces) {
-    ACTS_VERBOSE("Creating ProtoLayer with " << clusters.second.size()
+    ACTS_INFO("Creating ProtoLayer with " << clusters.second.size()
                                              << " surfaces.");
     protoLayers.push_back(ProtoLayer(gctx, clusters.second));
   }
@@ -59,25 +59,25 @@ std::vector<Acts::ProtoLayer> Acts::ProtoLayerHelper::protoLayers(
 std::vector<Acts::ProtoLayer> Acts::ProtoLayerHelper::protoLayers(
     const GeometryContext& gctx, const std::vector<const Surface*>& surfaces,
     const std::vector<SortingConfig>& sortings) const {
-  ACTS_DEBUG("Received " << surfaces.size() << " surfaces at input.");
+  ACTS_INFO("Received " << surfaces.size() << " surfaces at input.");
   std::vector<std::vector<const Surface*>> sortSurfaces = {surfaces};
   for (const auto& sorting : sortings) {
-    ACTS_VERBOSE("-> Sorting a set of " << sortSurfaces.size() << " in "
+    ACTS_INFO("-> Sorting a set of " << sortSurfaces.size() << " in "
                                         << binningValueNames()[sorting.first]);
     std::vector<std::vector<const Surface*>> subSurfaces;
     for (const auto& ssurfaces : sortSurfaces) {
-      ACTS_VERBOSE("-> Surfaces for this sorting step: " << ssurfaces.size());
+      ACTS_INFO("-> Surfaces for this sorting step: " << ssurfaces.size());
       auto pLayers = protoLayers(gctx, ssurfaces, sorting);
-      ACTS_VERBOSE("-> Resulted in " << pLayers.size() << " ProtoLayers.");
+      ACTS_INFO("-> Resulted in " << pLayers.size() << " ProtoLayers.");
       for (const auto& pLayer : pLayers) {
-        ACTS_VERBOSE("--> ProtoLayer containes " << pLayer.surfaces().size()
+        ACTS_INFO("--> ProtoLayer containes " << pLayer.surfaces().size()
                                                  << " surfaces.");
         subSurfaces.push_back(pLayer.surfaces());
       }
     }
     sortSurfaces = subSurfaces;
   }
-  ACTS_DEBUG("Yielded " << sortSurfaces.size() << " at output.");
+  ACTS_INFO("Yielded " << sortSurfaces.size() << " at output.");
 
   std::vector<Acts::ProtoLayer> finalProtoLayers;
 

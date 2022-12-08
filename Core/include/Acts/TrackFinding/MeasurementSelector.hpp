@@ -85,7 +85,7 @@ class MeasurementSelector {
                          typename std::vector<typename MultiTrajectory<
                              traj_t>::TrackStateProxy>::iterator>>;
 
-    ACTS_VERBOSE("Invoked MeasurementSelector");
+    ACTS_INFO("Invoked MeasurementSelector");
 
     // Return error if no measurement
     if (candidates.empty()) {
@@ -148,9 +148,9 @@ class MeasurementSelector {
       const auto chi2 = bestIt->chi2();
       const auto chi2Cut =
           VariableCut<traj_t>(*bestIt, cuts, chi2CutOff, logger);
-      ACTS_VERBOSE("Chi2: " << chi2 << ", max: " << chi2Cut);
+      ACTS_INFO("Chi2: " << chi2 << ", max: " << chi2Cut);
       if (chi2 >= chi2Cut) {
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "No measurement candidate. Return an outlier measurement.");
         isOutlier = true;
         // return single item range, no sorting necessary
@@ -178,14 +178,14 @@ class MeasurementSelector {
       const auto chi2 = endIterator->chi2();
       const auto chi2Cut =
           VariableCut<traj_t>(*endIterator, cuts, chi2CutOff, logger);
-      ACTS_VERBOSE("Chi2: " << chi2 << ", max: " << chi2Cut);
+      ACTS_INFO("Chi2: " << chi2 << ", max: " << chi2Cut);
       if (chi2 >= chi2Cut) {
         break;  // endIterator now points at the first track state with chi2
                 // larger than our cutoff => defines the end of our returned
                 // range
       }
     }
-    ACTS_VERBOSE("Number of selected measurements: "
+    ACTS_INFO("Number of selected measurements: "
                  << std::distance(candidates.begin(), endIterator)
                  << ", max: " << numMeasurementsCut);
 
@@ -215,7 +215,7 @@ class MeasurementSelector {
     if (bin >= cuts.size()) {
       bin = cuts.size() - 1;
     }
-    ACTS_VERBOSE("Variable cut for eta=" << eta << ": " << cuts[bin]);
+    ACTS_INFO("Variable cut for eta=" << eta << ": " << cuts[bin]);
     return cuts[bin];
   }
 

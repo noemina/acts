@@ -105,7 +105,7 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingAlgorithm::execute(
       continue;
     }
 
-    ACTS_VERBOSE("Initial parameters: "
+    ACTS_INFO("Initial parameters: "
                  << initialParams.fourPosition(ctx.geoContext).transpose()
                  << " -> " << initialParams.unitDirection().transpose());
 
@@ -129,7 +129,7 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingAlgorithm::execute(
       }
     }
 
-    ACTS_DEBUG("Invoke direct fitter for track " << itrack);
+    ACTS_INFO("Invoke direct fitter for track " << itrack);
     auto result =
         m_cfg.directNavigation
             ? (*m_cfg.fit)(trackSourceLinks, initialParams, options,
@@ -147,12 +147,12 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingAlgorithm::execute(
       Trajectories::IndexedParameters indexedParams;
       if (fitOutput.fittedParameters) {
         const auto& params = fitOutput.fittedParameters.value();
-        ACTS_VERBOSE("Fitted parameters for track " << itrack);
-        ACTS_VERBOSE("  " << params.parameters().transpose());
+        ACTS_INFO("Fitted parameters for track " << itrack);
+        ACTS_INFO("  " << params.parameters().transpose());
         // Push the fitted parameters to the container
         indexedParams.emplace(fitOutput.lastMeasurementIndex, params);
       } else {
-        ACTS_DEBUG("No fitted parameters for track " << itrack);
+        ACTS_INFO("No fitted parameters for track " << itrack);
       }
       // store the result
       trajectories.emplace_back(fitOutput.fittedStates, std::move(trackTips),
@@ -169,7 +169,7 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingAlgorithm::execute(
 
   std::stringstream ss;
   mtj->statistics().toStream(ss);
-  ACTS_DEBUG(ss.str());
+  ACTS_INFO(ss.str());
 
   ctx.eventStore.add(m_cfg.outputTrajectories, std::move(trajectories));
   return ActsExamples::ProcessCode::SUCCESS;

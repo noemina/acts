@@ -204,7 +204,7 @@ bool checkIntersection(const intersection_t& intersection, double pLimit,
   const double cLimit = intersection.pathLength;
 
   if constexpr (doLogging) {
-    ACTS_VERBOSE(" -> pLimit, oLimit, cLimit: " << pLimit << ", " << oLimit
+    ACTS_INFO(" -> pLimit, oLimit, cLimit: " << pLimit << ", " << oLimit
                                                 << ", " << cLimit);
   }
 
@@ -215,15 +215,15 @@ bool checkIntersection(const intersection_t& intersection, double pLimit,
 
   if constexpr (doLogging) {
     if (accept) {
-      ACTS_VERBOSE("Intersection is WITHIN limit");
+      ACTS_INFO("Intersection is WITHIN limit");
     } else {
-      ACTS_VERBOSE("Intersection is OUTSIDE limit because: ");
+      ACTS_INFO("Intersection is OUTSIDE limit because: ");
       if (not coCriterion) {
-        ACTS_VERBOSE("- intersection path length "
+        ACTS_INFO("- intersection path length "
                      << cLimit << " <= overstep limit " << oLimit);
       }
       if (not cpCriterion) {
-        ACTS_VERBOSE("- intersection path length "
+        ACTS_INFO("- intersection path length "
                      << std::abs(cLimit) << " is over the path limit "
                      << (std::abs(pLimit) + tolerance)
                      << " (including tolerance of " << tolerance << ")");

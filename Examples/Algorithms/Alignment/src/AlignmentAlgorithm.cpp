@@ -120,14 +120,14 @@ ActsExamples::ProcessCode ActsExamples::AlignmentAlgorithm::execute(
       m_cfg.alignedDetElements, m_cfg.chi2ONdfCutOff, m_cfg.deltaChi2ONdfCutOff,
       m_cfg.maxNumIterations);
 
-  ACTS_DEBUG("Invoke track-based alignment with " << numTracksUsed
+  ACTS_INFO("Invoke track-based alignment with " << numTracksUsed
                                                   << " input tracks");
   auto result =
       (*m_cfg.align)(sourceLinkTrackContainer, initialParameters, alignOptions);
   if (result.ok()) {
     const auto& alignOutput = result.value();
     alignedParameters = alignOutput.alignedParameters;
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Alignment finished with deltaChi2 = " << result.value().deltaChi2);
   } else {
     ACTS_WARNING("Alignment failed with " << result.error());

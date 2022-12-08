@@ -59,9 +59,9 @@ std::shared_ptr<Acts::TrackingVolume>
 Acts::CylinderVolumeBuilder::trackingVolume(
     const GeometryContext& gctx, TrackingVolumePtr existingVolume,
     VolumeBoundsPtr externalBounds) const {
-  ACTS_DEBUG("Configured to build volume : " << m_cfg.volumeName);
+  ACTS_INFO("Configured to build volume : " << m_cfg.volumeName);
   if (existingVolume) {
-    ACTS_DEBUG("- will wrap/enclose : " << existingVolume->volumeName());
+    ACTS_INFO("- will wrap/enclose : " << existingVolume->volumeName());
   }
 
   // the return volume
@@ -70,7 +70,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
 
   // now analyize the layers that are provided
   // -----------------------------------------------------
-  ACTS_DEBUG("-> Building layers");
+  ACTS_INFO("-> Building layers");
   LayerVector negativeLayers;
   LayerVector centralLayers;
   LayerVector positiveLayers;
@@ -87,7 +87,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
     // the positive Layer
     positiveLayers = m_cfg.layerBuilder->positiveLayers(gctx);
   }
-  ACTS_DEBUG("-> Building layers complete");
+  ACTS_INFO("-> Building layers complete");
 
   // Build the confined volumes
   MutableTrackingVolumeVector centralVolumes;
@@ -164,7 +164,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
   std::string layerConfiguration = "|";
   if (wConfig.nVolumeConfig) {
     // negative layers are present
-    ACTS_VERBOSE("Negative layers are present: rmin, rmax | zmin, zmax = "
+    ACTS_INFO("Negative layers are present: rmin, rmax | zmin, zmax = "
                  << wConfig.nVolumeConfig.toString());
     std::vector<std::string> centers;
     std::transform(negativeLayers.begin(), negativeLayers.end(),
@@ -172,13 +172,13 @@ Acts::CylinderVolumeBuilder::trackingVolume(
                      return std::to_string(
                          layer->surfaceRepresentation().center(gctx)[eZ]);
                    });
-    ACTS_VERBOSE("-> z locations: " << boost::algorithm::join(centers, ", "));
+    ACTS_INFO("-> z locations: " << boost::algorithm::join(centers, ", "));
     // add to the string output
     layerConfiguration += " Negative Endcap |";
   }
   if (wConfig.cVolumeConfig) {
     // central layers are present
-    ACTS_VERBOSE("Central layers are present:  rmin, rmax | zmin, zmax = "
+    ACTS_INFO("Central layers are present:  rmin, rmax | zmin, zmax = "
                  << wConfig.cVolumeConfig.toString());
     std::vector<std::string> centers;
     std::transform(centralLayers.begin(), centralLayers.end(),
@@ -186,13 +186,13 @@ Acts::CylinderVolumeBuilder::trackingVolume(
                      return std::to_string(VectorHelpers::perp(
                          layer->surfaceRepresentation().center(gctx)));
                    });
-    ACTS_VERBOSE("-> radii: " << boost::algorithm::join(centers, ", "));
+    ACTS_INFO("-> radii: " << boost::algorithm::join(centers, ", "));
     // add to the string output
     layerConfiguration += " Barrel |";
   }
   if (wConfig.pVolumeConfig) {
     // positive layers are present
-    ACTS_VERBOSE("Positive layers are present: rmin, rmax | zmin, zmax = "
+    ACTS_INFO("Positive layers are present: rmin, rmax | zmin, zmax = "
                  << wConfig.pVolumeConfig.toString());
     std::vector<std::string> centers;
     std::transform(positiveLayers.begin(), positiveLayers.end(),
@@ -200,26 +200,26 @@ Acts::CylinderVolumeBuilder::trackingVolume(
                      return std::to_string(
                          layer->surfaceRepresentation().center(gctx)[eZ]);
                    });
-    ACTS_VERBOSE("-> z locations: " << boost::algorithm::join(centers, ", "));
+    ACTS_INFO("-> z locations: " << boost::algorithm::join(centers, ", "));
     // add to the string output
     layerConfiguration += " Positive Endcap |";
   }
   // screen output
-  ACTS_DEBUG("Layer configuration is : " << layerConfiguration);
+  ACTS_INFO("Layer configuration is : " << layerConfiguration);
 
   // (B) LAYER Config SYNCHRONISATION ----------------------------------
   // synchronise the layer config
-  ACTS_VERBOSE("Configurations after layer parsing " << '\n'
+  ACTS_INFO("Configurations after layer parsing " << '\n'
                                                      << wConfig.toString());
   // first let us arrange the new container volume
   wConfig.configureContainerVolume();
-  ACTS_VERBOSE("Configuration after container synchronisation "
+  ACTS_INFO("Configuration after container synchronisation "
                << '\n'
                << wConfig.toString());
   // now let's understand the wrapping if needed
   if (wConfig.existingVolumeConfig) {
     wConfig.wrapInsertAttach();
-    ACTS_VERBOSE("Configuration after wrapping, insertion, attachment "
+    ACTS_INFO("Configuration after wrapping, insertion, attachment "
                  << '\n'
                  << wConfig.toString());
   } else {
@@ -254,7 +254,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
     }
     // Check for ring layout
     if (m_cfg.checkRingLayout) {
-      ACTS_DEBUG("Configured to check for ring layout - parsing layers.");
+      ACTS_INFO("Configured to check for ring layout - parsing layers.");
       // Parsing loop for ring layout
       std::vector<double> innerRadii = {};
       std::vector<double> outerRadii = {};
@@ -289,7 +289,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
       std::sort(innerRadii.begin(), innerRadii.end());
       std::sort(outerRadii.begin(), outerRadii.end());
 
-      ACTS_DEBUG("Inner radii:" << [&]() {
+      ACTS_INFO("Inner radii:" << [&]() {
         std::stringstream ss;
         for (double f : innerRadii) {
           ss << " " << f;
@@ -297,7 +297,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
         return ss.str();
       }());
 
-      ACTS_DEBUG("Outer radii:" << [&]() {
+      ACTS_INFO("Outer radii:" << [&]() {
         std::stringstream ss;
         for (double f : outerRadii) {
           ss << " " << f;
@@ -308,11 +308,11 @@ Acts::CylinderVolumeBuilder::trackingVolume(
       if (innerRadii.size() == outerRadii.size() and not innerRadii.empty()) {
         bool consistent = true;
         // The inter volume radii
-        ACTS_VERBOSE("Checking ring radius consistency");
+        ACTS_INFO("Checking ring radius consistency");
         std::vector<double> interRadii = {};
         for (int ir = 1; ir < int(innerRadii.size()); ++ir) {
           // Check whether inner/outer radii are consistent
-          ACTS_VERBOSE(
+          ACTS_INFO(
               "or #" << ir - 1 << " < ir #" << ir << ": " << outerRadii[ir - 1]
                      << " < " << innerRadii[ir] << ", ok: "
                      << (outerRadii[ir - 1] < innerRadii[ir] ? "yes" : "no"));
@@ -325,7 +325,7 @@ Acts::CylinderVolumeBuilder::trackingVolume(
         }
         // Continue if the ring layout is consistent
         if (consistent) {
-          ACTS_DEBUG("Ring layout detection: " << innerRadii.size()
+          ACTS_INFO("Ring layout detection: " << innerRadii.size()
                                                << " volumes.");
           // Separate the Layers into volumes
           std::vector<std::pair<double, double>> volumeRminRmax = {};
@@ -359,12 +359,12 @@ Acts::CylinderVolumeBuilder::trackingVolume(
             }
           }
           // Subvolume construction
-          ACTS_DEBUG("Ring layout configuration: ");
+          ACTS_INFO("Ring layout configuration: ");
           // Endcap container
           std::vector<TrackingVolumePtr> endcapContainer;
           unsigned int ir = 0;
           for (auto& rLayers : ringLayers) {
-            ACTS_DEBUG(" - ring volume " << ir << " with " << rLayers.size()
+            ACTS_INFO(" - ring volume " << ir << " with " << rLayers.size()
                                          << " layers, and rmin/rmax = "
                                          << volumeRminRmax[ir].first << "/"
                                          << volumeRminRmax[ir].second);
@@ -379,10 +379,10 @@ Acts::CylinderVolumeBuilder::trackingVolume(
           // Return a container of ring volumes
           return tvHelper->createContainerTrackingVolume(gctx, endcapContainer);
         } else {
-          ACTS_DEBUG("Ring radii found to be inconsistent");
+          ACTS_INFO("Ring radii found to be inconsistent");
         }
       } else {
-        ACTS_DEBUG("Have " << innerRadii.size() << " inner radii and "
+        ACTS_INFO("Have " << innerRadii.size() << " inner radii and "
                            << outerRadii.size() << " outer radii");
       }
     }
@@ -402,12 +402,12 @@ Acts::CylinderVolumeBuilder::trackingVolume(
   auto pEndcap = createEndcap(wConfig.cVolumeConfig, wConfig.pVolumeConfig,
                               "::PositiveEndcap");
 
-  ACTS_DEBUG("Newly created volume(s) will be " << wConfig.wConditionScreen);
+  ACTS_INFO("Newly created volume(s) will be " << wConfig.wConditionScreen);
   // Standalone container, full wrapping, full insertion & if no existing volume
   // is present needs a bare triple
   if (wConfig.wCondition == Wrapping || wConfig.wCondition == Inserting ||
       wConfig.wCondition == NoWrapping) {
-    ACTS_VERBOSE("Combined new container is being built.");
+    ACTS_INFO("Combined new container is being built.");
     // Stuff into the container what you have
     std::vector<TrackingVolumePtr> volumesContainer;
     if (nEndcap) {
@@ -626,7 +626,7 @@ Acts::VolumeConfig Acts::CylinderVolumeBuilder::analyzeContent(
   lConfig.volumes = mtvVector;
   // overwrite to radius 0 if needed
   if (m_cfg.buildToRadiusZero) {
-    ACTS_VERBOSE("This layer builder is configured to build to the beamline.");
+    ACTS_INFO("This layer builder is configured to build to the beamline.");
     lConfig.rMin = 0.;
   }
 

@@ -55,11 +55,11 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::find(
     Vertex<InputTrack_t>& vtxCandidate = *allVertices.back();
     allVerticesPtr.push_back(&vtxCandidate);
 
-    ACTS_DEBUG("Position of current vertex candidate after seeding: "
+    ACTS_INFO("Position of current vertex candidate after seeding: "
                << vtxCandidate.fullPosition());
     if (vtxCandidate.position().z() ==
         vertexingOptions.vertexConstraint.position().z()) {
-      ACTS_DEBUG(
+      ACTS_INFO(
           "No seed found anymore. Break and stop primary vertex finding.");
       allVertices.pop_back();
       allVerticesPtr.pop_back();
@@ -78,7 +78,7 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::find(
       return prepResult.error();
     }
     if (!(*prepResult)) {
-      ACTS_DEBUG("Could not prepare for fit anymore. Break.");
+      ACTS_INFO("Could not prepare for fit anymore. Break.");
       allVertices.pop_back();
       allVerticesPtr.pop_back();
       break;
@@ -92,13 +92,13 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::find(
     if (!fitResult.ok()) {
       return fitResult.error();
     }
-    ACTS_DEBUG("New position of current vertex candidate after fit: "
+    ACTS_INFO("New position of current vertex candidate after fit: "
                << vtxCandidate.fullPosition());
     // Check if vertex is good vertex
     auto [nCompatibleTracks, isGoodVertex] =
         checkVertexAndCompatibleTracks(vtxCandidate, seedTracks, fitterState);
 
-    ACTS_DEBUG("Vertex is good vertex: " << isGoodVertex);
+    ACTS_INFO("Vertex is good vertex: " << isGoodVertex);
     if (nCompatibleTracks > 0) {
       removeCompatibleTracksFromSeedTracks(vtxCandidate, seedTracks,
                                            fitterState, removedSeedTracks);
@@ -107,7 +107,7 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::find(
           vtxCandidate, seedTracks, fitterState, removedSeedTracks,
           vertexingOptions.geoContext);
       if (!removedIncompatibleTrack) {
-        ACTS_DEBUG(
+        ACTS_INFO(
             "Could not remove any further track from seed tracks. Break.");
         allVertices.pop_back();
         allVerticesPtr.pop_back();
@@ -116,7 +116,7 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::find(
     }
     bool keepVertex = isGoodVertex &&
                       keepNewVertex(vtxCandidate, allVerticesPtr, fitterState);
-    ACTS_DEBUG("New vertex will be saved: " << keepVertex);
+    ACTS_INFO("New vertex will be saved: " << keepVertex);
 
     // Delete vertex from allVertices list again if it's not kept
     if (not keepVertex) {
@@ -297,14 +297,14 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::
       }
 
       if (fitterState.vtxInfoMap[&vtx].trackLinks.empty()) {
-        ACTS_DEBUG(
+        ACTS_INFO(
             "No tracks near seed were found, while at least one was "
             "expected. Break.");
         return Result<bool>::success(false);
       }
 
     } else {
-      ACTS_DEBUG("No nearest track to seed found. Break.");
+      ACTS_INFO("No nearest track to seed found. Break.");
       return Result<bool>::success(false);
     }
   }
@@ -367,7 +367,7 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::
                        [&trk](auto seedTrk) { return trk == seedTrk; });
       if (foundIter != seedTracks.end()) {
         nCompatibleTracks++;
-        ACTS_DEBUG("Compatible track found.");
+        ACTS_INFO("Compatible track found.");
 
         if (m_cfg.addSingleTrackVertices && m_cfg.useBeamSpotConstraint) {
           isGoodVertex = true;
@@ -461,7 +461,7 @@ auto Acts::AdaptiveMultiVertexFinder<vfitter_t, sfinder_t>::
       seedTracks.erase(smallestDzSeedIter);
       removedSeedTracks.push_back(removedTrack);
     } else {
-      ACTS_DEBUG("No track found to remove. Stop vertex finding now.");
+      ACTS_INFO("No track found to remove. Stop vertex finding now.");
       return false;
     }
   }

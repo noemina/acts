@@ -52,10 +52,10 @@ ActsExamples::ProcessCode ActsExamples::HelloRandomAlgorithm::execute(
     double gamma = gammaDist(rng);
     int poisson = poissonDist(rng);
 
-    ACTS_VERBOSE("Gauss   : " << gauss);
-    ACTS_VERBOSE("Uniform : " << uniform);
-    ACTS_VERBOSE("Gamma   : " << gamma);
-    ACTS_VERBOSE("Poisson : " << poisson);
+    ACTS_INFO("Gauss   : " << gauss);
+    ACTS_INFO("Uniform : " << uniform);
+    ACTS_INFO("Gamma   : " << gamma);
+    ACTS_INFO("Poisson : " << poisson);
 
     HelloData x{};
     x.x = gauss;

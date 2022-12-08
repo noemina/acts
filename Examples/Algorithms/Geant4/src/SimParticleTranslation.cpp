@@ -40,7 +40,7 @@ void ActsExamples::SimParticleTranslation::GeneratePrimaries(G4Event* anEvent) {
   anEvent->SetEventID(m_eventNr++);
   unsigned int eventID = anEvent->GetEventID();
 
-  ACTS_DEBUG("Primary Generator Action for Event: " << eventID);
+  ACTS_INFO("Primary Generator Action for Event: " << eventID);
 
   auto& eventData = EventStoreRegistry::eventData();
   WhiteBoard* eventStore = eventData.store;
@@ -78,7 +78,7 @@ void ActsExamples::SimParticleTranslation::GeneratePrimaries(G4Event* anEvent) {
       // Add the vertex to the event
       if (pVertex != nullptr) {
         anEvent->AddPrimaryVertex(pVertex);
-        ACTS_DEBUG("Flushing " << pCounter
+        ACTS_INFO("Flushing " << pCounter
                                << " particles associated with vertex "
                                << Acts::toString(*lastVertex));
         pCounter = 0;
@@ -115,17 +115,17 @@ void ActsExamples::SimParticleTranslation::GeneratePrimaries(G4Event* anEvent) {
 
     // Skip if tranlation failed
     if (particleDefinition == nullptr) {
-      ACTS_VERBOSE(
+      ACTS_INFO(
           "Could not translate particle with PDG code : " << particlePdgCode);
       continue;
     }
 
-    ACTS_VERBOSE("Adding particle with name '"
+    ACTS_INFO("Adding particle with name '"
                  << particleDefinition->GetParticleName()
                  << "' and properties:");
-    ACTS_VERBOSE(" -> mass: " << particleMass);
-    ACTS_VERBOSE(" -> momentum: " << mom4.transpose());
-    ACTS_VERBOSE(" -> charge: " << part.charge());
+    ACTS_INFO(" -> mass: " << particleMass);
+    ACTS_INFO(" -> momentum: " << mom4.transpose());
+    ACTS_INFO(" -> charge: " << part.charge());
 
     G4PrimaryParticle* particle = new G4PrimaryParticle(particleDefinition);
 
@@ -140,7 +140,7 @@ void ActsExamples::SimParticleTranslation::GeneratePrimaries(G4Event* anEvent) {
   // Final vertex to be added
   if (pVertex != nullptr) {
     anEvent->AddPrimaryVertex(pVertex);
-    ACTS_DEBUG("Flushing " << pCounter << " particles associated with vertex "
+    ACTS_INFO("Flushing " << pCounter << " particles associated with vertex "
                            << Acts::toString(*lastVertex));
   }
 }

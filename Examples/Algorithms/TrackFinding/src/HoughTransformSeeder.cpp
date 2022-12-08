@@ -169,7 +169,7 @@ ActsExamples::ProcessCode ActsExamples::HoughTransformSeeder::execute(
       }
     }
   }
-  ACTS_DEBUG("Created " << protoTracks.size() << " track seeds");
+  ACTS_INFO("Created " << protoTracks.size() << " track seeds");
 
   ctx.eventStore.add(m_cfg.outputProtoTracks, ProtoTrackContainer{protoTracks});
   // clear the vector

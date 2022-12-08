@@ -53,7 +53,7 @@ Acts::detail::CorrectedFreeToBoundTransformer::operator()(
   // transformation
   if (absCosIncidenceAng < m_cosIncidentAngleMinCutoff or
       absCosIncidenceAng > m_cosIncidentAngleMaxCutoff) {
-    ACTS_VERBOSE("Incident angle: " << std::acos(absCosIncidenceAng)
+    ACTS_INFO("Incident angle: " << std::acos(absCosIncidenceAng)
                                     << " is out of range for correction");
     return std::nullopt;
   }

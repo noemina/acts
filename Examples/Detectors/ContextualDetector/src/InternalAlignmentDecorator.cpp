@@ -27,8 +27,8 @@ ActsExamples::Contextual::InternalAlignmentDecorator::decorate(
   // In which iov batch are we?
   unsigned int iov = context.eventNumber / m_cfg.iovSize;
 
-  ACTS_VERBOSE("IOV handling in thread " << std::this_thread::get_id() << ".");
-  ACTS_VERBOSE("IOV resolved to " << iov << " - from event "
+  ACTS_INFO("IOV handling in thread " << std::this_thread::get_id() << ".");
+  ACTS_INFO("IOV resolved to " << iov << " - from event "
                                   << context.eventNumber << ".");
 
   m_eventsSeen++;
@@ -44,7 +44,7 @@ ActsExamples::Contextual::InternalAlignmentDecorator::decorate(
 
       m_activeIovs.emplace(iov, IovStatus{m_eventsSeen});
 
-      ACTS_VERBOSE("New IOV " << iov << " detected at event "
+      ACTS_INFO("New IOV " << iov << " detected at event "
                               << context.eventNumber
                               << ", emulate new alignment.");
 
@@ -71,7 +71,7 @@ ActsExamples::Contextual::InternalAlignmentDecorator::decorate(
       unsigned int this_iov = it->first;
       auto& status = it->second;
       if (m_eventsSeen - status.lastAccessed > m_cfg.flushSize) {
-        ACTS_DEBUG("IOV " << this_iov << " has not been accessed in the last "
+        ACTS_INFO("IOV " << this_iov << " has not been accessed in the last "
                           << m_cfg.flushSize << " events, clearing");
         it = m_activeIovs.erase(it);
         for (auto& lstore : m_cfg.detectorStore) {

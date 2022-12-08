@@ -67,7 +67,7 @@ struct MaterialCollector {
         return;
       }
 
-      ACTS_VERBOSE("Material check on surface "
+      ACTS_INFO("Material check on surface "
                    << state.navigation.currentSurface->geometryId());
 
       if (state.navigation.currentSurface->surfaceMaterial()) {
@@ -80,28 +80,28 @@ struct MaterialCollector {
           double prepofu = 1.;
           if (state.navigation.startSurface ==
               state.navigation.currentSurface) {
-            ACTS_VERBOSE("Update on start surface: post-update mode.");
+            ACTS_INFO("Update on start surface: post-update mode.");
             prepofu =
                 state.navigation.currentSurface->surfaceMaterial()->factor(
                     state.stepping.navDir, MaterialUpdateStage::PostUpdate);
           } else if (state.navigation.targetSurface ==
                      state.navigation.currentSurface) {
-            ACTS_VERBOSE("Update on target surface: pre-update mode");
+            ACTS_INFO("Update on target surface: pre-update mode");
             prepofu =
                 state.navigation.currentSurface->surfaceMaterial()->factor(
                     state.stepping.navDir, MaterialUpdateStage::PreUpdate);
           } else {
-            ACTS_VERBOSE("Update while pass through: full mode.");
+            ACTS_INFO("Update while pass through: full mode.");
           }
 
           // the pre/post factor has been applied
           // now check if there's still something to do
           if (prepofu == 0.) {
-            ACTS_VERBOSE("Pre/Post factor set material to zero.");
+            ACTS_INFO("Pre/Post factor set material to zero.");
             return;
           }
           // more debugging output to the screen
-          ACTS_VERBOSE("Material properties found for this surface.");
+          ACTS_INFO("Material properties found for this surface.");
 
           // the path correction from the surface intersection
           double pCorrection =
@@ -112,7 +112,7 @@ struct MaterialCollector {
           result.materialInX0 += pCorrection * mProperties->thicknessInX0();
           result.materialInL0 += pCorrection * mProperties->thicknessInL0();
 
-          ACTS_VERBOSE("t/X0 (t/L0) increased to "
+          ACTS_INFO("t/X0 (t/L0) increased to "
                        << result.materialInX0 << " (" << result.materialInL0
                        << " )");
 

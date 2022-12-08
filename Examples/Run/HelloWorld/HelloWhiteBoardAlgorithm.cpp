@@ -29,7 +29,7 @@ ActsExamples::ProcessCode ActsExamples::HelloWhiteBoardAlgorithm::execute(
   // event-store is append-only and always returns a const reference.
   ACTS_INFO("Reading HelloDataCollection " << m_cfg.input);
   const auto& in = ctx.eventStore.get<HelloDataCollection>(m_cfg.input);
-  ACTS_VERBOSE("Read HelloDataCollection with size " << in.size());
+  ACTS_INFO("Read HelloDataCollection with size " << in.size());
 
   // create a copy
   HelloDataCollection copy(in);

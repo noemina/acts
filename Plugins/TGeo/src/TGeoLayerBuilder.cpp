@@ -89,7 +89,7 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
   addonOutput += std::string(".");
 
   // Screen output of the configuration
-  ACTS_DEBUG(layerType << " layers : found " << layerConfigs.size()
+  ACTS_INFO(layerType << " layers : found " << layerConfigs.size()
                        << " configuration(s)" + addonOutput);
 
   // Helper function to fill the layer
@@ -138,7 +138,7 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
 
     if (type == 0) {
       ProtoLayer pl(gctx, lSurfaces);
-      ACTS_DEBUG("- creating CylinderLayer with "
+      ACTS_INFO("- creating CylinderLayer with "
                  << lSurfaces.size() << " surfaces at r = " << pl.medium(binR));
 
       pl.envelope[Acts::binR] = {lCfg.envelope.first, lCfg.envelope.second};
@@ -152,7 +152,7 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
       }
     } else {
       ProtoLayer pl(gctx, lSurfaces);
-      ACTS_DEBUG("- creating DiscLayer with "
+      ACTS_INFO("- creating DiscLayer with "
                  << lSurfaces.size() << " surfaces at z = " << pl.medium(binZ));
 
       pl.envelope[Acts::binR] = {lCfg.envelope.first, lCfg.envelope.second};
@@ -168,14 +168,14 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
   };
 
   for (auto layerCfg : layerConfigs) {
-    ACTS_DEBUG("- layer configuration found for layer " << layerCfg.volumeName
+    ACTS_INFO("- layer configuration found for layer " << layerCfg.volumeName
                                                         << " with sensors ");
     for (auto& sensor : layerCfg.sensorNames) {
-      ACTS_DEBUG("  - sensor: " << sensor);
+      ACTS_INFO("  - sensor: " << sensor);
     }
     if (not layerCfg.parseRanges.empty()) {
       for (const auto& pRange : layerCfg.parseRanges) {
-        ACTS_DEBUG("- layer parsing restricted in "
+        ACTS_INFO("- layer parsing restricted in "
                    << binningValueNames()[pRange.first] << " to ["
                    << pRange.second.first << "/" << pRange.second.second
                    << "].");
@@ -183,7 +183,7 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
     }
     if (not layerCfg.splitConfigs.empty()) {
       for (const auto& sConfig : layerCfg.splitConfigs) {
-        ACTS_DEBUG("- layer splitting attempt in "
+        ACTS_INFO("- layer splitting attempt in "
                    << binningValueNames()[sConfig.first] << " with tolerance "
                    << sConfig.second << ".");
       }
@@ -194,9 +194,9 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
         gGeoManager->FindVolumeFast(layerCfg.volumeName.c_str());
     if (tVolume == nullptr) {
       tVolume = gGeoManager->GetTopVolume();
-      ACTS_DEBUG("- search volume is TGeo top volume");
+      ACTS_INFO("- search volume is TGeo top volume");
     } else {
-      ACTS_DEBUG("- setting search volume to " << tVolume->GetName());
+      ACTS_INFO("- setting search volume to " << tVolume->GetName());
     }
 
     if (tVolume != nullptr) {
@@ -208,17 +208,17 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
       TGeoParser::State tgpState;
       tgpState.volume = tVolume;
 
-      ACTS_DEBUG("- applying  " << layerCfg.parseRanges.size()
+      ACTS_INFO("- applying  " << layerCfg.parseRanges.size()
                                 << " search restrictions.");
       for (const auto& prange : layerCfg.parseRanges) {
-        ACTS_VERBOSE(" - range " << binningValueNames()[prange.first]
+        ACTS_INFO(" - range " << binningValueNames()[prange.first]
                                  << " within [ " << prange.second.first << ", "
                                  << prange.second.second << "]");
       }
 
       TGeoParser::select(tgpState, tgpOptions);
 
-      ACTS_DEBUG("- number of selected nodes found : "
+      ACTS_INFO("- number of selected nodes found : "
                  << tgpState.selectedNodes.size());
 
       for (auto& snode : tgpState.selectedNodes) {
@@ -244,13 +244,13 @@ void Acts::TGeoLayerBuilder::buildLayers(const GeometryContext& gctx,
         }
       }
 
-      ACTS_DEBUG("- created TGeoDetectorElements : " << layerSurfaces.size());
+      ACTS_INFO("- created TGeoDetectorElements : " << layerSurfaces.size());
 
       if (m_cfg.protoLayerHelper != nullptr and
           not layerCfg.splitConfigs.empty()) {
         auto protoLayers = m_cfg.protoLayerHelper->protoLayers(
             gctx, unpack_shared_vector(layerSurfaces), layerCfg.splitConfigs);
-        ACTS_DEBUG("- splitting into " << protoLayers.size() << " layers.");
+        ACTS_INFO("- splitting into " << protoLayers.size() << " layers.");
 
         // Number of options mismatch and has not been configured for
         // auto-binning

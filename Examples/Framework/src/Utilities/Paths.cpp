@@ -87,7 +87,7 @@ std::pair<size_t, size_t> ActsExamples::determineEventFilesRange(
     // keep a copy so the match can refer to the underlying const char*
     filename = f.path().filename().native();
     if (std::regex_match(filename.c_str(), match, re)) {
-      ACTS_VERBOSE("Matching file " << filename);
+      ACTS_INFO("Matching file " << filename);
 
       // first sub_match is the whole string, second should be the event number
       size_t event = 0;
@@ -101,7 +101,7 @@ std::pair<size_t, size_t> ActsExamples::determineEventFilesRange(
       eventMax = std::max(eventMax, event);
     }
   }
-  ACTS_VERBOSE("Detected event range [" << eventMin << "," << eventMax << "]");
+  ACTS_INFO("Detected event range [" << eventMin << "," << eventMax << "]");
 
   // should only occur if no files matched and the initial values persisted.
   if (eventMax < eventMin) {

@@ -21,7 +21,7 @@ void ActsExamples::TrackSummaryPlotTool::book(
   PlotHelpers::Binning bEta = m_cfg.varBinning.at("Eta");
   PlotHelpers::Binning bPt = m_cfg.varBinning.at("Pt");
   PlotHelpers::Binning bNum = m_cfg.varBinning.at("Num");
-  ACTS_DEBUG("Initialize the histograms for track info plots");
+  ACTS_INFO("Initialize the histograms for track info plots");
   // number of track states versus eta
   trackSummaryPlotCache.nStates_vs_eta = PlotHelpers::bookProf(
       "nStates_vs_eta", "Number of total states vs. #eta", bEta, bNum);
@@ -71,7 +71,7 @@ void ActsExamples::TrackSummaryPlotTool::clear(
 void ActsExamples::TrackSummaryPlotTool::write(
     const TrackSummaryPlotTool::TrackSummaryPlotCache& trackSummaryPlotCache)
     const {
-  ACTS_DEBUG("Write the plots to output file.");
+  ACTS_INFO("Write the plots to output file.");
   trackSummaryPlotCache.nStates_vs_eta->Write();
   trackSummaryPlotCache.nMeasurements_vs_eta->Write();
   trackSummaryPlotCache.nOutliers_vs_eta->Write();

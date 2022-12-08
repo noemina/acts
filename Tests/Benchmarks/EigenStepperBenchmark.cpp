@@ -105,7 +105,7 @@ int main(int argc, char* argv[]) {
       [&] {
         auto r = propagator.propagate(pars, options).value();
         if (totalPathLength == 0.) {
-          ACTS_DEBUG("reached position "
+          ACTS_INFO("reached position "
                      << r.endParameters->position(tgContext).transpose()
                      << " in " << r.steps << " steps");
         }

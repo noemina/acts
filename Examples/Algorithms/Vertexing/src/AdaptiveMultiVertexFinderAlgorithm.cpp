@@ -122,9 +122,9 @@ ActsExamples::AdaptiveMultiVertexFinderAlgorithm::execute(
   auto t1 = std::chrono::high_resolution_clock::now();
 
   if (inputTrackParameters.empty()) {
-    ACTS_DEBUG("Empty track parameter collection found, skipping vertexing");
+    ACTS_INFO("Empty track parameter collection found, skipping vertexing");
   } else {
-    ACTS_DEBUG("Have " << inputTrackParameters.size()
+    ACTS_INFO("Have " << inputTrackParameters.size()
                        << " input track parameters, running vertexing");
     // find vertices and measure elapsed time
     auto result = finder.find(inputTrackPointers, finderOpts, state);
@@ -141,7 +141,7 @@ ActsExamples::AdaptiveMultiVertexFinderAlgorithm::execute(
   // show some debug output
   ACTS_INFO("Found " << vertices.size() << " vertices in event");
   for (const auto& vtx : vertices) {
-    ACTS_DEBUG("Found vertex at " << vtx.fullPosition().transpose() << " with "
+    ACTS_INFO("Found vertex at " << vtx.fullPosition().transpose() << " with "
                                   << vtx.tracks().size() << " tracks.");
   }
 

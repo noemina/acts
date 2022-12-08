@@ -128,7 +128,7 @@ ActsExamples::ProcessCode ActsExamples::SpacePointMaker::execute(
 
   spacePoints.shrink_to_fit();
 
-  ACTS_DEBUG("Created " << spacePoints.size() << " space points");
+  ACTS_INFO("Created " << spacePoints.size() << " space points");
   ctx.eventStore.add(m_cfg.outputSpacePoints, std::move(spacePoints));
 
   return ActsExamples::ProcessCode::SUCCESS;

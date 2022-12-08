@@ -62,14 +62,14 @@ ActsExamples::RootMaterialTrackReader::RootMaterialTrackReader(
   for (const auto& inputFile : m_cfg.fileList) {
     // add file to the input chain
     m_inputChain->Add(inputFile.c_str());
-    ACTS_DEBUG("Adding File " << inputFile << " to tree '" << m_cfg.treeName
+    ACTS_INFO("Adding File " << inputFile << " to tree '" << m_cfg.treeName
                               << "'.");
   }
 
   m_events = m_inputChain->GetMaximum("event_id") + 1;
   size_t nentries = m_inputChain->GetEntries();
   m_batchSize = nentries / m_events;
-  ACTS_DEBUG("The full chain has "
+  ACTS_INFO("The full chain has "
              << nentries << " entries for " << m_events
              << " events this corresponds to a batch size of: " << m_batchSize);
   std::cout << "The full chain has " << nentries << " entries for " << m_events
@@ -120,7 +120,7 @@ ActsExamples::RootMaterialTrackReader::availableEvents() const {
 
 ActsExamples::ProcessCode ActsExamples::RootMaterialTrackReader::read(
     const ActsExamples::AlgorithmContext& context) {
-  ACTS_DEBUG("Trying to read recorded material from tracks.");
+  ACTS_INFO("Trying to read recorded material from tracks.");
   // read in the material track
   if (m_inputChain != nullptr && context.eventNumber < m_events) {
     // lock the mutex
@@ -137,7 +137,7 @@ ActsExamples::ProcessCode ActsExamples::RootMaterialTrackReader::read(
       if (not m_cfg.orderedEvents and entry < m_entryNumbers.size()) {
         entry = m_entryNumbers[entry];
       }
-      ACTS_VERBOSE("Reading event: " << context.eventNumber
+      ACTS_INFO("Reading event: " << context.eventNumber
                                      << " with stored entry: " << entry);
       m_inputChain->GetEntry(entry);
 
@@ -148,7 +148,7 @@ ActsExamples::ProcessCode ActsExamples::RootMaterialTrackReader::read(
 
       // Fill the individual steps
       size_t msteps = m_step_length->size();
-      ACTS_VERBOSE("Reading " << msteps << " material steps.");
+      ACTS_INFO("Reading " << msteps << " material steps.");
       rmTrack.second.materialInteractions.reserve(msteps);
       rmTrack.second.materialInX0 = 0.;
       rmTrack.second.materialInL0 = 0.;

@@ -47,7 +47,7 @@ class JsonMaterialDecorator : public IMaterialDecorator {
     // the material reader
     Acts::MaterialMapJsonConverter jmConverter(rConfig, level);
 
-    ACTS_VERBOSE("Reading JSON material description from: " << jFileName);
+    ACTS_INFO("Reading JSON material description from: " << jFileName);
     std::ifstream ifj(jFileName.c_str());
     if (!ifj.good()) {
       throw std::runtime_error{"Unable to open input JSON material file: " +
@@ -66,23 +66,23 @@ class JsonMaterialDecorator : public IMaterialDecorator {
     auto maps = jmConverter.jsonToMaterialMaps(jin);
     m_surfaceMaterialMap = maps.first;
     m_volumeMaterialMap = maps.second;
-    ACTS_VERBOSE("JSON material description read complete");
+    ACTS_INFO("JSON material description read complete");
   }
 
   /// Decorate a surface
   ///
   /// @param surface the non-cost surface that is decorated
   void decorate(Surface& surface) const final {
-    ACTS_VERBOSE("Processing surface: " << surface.geometryId());
+    ACTS_INFO("Processing surface: " << surface.geometryId());
     // Clear the material if registered to do so
     if (m_clearSurfaceMaterial) {
-      ACTS_VERBOSE("-> Clearing surface material");
+      ACTS_INFO("-> Clearing surface material");
       surface.assignSurfaceMaterial(nullptr);
     }
     // Try to find the surface in the map
     auto sMaterial = m_surfaceMaterialMap.find(surface.geometryId());
     if (sMaterial != m_surfaceMaterialMap.end()) {
-      ACTS_VERBOSE("-> Found material for surface, assigning");
+      ACTS_INFO("-> Found material for surface, assigning");
       surface.assignSurfaceMaterial(sMaterial->second);
     }
   }
@@ -91,16 +91,16 @@ class JsonMaterialDecorator : public IMaterialDecorator {
   ///
   /// @param volume the non-cost volume that is decorated
   void decorate(TrackingVolume& volume) const final {
-    ACTS_VERBOSE("Processing volume: " << volume.geometryId());
+    ACTS_INFO("Processing volume: " << volume.geometryId());
     // Clear the material if registered to do so
     if (m_clearVolumeMaterial) {
-      ACTS_VERBOSE("-> Clearing volume material");
+      ACTS_INFO("-> Clearing volume material");
       volume.assignVolumeMaterial(nullptr);
     }
     // Try to find the volume in the map
     auto vMaterial = m_volumeMaterialMap.find(volume.geometryId());
     if (vMaterial != m_volumeMaterialMap.end()) {
-      ACTS_VERBOSE("-> Found material for volume, assigning");
+      ACTS_INFO("-> Found material for volume, assigning");
       volume.assignVolumeMaterial(vMaterial->second);
     }
   }

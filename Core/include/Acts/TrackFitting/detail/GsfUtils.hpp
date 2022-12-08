@@ -84,7 +84,7 @@ class ScopedGsfInfoPrinterAndChecker {
       auto getVector = [&](auto idx) {
         return cmp.pars().template segment<3>(idx).transpose();
       };
-      ACTS_VERBOSE("  #" << i++ << " pos: " << getVector(eFreePos0) << ", dir: "
+      ACTS_INFO("  #" << i++ << " pos: " << getVector(eFreePos0) << ", dir: "
                          << getVector(eFreeDir0) << ", weight: " << cmp.weight()
                          << ", status: " << cmp.status()
                          << ", qop: " << cmp.pars()[eFreeQOverP]
@@ -119,14 +119,14 @@ class ScopedGsfInfoPrinterAndChecker {
         m_missedCount(missedCount) {
     // Some initial printing
     checks("start");
-    ACTS_VERBOSE("Gsf step "
+    ACTS_INFO("Gsf step "
                  << state.stepping.steps << " at mean position "
                  << stepper.position(state.stepping).transpose()
                  << " with direction "
                  << stepper.direction(state.stepping).transpose()
                  << " and momentum " << stepper.momentum(state.stepping)
                  << " and charge " << stepper.charge(state.stepping));
-    ACTS_VERBOSE("Propagation is in "
+    ACTS_INFO("Propagation is in "
                  << (state.stepping.navDir == NavigationDirection::Forward
                          ? "forward"
                          : "backward")
@@ -137,9 +137,9 @@ class ScopedGsfInfoPrinterAndChecker {
   ~ScopedGsfInfoPrinterAndChecker() {
     if (m_state.navigation.currentSurface) {
       const auto p_final = m_stepper.momentum(m_state.stepping);
-      ACTS_VERBOSE("Component status at end of step:");
+      ACTS_INFO("Component status at end of step:");
       print_component_stats();
-      ACTS_VERBOSE("Delta Momentum = " << std::setprecision(5)
+      ACTS_INFO("Delta Momentum = " << std::setprecision(5)
                                        << p_final - m_p_initial);
     }
     checks("end");

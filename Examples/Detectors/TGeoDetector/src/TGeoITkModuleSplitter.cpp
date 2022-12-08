@@ -64,7 +64,7 @@ ActsExamples::TGeoITkModuleSplitter::split(
           gctx, detElement, m_cfg.discMap.at("EC5"));
     }
   }
-  ACTS_DEBUG("No matching configuration found. Node " +
+  ACTS_INFO("No matching configuration found. Node " +
              std::string(detElement->tgeoNode().GetName()) +
              " will not be split.");
 
@@ -108,7 +108,7 @@ ActsExamples::TGeoITkModuleSplitter::splitBarrelModule(
   // Translation for every subelement
   auto localTranslation = Acts::Vector2(-0.5 * lengthX * (nSegments - 1), 0.);
   const auto step = Acts::Vector2(lengthX, 0.);
-  ACTS_DEBUG("Rectangle bounds for new node (half length): " +
+  ACTS_INFO("Rectangle bounds for new node (half length): " +
              std::to_string(rectBounds->halfLengthX()) + ", " +
              std::to_string(rectBounds->halfLengthY()));
 
@@ -149,7 +149,7 @@ ActsExamples::TGeoITkModuleSplitter::splitDiscModule(
         std::to_string(discOrigin[1]) + ", " + std::to_string(discOrigin[2]);
     return out;
   };
-  ACTS_DEBUG(printOrigin(surface));
+  ACTS_INFO(printOrigin(surface));
 
   if (bounds.type() != Acts::SurfaceBounds::eAnnulus or splitRanges.empty()) {
     ACTS_WARNING("Invalid splitting config for disk node: " +
@@ -176,7 +176,7 @@ ActsExamples::TGeoITkModuleSplitter::splitDiscModule(
     values[Acts::AnnulusBounds::eMinR] = splitRanges[i].first;
     values[Acts::AnnulusBounds::eMaxR] = splitRanges[i].second;
     auto annulusBounds = std::make_shared<Acts::AnnulusBounds>(values);
-    ACTS_DEBUG(
+    ACTS_INFO(
         "New r bounds for node: " + std::to_string(annulusBounds->rMin()) +
         ", " + std::to_string(annulusBounds->rMax()));
 

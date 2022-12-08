@@ -36,8 +36,8 @@ void print_current_cuda_meminfo(Acts::LoggerWrapper& logger) {
   cudaMemGetInfo(&free, &total);
   cudaGetDevice(&device);
 
-  ACTS_VERBOSE("Current CUDA device: " << device);
-  ACTS_VERBOSE("Memory (used / total) [in MB]: " << (total - free) / mb << " / "
+  ACTS_INFO("Current CUDA device: " << device);
+  ACTS_INFO("Memory (used / total) [in MB]: " << (total - free) / mb << " / "
                                                  << total / mb);
 }
 }  // namespace
@@ -94,10 +94,10 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
   g_model.to(device);
 
   // printout the r,phi,z of the first spacepoint
-  ACTS_VERBOSE("First spacepoint information [r, phi, z]: "
+  ACTS_INFO("First spacepoint information [r, phi, z]: "
                << inputValues[0] << ", " << inputValues[1] << ", "
                << inputValues[2]);
-  ACTS_VERBOSE("Max and min spacepoint: "
+  ACTS_INFO("Max and min spacepoint: "
                << *std::max_element(inputValues.begin(), inputValues.end())
                << ", "
                << *std::min_element(inputValues.begin(), inputValues.end()))
@@ -123,7 +123,7 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
       e_model.forward(eInputTensorJit).toTensor();
   eInputTensorJit.clear();
 
-  ACTS_VERBOSE("Embedding space of the first SP:\n"
+  ACTS_INFO("Embedding space of the first SP:\n"
                << eOutput->slice(/*dim=*/0, /*start=*/0, /*end=*/1));
   print_current_cuda_meminfo(logger);
 
@@ -140,9 +140,9 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
       *eOutput, numSpacepoints, m_cfg.embeddingDim, m_cfg.rVal, m_cfg.knnVal);
   eOutput.reset();
 
-  ACTS_VERBOSE("Shape of built edges: (" << edgeList->size(0) << ", "
+  ACTS_INFO("Shape of built edges: (" << edgeList->size(0) << ", "
                                          << edgeList->size(1));
-  ACTS_VERBOSE("Slice of edgelist:\n" << edgeList->slice(1, 0, 5));
+  ACTS_INFO("Slice of edgelist:\n" << edgeList->slice(1, 0, 5));
   print_current_cuda_meminfo(logger);
 
   timeInfo.building = timer.stopAndGetElapsedTime();
@@ -169,8 +169,8 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
   auto fOutput = torch::cat(results);
   results.clear();
 
-  ACTS_VERBOSE("Size after filtering network: " << fOutput.size(0));
-  ACTS_VERBOSE("Slice of filtered output:\n"
+  ACTS_INFO("Size after filtering network: " << fOutput.size(0));
+  ACTS_INFO("Slice of filtered output:\n"
                << fOutput.slice(/*dim=*/0, /*start=*/0, /*end=*/9));
   print_current_cuda_meminfo(logger);
 
@@ -180,7 +180,7 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
   edgesAfterF = edgesAfterF.to(torch::kInt64);
   const int64_t numEdgesAfterF = edgesAfterF.size(1);
 
-  ACTS_VERBOSE("Size after filter cut: " << numEdgesAfterF)
+  ACTS_INFO("Size after filter cut: " << numEdgesAfterF)
   print_current_cuda_meminfo(logger);
 
   timeInfo.filtering = timer.stopAndGetElapsedTime();
@@ -193,7 +193,7 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
 
   auto bidirEdgesAfterF = torch::cat({edgesAfterF, edgesAfterF.flip(0)}, 1);
 
-  ACTS_VERBOSE("Bi-directional edges shape: ("
+  ACTS_INFO("Bi-directional edges shape: ("
                << bidirEdgesAfterF.size(0) << ", " << bidirEdgesAfterF.size(1)
                << ")")
   print_current_cuda_meminfo(logger);
@@ -211,9 +211,9 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
 
   timeInfo.gnn = timer.stopAndGetElapsedTime();
 
-  ACTS_VERBOSE("GNN scores size: " << gOutput.size(0) << " (bidir: "
+  ACTS_INFO("GNN scores size: " << gOutput.size(0) << " (bidir: "
                                    << gOutputBidir.size(0) << ")");
-  ACTS_VERBOSE("Score output slice:\n" << gOutput.slice(0, 0, 5));
+  ACTS_INFO("Score output slice:\n" << gOutput.slice(0, 0, 5));
   print_current_cuda_meminfo(logger);
 
   // ***************
@@ -241,8 +241,8 @@ std::optional<ExaTrkXTime> ExaTrkXTrackFindingTorch::getTracks(
       numSpacepoints, rowIndices, colIndices, edgeWeights, trackLabels,
       m_cfg.edgeCut);
 
-  ACTS_VERBOSE("Number of track labels: " << trackLabels.size());
-  ACTS_VERBOSE("NUmber of unique track labels: " << [&]() {
+  ACTS_INFO("Number of track labels: " << trackLabels.size());
+  ACTS_INFO("NUmber of unique track labels: " << [&]() {
     std::vector<vertex_t> sorted(trackLabels);
     std::sort(sorted.begin(), sorted.end());
     sorted.erase(std::unique(sorted.begin(), sorted.end()), sorted.end());

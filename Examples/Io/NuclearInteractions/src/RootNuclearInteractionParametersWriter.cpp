@@ -374,7 +374,7 @@ ActsExamples::RootNuclearInteractionParametersWriter::endRun() {
   gDirectory->mkdir("hard");
 
   // Write the nuclear interaction probability
-  ACTS_DEBUG("Starting parametrisation of nuclear interaction probability");
+  ACTS_INFO("Starting parametrisation of nuclear interaction probability");
   const auto nuclearInteractionProbability =
       Parametrisation::cumulativeNuclearInteractionProbability(
           m_eventFractionCollection, m_cfg.interactionProbabilityBins);
@@ -387,18 +387,18 @@ ActsExamples::RootNuclearInteractionParametersWriter::endRun() {
       buildMap(nuclearInteractionProbability, m_cfg.nSimulatedEvents);
   gDirectory->WriteObject(&mapNIprob.first, "NuclearInteractionBinBorders");
   gDirectory->WriteObject(&mapNIprob.second, "NuclearInteractionBinContents");
-  ACTS_DEBUG("Nuclear interaction probability parametrised");
+  ACTS_INFO("Nuclear interaction probability parametrised");
 
-  ACTS_DEBUG("Starting calulcation of probability of interaction type");
+  ACTS_INFO("Starting calulcation of probability of interaction type");
   // Write the interaction type proability
   const auto softProbability =
       Parametrisation::softProbability(m_eventFractionCollection);
 
   gDirectory->WriteObject(&softProbability, "SoftInteraction");
-  ACTS_DEBUG("Calulcation of probability of interaction type finished");
+  ACTS_INFO("Calulcation of probability of interaction type finished");
 
   // Write the PDG id production distribution
-  ACTS_DEBUG(
+  ACTS_INFO(
       "Starting calulcation of transition probabilities betweend PDG IDs");
   const auto pdgIdMap =
       Parametrisation::cumulativePDGprobability(m_eventFractionCollection);
@@ -416,14 +416,14 @@ ActsExamples::RootNuclearInteractionParametersWriter::endRun() {
   gDirectory->WriteObject(&branchingPdgIds, "BranchingPdgIds");
   gDirectory->WriteObject(&targetPdgIds, "TargetPdgIds");
   gDirectory->WriteObject(&targetPdgProbability, "TargetPdgProbability");
-  ACTS_DEBUG(
+  ACTS_INFO(
       "Calulcation of transition probabilities betweend PDG IDs finished");
 
   // Write the multiplicity and kinematics distribution
-  ACTS_DEBUG("Starting parametrisation of multiplicity probabilities");
+  ACTS_INFO("Starting parametrisation of multiplicity probabilities");
   const auto multiplicity = Parametrisation::cumulativeMultiplicityProbability(
       m_eventFractionCollection, m_cfg.multiplicityMax);
-  ACTS_DEBUG("Parametrisation of multiplicity probabilities finished");
+  ACTS_INFO("Parametrisation of multiplicity probabilities finished");
 
   gDirectory->cd("soft");
   if (m_cfg.writeOptionalHistograms) {
@@ -433,10 +433,10 @@ ActsExamples::RootNuclearInteractionParametersWriter::endRun() {
   gDirectory->WriteObject(&multProbSoft.first, "MultiplicityBinBorders");
   gDirectory->WriteObject(&multProbSoft.second, "MultiplicityBinContents");
   for (unsigned int i = 1; i <= m_cfg.multiplicityMax; i++) {
-    ACTS_DEBUG("Starting parametrisation of final state kinematics for soft " +
+    ACTS_INFO("Starting parametrisation of final state kinematics for soft " +
                std::to_string(i) + " particle(s) final state");
     recordKinematicParametrisation(m_eventFractionCollection, true, i, m_cfg);
-    ACTS_DEBUG("Parametrisation of final state kinematics for soft " +
+    ACTS_INFO("Parametrisation of final state kinematics for soft " +
                std::to_string(i) + " particle(s) final state finished");
   }
   gDirectory->cd("../hard");
@@ -448,10 +448,10 @@ ActsExamples::RootNuclearInteractionParametersWriter::endRun() {
   gDirectory->WriteObject(&multProbHard.second, "MultiplicityBinContents");
 
   for (unsigned int i = 1; i <= m_cfg.multiplicityMax; i++) {
-    ACTS_DEBUG("Starting parametrisation of final state kinematics for hard " +
+    ACTS_INFO("Starting parametrisation of final state kinematics for hard " +
                std::to_string(i) + " particle(s) final state");
     recordKinematicParametrisation(m_eventFractionCollection, false, i, m_cfg);
-    ACTS_DEBUG("Parametrisation of final state kinematics for hard " +
+    ACTS_INFO("Parametrisation of final state kinematics for hard " +
                std::to_string(i) + " particle(s) final state finished");
   }
   gDirectory->cd();

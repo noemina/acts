@@ -55,7 +55,7 @@ ActsExamples::ProcessCode ActsExamples::HepMC3AsciiReader::read(
   auto path = perEventFilepath(m_cfg.inputDir, m_cfg.inputStem + ".hepmc3",
                                ctx.eventNumber);
 
-  ACTS_DEBUG("Attempting to read event from " << path);
+  ACTS_INFO("Attempting to read event from " << path);
   HepMC3::ReaderAscii reader(path);
 
   reader.read_event(event);
@@ -69,7 +69,7 @@ ActsExamples::ProcessCode ActsExamples::HepMC3AsciiReader::read(
     return ActsExamples::ProcessCode::ABORT;
   }
 
-  ACTS_VERBOSE(events.size()
+  ACTS_INFO(events.size()
                << " events read, writing to " << m_cfg.outputEvents);
   ctx.eventStore.add(m_cfg.outputEvents, std::move(events));
 

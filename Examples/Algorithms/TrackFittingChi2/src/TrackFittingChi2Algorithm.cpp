@@ -99,7 +99,7 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingChi2Algorithm::execute(
       continue;
     }
 
-    ACTS_VERBOSE("chi2algo | ev="
+    ACTS_INFO("chi2algo | ev="
                  << ctx.eventNumber << " | initial parameters: "
                  << initialParams.fourPosition(ctx.geoContext).transpose()
                  << " -> " << initialParams.unitDirection().transpose());
@@ -122,13 +122,13 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingChi2Algorithm::execute(
       }
     }
 
-    ACTS_DEBUG("chi2algo | invoke fitter");
+    ACTS_INFO("chi2algo | invoke fitter");
     auto mtj = std::make_shared<Acts::VectorMultiTrajectory>();
     auto result = fitTrack(trackSourceLinks, initialParams, chi2Options,
                            surfSequence, mtj);
 
     if (result.ok()) {
-      ACTS_DEBUG("chi2algo | result ok");
+      ACTS_INFO("chi2algo | result ok");
       // Get the fit output object
       auto& fitOutput = result.value();
       // The track entry indices container. One element here.
@@ -137,18 +137,18 @@ ActsExamples::ProcessCode ActsExamples::TrackFittingChi2Algorithm::execute(
       trackTips.emplace_back(fitOutput.lastMeasurementIndex);
       // The fitted parameters container. One element (at most) here.
       Trajectories::IndexedParameters indexedParams;
-      ACTS_VERBOSE("chi2algo | final χ² = " << fitOutput.chisquare);
-      ACTS_VERBOSE("chi2algo | lastMeasurementIndex = "
+      ACTS_INFO("chi2algo | final χ² = " << fitOutput.chisquare);
+      ACTS_INFO("chi2algo | lastMeasurementIndex = "
                    << fitOutput.lastMeasurementIndex);
 
       if (fitOutput.fittedParameters) {
         const auto& params = fitOutput.fittedParameters.value();
-        ACTS_VERBOSE("chi2algo | Fitted parameters for track "
+        ACTS_INFO("chi2algo | Fitted parameters for track "
                      << itrack << ": " << params.parameters().transpose());
         // Push the fitted parameters to the container
         indexedParams.emplace(fitOutput.lastMeasurementIndex, params);
       } else {
-        ACTS_DEBUG("chi2algo | No fitted parameters for track " << itrack);
+        ACTS_INFO("chi2algo | No fitted parameters for track " << itrack);
       }
       // store the result
       trajectories.emplace_back(fitOutput.fittedStates, std::move(trackTips),

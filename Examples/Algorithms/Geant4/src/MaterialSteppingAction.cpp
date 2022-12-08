@@ -40,7 +40,7 @@ void ActsExamples::MaterialSteppingAction::UserSteppingAction(
   std::string materialName = material->GetName();
   for (const auto& emat : m_cfg.excludeMaterials) {
     if (emat == materialName) {
-      ACTS_VERBOSE("Exclude step in material '" << materialName << ".");
+      ACTS_INFO("Exclude step in material '" << materialName << ".");
       return;
     }
   }
@@ -50,7 +50,7 @@ void ActsExamples::MaterialSteppingAction::UserSteppingAction(
       (Acts::UnitConstants::g / Acts::UnitConstants::mm3) /
       (CLHEP::gram / CLHEP::mm3);
 
-  ACTS_VERBOSE("Performing a step with step size = "
+  ACTS_INFO("Performing a step with step size = "
                << convertLength * step->GetStepLength());
 
   // Quantities valid for elemental materials and mixtures

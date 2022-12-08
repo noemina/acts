@@ -296,7 +296,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectoryStatesWriter::writeT(
         auto ip = particles.find(barcode);
         if (ip != particles.end()) {
           const auto& particle = *ip;
-          ACTS_DEBUG("Find the truth particle with barcode = " << barcode);
+          ACTS_INFO("Find the truth particle with barcode = " << barcode);
           // Get the truth particle charge
           truthQ = particle.charge();
         } else {

@@ -47,7 +47,7 @@ std::shared_ptr<Acts::ProtoSurfaceMaterial> Acts::createProtoMaterial(
       max = M_PI;
     }
     int bins = params.get<int>(valueTag + "_"s + bin.first);
-    ACTS_VERBOSE("  - material binning for " << bin.first << " on " << valueTag
+    ACTS_INFO("  - material binning for " << bin.first << " on " << valueTag
                                              << ": " << bins);
     if (bins >= 1) {
       bu += Acts::BinUtility(bins, min, max, bopt, bval);
@@ -61,7 +61,7 @@ void Acts::addLayerProtoMaterial(
     const std::vector<std::pair<const std::string, Acts::BinningOption> >&
         binning,
     LoggerWrapper logger) {
-  ACTS_VERBOSE("addLayerProtoMaterial");
+  ACTS_INFO("addLayerProtoMaterial");
   // Start with the representing surface
   std::vector<std::string> materialOptions = {"layer_material_representing"};
   std::vector<const Surface*> materialSurfaces = {
@@ -81,9 +81,9 @@ void Acts::addLayerProtoMaterial(
   // Now loop over it and create the ProtoMaterial
   for (unsigned int is = 0; is < materialOptions.size(); ++is) {
     // if (actsExtension.hasValue(materialOptions[is])) {
-    ACTS_VERBOSE(" - checking material for: " << materialOptions[is]);
+    ACTS_INFO(" - checking material for: " << materialOptions[is]);
     if (params.contains(materialOptions[is])) {
-      ACTS_VERBOSE(" - have material");
+      ACTS_INFO(" - have material");
       // Create the material and assign it
       auto psMaterial =
           createProtoMaterial(params, materialOptions[is], binning, logger);
@@ -98,13 +98,13 @@ void Acts::addLayerProtoMaterial(
 void Acts::addCylinderLayerProtoMaterial(dd4hep::DetElement detElement,
                                          Layer& cylinderLayer,
                                          LoggerWrapper logger) {
-  ACTS_VERBOSE(
+  ACTS_INFO(
       "Translating DD4hep material into Acts material for CylinderLayer : "
       << detElement.name());
   if (hasParams(detElement)) {
-    ACTS_VERBOSE(" params: " << getParams(detElement));
+    ACTS_INFO(" params: " << getParams(detElement));
   } else {
-    ACTS_VERBOSE(" NO params");
+    ACTS_INFO(" NO params");
   }
   if (getParamOr<bool>("layer_material", detElement, false)) {
     addLayerProtoMaterial(getParams(detElement), cylinderLayer,
@@ -115,13 +115,13 @@ void Acts::addCylinderLayerProtoMaterial(dd4hep::DetElement detElement,
 
 void Acts::addDiscLayerProtoMaterial(dd4hep::DetElement detElement,
                                      Layer& discLayer, LoggerWrapper logger) {
-  ACTS_VERBOSE("Translating DD4hep material into Acts material for DiscLayer : "
+  ACTS_INFO("Translating DD4hep material into Acts material for DiscLayer : "
                << detElement.name());
 
   if (hasParams(detElement)) {
-    ACTS_VERBOSE(" params: " << getParams(detElement));
+    ACTS_INFO(" params: " << getParams(detElement));
   } else {
-    ACTS_VERBOSE(" NO params");
+    ACTS_INFO(" NO params");
   }
   if (getParamOr<bool>("layer_material", detElement, false)) {
     addLayerProtoMaterial(getParams(detElement), discLayer,

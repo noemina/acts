@@ -50,7 +50,7 @@ void setupLoopProtection(propagator_state_t& state, const stepper_t& stepper,
   if (std::abs(loopLimit) < std::abs(pathLimit)) {
     pathAborter.internalLimit = loopLimit;
 
-    ACTS_VERBOSE("Path aborter limit set to "
+    ACTS_INFO("Path aborter limit set to "
                  << loopLimit << " (full helix =  " << helixPath << ")");
   }
 }

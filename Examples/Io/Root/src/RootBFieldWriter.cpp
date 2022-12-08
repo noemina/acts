@@ -54,19 +54,19 @@ void RootBFieldWriter::run(const Config& config,
     for (auto m : minima) {
       ss << " " << m;
     }
-    ACTS_VERBOSE(ss.str());
+    ACTS_INFO(ss.str());
     ss.str("");
     ss << "Maximum:";
     for (auto m : maxima) {
       ss << " " << m;
     }
-    ACTS_VERBOSE(ss.str());
+    ACTS_INFO(ss.str());
     ss.str("");
     ss << "nBins:";
     for (auto m : nBins) {
       ss << " " << m;
     }
-    ACTS_VERBOSE(ss.str());
+    ACTS_INFO(ss.str());
   }
 
   if (config.gridType == GridType::xyz) {
@@ -247,7 +247,7 @@ void RootBFieldWriter::run(const Config& config,
       for (size_t j = 0; j < nBinsR; j++) {
         double raw_r = minR + j * stepR;
         Acts::Vector3 position(raw_r, 0.0, raw_z);  // position at phi=0
-        ACTS_VERBOSE("Requesting position: " << position.transpose());
+        ACTS_INFO("Requesting position: " << position.transpose());
         auto bField = config.bField->getFieldUnchecked(position);
         z = raw_z / Acts::UnitConstants::mm;
         r = raw_r / Acts::UnitConstants::mm;

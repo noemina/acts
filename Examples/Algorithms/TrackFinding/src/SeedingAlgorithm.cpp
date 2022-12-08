@@ -258,7 +258,7 @@ ActsExamples::ProcessCode ActsExamples::SeedingAlgorithm::execute(
     }
   }
 
-  ACTS_DEBUG("Created " << seeds.size() << " track seeds from "
+  ACTS_INFO("Created " << seeds.size() << " track seeds from "
                         << spacePointPtrs.size() << " space points");
 
   ctx.eventStore.add(m_cfg.outputSeeds, SimSeedContainer{seeds});

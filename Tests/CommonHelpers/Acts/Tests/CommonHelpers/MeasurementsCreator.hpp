@@ -84,13 +84,13 @@ struct MeasurementsCreator {
     const Acts::GeometryIdentifier geoId = surface.geometryId();
     // only generate measurements on sensitive surface
     if (not geoId.sensitive()) {
-      ACTS_VERBOSE("Create no measurements on non-sensitive surface " << geoId);
+      ACTS_INFO("Create no measurements on non-sensitive surface " << geoId);
       return;
     }
     // only generate measurements if a resolution is configured
     auto found = resolutions.find(geoId);
     if (found == resolutions.end()) {
-      ACTS_VERBOSE("No resolution configured for sensitive surface " << geoId);
+      ACTS_INFO("No resolution configured for sensitive surface " << geoId);
       return;
     }
     const MeasurementResolution& resolution = *found;

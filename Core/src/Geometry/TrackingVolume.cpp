@@ -463,7 +463,7 @@ Acts::TrackingVolume::compatibleBoundaries(
     const GeometryContext& gctx, const Vector3& position,
     const Vector3& direction, const NavigationOptions<Surface>& options,
     LoggerWrapper logger) const {
-  ACTS_VERBOSE("Finding compatibleBoundaries");
+  ACTS_INFO("Finding compatibleBoundaries");
   // Loop over boundarySurfaces and calculate the intersection
   auto excludeObject = options.startObject;
   boost::container::small_vector<Acts::BoundaryIntersection, 4> bIntersections;
@@ -484,7 +484,7 @@ Acts::TrackingVolume::compatibleBoundaries(
       return BoundaryIntersection();
     }
 
-    ACTS_VERBOSE("Check intersection with surface "
+    ACTS_INFO("Check intersection with surface "
                  << bSurface->surfaceRepresentation().geometryId());
     if (detail::checkIntersection(sIntersection.intersection, pLimit, oLimit,
                                   s_onSurfaceTolerance, logger)) {
@@ -494,7 +494,7 @@ Acts::TrackingVolume::compatibleBoundaries(
     }
 
     if (sIntersection.alternative) {
-      ACTS_VERBOSE("Consider alternative");
+      ACTS_INFO("Consider alternative");
       if (detail::checkIntersection(sIntersection.alternative, pLimit, oLimit,
                                     s_onSurfaceTolerance, logger)) {
         sIntersection.alternative.pathLength *= options.navDir;
@@ -503,22 +503,22 @@ Acts::TrackingVolume::compatibleBoundaries(
         ;
       }
     } else {
-      ACTS_VERBOSE("No alternative for intersection");
+      ACTS_INFO("No alternative for intersection");
     }
 
-    ACTS_VERBOSE("No intersection accepted");
+    ACTS_INFO("No intersection accepted");
     return BoundaryIntersection();
   };
 
   /// Helper function to process boundary surfaces
   auto processBoundaries =
       [&](const TrackingVolumeBoundaries& bSurfaces) -> void {
-    ACTS_VERBOSE("Processing boundaries");
+    ACTS_INFO("Processing boundaries");
     // Loop over the boundary surfaces
     for (auto& bsIter : bSurfaces) {
       // Get the boundary surface pointer
       const auto& bSurfaceRep = bsIter->surfaceRepresentation();
-      ACTS_VERBOSE("Consider boundary surface " << bSurfaceRep.geometryId()
+      ACTS_INFO("Consider boundary surface " << bSurfaceRep.geometryId()
                                                 << " :\n"
                                                 << std::tie(bSurfaceRep, gctx));
 
@@ -529,29 +529,29 @@ Acts::TrackingVolume::compatibleBoundaries(
         // Intersect and continue
         auto bIntersection = checkIntersection(bCandidate, bsIter.get());
         if (bIntersection) {
-          ACTS_VERBOSE(" - Proceed with surface");
+          ACTS_INFO(" - Proceed with surface");
           bIntersections.push_back(bIntersection);
         } else {
-          ACTS_VERBOSE(" - Surface intersecion invalid");
+          ACTS_INFO(" - Surface intersecion invalid");
         }
       } else {
-        ACTS_VERBOSE(" - Surface is excluded surface");
+        ACTS_INFO(" - Surface is excluded surface");
       }
     }
   };
 
   // Process the boundaries of the current volume
   auto& bSurfaces = boundarySurfaces();
-  ACTS_VERBOSE("Volume reports " << bSurfaces.size() << " boundary surfaces");
+  ACTS_INFO("Volume reports " << bSurfaces.size() << " boundary surfaces");
   processBoundaries(bSurfaces);
 
   // Process potential boundaries of contained volumes
   auto confinedDenseVolumes = denseVolumes();
-  ACTS_VERBOSE("Volume reports " << confinedDenseVolumes.size()
+  ACTS_INFO("Volume reports " << confinedDenseVolumes.size()
                                  << " confined dense volumes");
   for (const auto& dv : confinedDenseVolumes) {
     auto& bSurfacesConfined = dv->boundarySurfaces();
-    ACTS_VERBOSE(" -> " << bSurfacesConfined.size() << " boundary surfaces");
+    ACTS_INFO(" -> " << bSurfacesConfined.size() << " boundary surfaces");
     processBoundaries(bSurfacesConfined);
   }
 

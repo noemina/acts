@@ -325,7 +325,7 @@ class KalmanFitter {
         return;
       }
 
-      ACTS_VERBOSE("KalmanFitter step at pos: "
+      ACTS_INFO("KalmanFitter step at pos: "
                    << stepper.position(state.stepping).transpose()
                    << " dir: " << stepper.direction(state.stepping).transpose()
                    << " momentum: " << stepper.momentum(state.stepping));
@@ -358,7 +358,7 @@ class KalmanFitter {
         // -> Fill strack state information & update stepper information
 
         if (not result.smoothed and not result.reversed) {
-          ACTS_VERBOSE("Perform " << direction << " filter step");
+          ACTS_INFO("Perform " << direction << " filter step");
           auto res = filter(surface, state, stepper, result);
           if (!res.ok()) {
             ACTS_ERROR("Error in " << direction << " filter: " << res.error());
@@ -366,7 +366,7 @@ class KalmanFitter {
           }
         }
         if (result.reversed) {
-          ACTS_VERBOSE("Perform " << direction << " filter step");
+          ACTS_INFO("Perform " << direction << " filter step");
           auto res = reversedFilter(surface, state, stepper, result);
           if (!res.ok()) {
             ACTS_ERROR("Error in " << direction << " filter: " << res.error());
@@ -393,7 +393,7 @@ class KalmanFitter {
             // Start to run reversed filtering:
             // Reverse navigation direction and reset navigation and stepping
             // state to last measurement
-            ACTS_VERBOSE("Reverse navigation direction.");
+            ACTS_INFO("Reverse navigation direction.");
             auto res = reverse(state, stepper, result);
             if (!res.ok()) {
               ACTS_ERROR("Error in reversing navigation: " << res.error());
@@ -404,7 +404,7 @@ class KalmanFitter {
             // --> Call the smoothing
             // --> Set a stop condition when all track states have been
             // handled
-            ACTS_VERBOSE("Finalize/run smoothing");
+            ACTS_INFO("Finalize/run smoothing");
             auto res = finalize(state, stepper, result);
             if (!res.ok()) {
               ACTS_ERROR("Error in finalize: " << res.error());
@@ -429,14 +429,14 @@ class KalmanFitter {
             result.result =
                 Result<void>(KalmanFitterError::BackwardUpdateFailed);
           } else {
-            ACTS_VERBOSE(
+            ACTS_INFO(
                 "No target surface set. Completing without fitted track "
                 "parameter");
             // Remember the track fitting is done
             result.finished = true;
           }
         } else if (targetReached(state, stepper, *targetSurface)) {
-          ACTS_VERBOSE("Completing with fitted track parameter");
+          ACTS_INFO("Completing with fitted track parameter");
           // Transport & bind the parameter to the final surface
           auto res = stepper.boundState(state.stepping, *targetSurface, true,
                                         freeToBoundCorrection);
@@ -552,7 +552,7 @@ class KalmanFitter {
       auto sourcelink_it = inputMeasurements->find(surface->geometryId());
       if (sourcelink_it != inputMeasurements->end()) {
         // Screen output message
-        ACTS_VERBOSE("Measurement surface " << surface->geometryId()
+        ACTS_INFO("Measurement surface " << surface->geometryId()
                                             << " detected.");
         // Transport the covariance to the surface
         stepper.transportCovarianceToBound(state.stepping, *surface,
@@ -579,7 +579,7 @@ class KalmanFitter {
         if (trackStateProxy.typeFlags().test(
                 Acts::TrackStateFlag::MeasurementFlag)) {
           // Update the stepping state with filtered parameters
-          ACTS_VERBOSE("Filtering step successful, updated parameters are : \n"
+          ACTS_INFO("Filtering step successful, updated parameters are : \n"
                        << trackStateProxy.filtered().transpose());
           // update stepping state using filtered parameters after kalman
           stepper.update(state.stepping,
@@ -656,7 +656,7 @@ class KalmanFitter {
       auto sourcelink_it = inputMeasurements->find(surface->geometryId());
       if (sourcelink_it != inputMeasurements->end()) {
         // Screen output message
-        ACTS_VERBOSE("Measurement surface "
+        ACTS_INFO("Measurement surface "
                      << surface->geometryId()
                      << " detected in reversed propagation.");
 
@@ -716,7 +716,7 @@ class KalmanFitter {
           return updateRes.error();
         } else {
           // Update the stepping state with filtered parameters
-          ACTS_VERBOSE(
+          ACTS_INFO(
               "Backward Filtering step successful, updated parameters are : "
               "\n"
               << trackStateProxy.filtered().transpose());
@@ -752,13 +752,13 @@ class KalmanFitter {
                  surface->surfaceMaterial() != nullptr) {
         // Transport covariance
         if (surface->associatedDetectorElement() != nullptr) {
-          ACTS_VERBOSE("Detected hole on " << surface->geometryId()
+          ACTS_INFO("Detected hole on " << surface->geometryId()
                                            << " in reversed filtering");
           if (state.stepping.covTransport) {
             stepper.transportCovarianceToBound(state.stepping, *surface);
           }
         } else if (surface->surfaceMaterial() != nullptr) {
-          ACTS_VERBOSE("Detected in-sensitive surface "
+          ACTS_INFO("Detected in-sensitive surface "
                        << surface->geometryId() << " in reversed filtering");
           if (state.stepping.covTransport) {
             stepper.transportCovarianceToCurvilinear(state.stepping);
@@ -809,10 +809,10 @@ class KalmanFitter {
                                                            energyLoss);
 
           // Screen out material effects info
-          ACTS_VERBOSE("Material effects on surface: "
+          ACTS_INFO("Material effects on surface: "
                        << surface->geometryId()
                        << " at update stage: " << updateStage << " are :");
-          ACTS_VERBOSE("eLoss = "
+          ACTS_INFO("eLoss = "
                        << interaction.Eloss << ", "
                        << "variancePhi = " << interaction.variancePhi << ", "
                        << "varianceTheta = " << interaction.varianceTheta
@@ -826,7 +826,7 @@ class KalmanFitter {
 
       if (not hasMaterial) {
         // Screen out message
-        ACTS_VERBOSE("No material effects on surface: " << surface->geometryId()
+        ACTS_INFO("No material effects on surface: " << surface->geometryId()
                                                         << " at update stage: "
                                                         << updateStage);
       }
@@ -870,7 +870,7 @@ class KalmanFitter {
       }
       // Screen output for debugging
       if (logger().doPrint(Logging::VERBOSE)) {
-        ACTS_VERBOSE("Apply smoothing on " << nStates
+        ACTS_INFO("Apply smoothing on " << nStates
                                            << " filtered track states.");
       }
 
@@ -938,14 +938,14 @@ class KalmanFitter {
       const auto& surface = closerTofirstCreatedState
                                 ? firstCreatedState.referenceSurface()
                                 : lastCreatedMeasurement.referenceSurface();
-      ACTS_VERBOSE(
+      ACTS_INFO(
           "Smoothing successful, updating stepping state to smoothed "
           "parameters at surface "
           << surface.geometryId() << ". Prepared to reach the target surface.");
 
       // Reverse the navigation direction if necessary
       if (reverseDirection) {
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "Reverse navigation direction after smoothing for reaching the "
             "target surface");
         state.stepping.navDir =
@@ -1015,7 +1015,7 @@ class KalmanFitter {
 
     // To be able to find measurements later, we put them into a map
     // We need to copy input SourceLinks anyways, so the map can own them.
-    ACTS_VERBOSE("Preparing " << std::distance(it, end)
+    ACTS_INFO("Preparing " << std::distance(it, end)
                               << " input measurements");
     std::map<GeometryIdentifier, std::reference_wrapper<const SourceLink>>
         inputMeasurements;
@@ -1127,7 +1127,7 @@ class KalmanFitter {
 
     // To be able to find measurements later, we put them into a map
     // We need to copy input SourceLinks anyways, so the map can own them.
-    ACTS_VERBOSE("Preparing " << std::distance(it, end)
+    ACTS_INFO("Preparing " << std::distance(it, end)
                               << " input measurements");
     std::map<GeometryIdentifier, std::reference_wrapper<const SourceLink>>
         inputMeasurements;

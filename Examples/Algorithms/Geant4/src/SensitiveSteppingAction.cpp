@@ -63,7 +63,7 @@ void ActsExamples::SensitiveSteppingAction::UserSteppingAction(
   std::string mappingPfx(SensitiveSurfaceMapper::mappingPrefix);
 
   if (volumeName.find(mappingPfx) != std::string::npos) {
-    ACTS_VERBOSE("Step in senstive volume " << volumeName);
+    ACTS_INFO("Step in senstive volume " << volumeName);
 
     // Get PreStepPoint and PostStepPoint
     G4StepPoint* preStepPoint = step->GetPreStepPoint();

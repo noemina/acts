@@ -31,11 +31,11 @@
 std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
     const GeometryContext& gctx, const LayerVector& layersInput, double min,
     double max, BinningType bType, BinningValue bValue) const {
-  ACTS_VERBOSE("Build LayerArray with " << layersInput.size()
+  ACTS_INFO("Build LayerArray with " << layersInput.size()
                                         << " layers at input.");
-  ACTS_VERBOSE("       min/max provided : " << min << " / " << max);
-  ACTS_VERBOSE("       binning type     : " << bType);
-  ACTS_VERBOSE("       binning value    : " << bValue);
+  ACTS_INFO("       min/max provided : " << min << " / " << max);
+  ACTS_INFO("       binning type     : " << bType);
+  ACTS_INFO("       binning value    : " << bValue);
 
   // create a local copy of the layer vector
   LayerVector layers(layersInput);
@@ -56,7 +56,7 @@ std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
     case equidistant: {
       // loop over layers and put them in
       for (auto& layIter : layers) {
-        ACTS_VERBOSE("equidistant : registering a Layer at binning position : "
+        ACTS_INFO("equidistant : registering a Layer at binning position : "
                      << (layIter->binningPosition(gctx, bValue)));
         layerOrderVector.push_back(LayerOrderPosition(
             layIter, layIter->binningPosition(gctx, bValue)));
@@ -64,7 +64,7 @@ std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
       // create the binUitlity
       binUtility = std::make_unique<const BinUtility>(layers.size(), min, max,
                                                       open, bValue);
-      ACTS_VERBOSE("equidistant : created a BinUtility as " << *binUtility);
+      ACTS_INFO("equidistant : created a BinUtility as " << *binUtility);
     } break;
 
     // arbitrary binning
@@ -109,7 +109,7 @@ std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
         std::shared_ptr<const Surface> navLayerSurface =
             createNavigationSurface(gctx, *layIter, bValue,
                                     -std::abs(layerValue - navigationValue));
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "arbitrary : creating a  NavigationLayer at "
             << (navLayerSurface->binningPosition(gctx, bValue)).x() << ", "
             << (navLayerSurface->binningPosition(gctx, bValue)).y() << ", "
@@ -122,7 +122,7 @@ std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
         // push the original layer in
         layerOrderVector.push_back(LayerOrderPosition(
             layIter, layIter->binningPosition(gctx, bValue)));
-        ACTS_VERBOSE("arbitrary : registering MaterialLayer at  "
+        ACTS_INFO("arbitrary : registering MaterialLayer at  "
                      << (layIter->binningPosition(gctx, bValue)).x() << ", "
                      << (layIter->binningPosition(gctx, bValue)).y() << ", "
                      << (layIter->binningPosition(gctx, bValue)).z());
@@ -139,7 +139,7 @@ std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
         std::shared_ptr<const Surface> navLayerSurface =
             createNavigationSurface(gctx, *lastLayer, bValue,
                                     navigationValue - layerValue);
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "arbitrary : creating a  NavigationLayer at "
             << (navLayerSurface->binningPosition(gctx, bValue)).x() << ", "
             << (navLayerSurface->binningPosition(gctx, bValue)).y() << ", "
@@ -152,11 +152,11 @@ std::unique_ptr<const Acts::LayerArray> Acts::LayerArrayCreator::layerArray(
       // now close the boundaries
       boundaries.push_back(max);
       // some screen output
-      ACTS_VERBOSE(layerOrderVector.size()
+      ACTS_INFO(layerOrderVector.size()
                    << " Layers (material + navigation) built. ");
       // create the BinUtility
       binUtility = std::make_unique<const BinUtility>(boundaries, open, bValue);
-      ACTS_VERBOSE("arbitrary : created a BinUtility as " << *binUtility);
+      ACTS_INFO("arbitrary : created a BinUtility as " << *binUtility);
 
     } break;
     // default return nullptr

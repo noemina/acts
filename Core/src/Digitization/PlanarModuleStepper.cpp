@@ -45,7 +45,7 @@ std::vector<Acts::DigitizationStep> Acts::PlanarModuleStepper::cellSteps(
     if (bool(sIntersection)) {
       // now record
       stepIntersections.push_back(sIntersection.intersection);
-      ACTS_VERBOSE("Boundary Surface intersected with = "
+      ACTS_INFO("Boundary Surface intersected with = "
                    << sIntersection.intersection.position.x() << ", "
                    << sIntersection.intersection.position.y() << ", "
                    << sIntersection.intersection.position.z());
@@ -92,7 +92,7 @@ std::vector<Acts::DigitizationStep> Acts::PlanarModuleStepper::cellSteps(
     if (bool(bIntersection)) {
       // now record
       boundaryIntersections.push_back(bIntersection.intersection);
-      ACTS_VERBOSE("Boundary Surface intersected with = "
+      ACTS_INFO("Boundary Surface intersected with = "
                    << bIntersection.intersection.position.x() << ", "
                    << bIntersection.intersection.position.y() << ", "
                    << bIntersection.intersection.position.z());
@@ -107,7 +107,7 @@ std::vector<Acts::DigitizationStep> Acts::PlanarModuleStepper::cellSteps(
   // Post-process if we have more than 2 intersections
   // only first or last can be wrong after resorting
   if (boundaryIntersections.size() > 2) {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "More than 2 Boundary Surfaces intersected, this is an edge "
         "case, resolving ... ");
     std::sort(boundaryIntersections.begin(), boundaryIntersections.end());

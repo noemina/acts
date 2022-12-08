@@ -10,8 +10,8 @@ output, you can make use of the output decorators defined in
 program, you should use the provided macros for the different severity levels:
 
 ```cpp
-ACTS_VERBOSE(...);
-ACTS_DEBUG(...);
+ACTS_INFO(...);
+ACTS_INFO(...);
 ACTS_INFO(...);
 ACTS_WARNING(...);
 ACTS_ERROR(...);
@@ -52,7 +52,7 @@ void myFunction() {
       = Acts::getDefaultLogger("MyLogger", Acts::Logging::INFO, &logfile);
   // make sure the Acts debug macros can work with your logger
   ACTS_LOCAL_LOGGER(myLogger);
-  ACTS_VERBOSE("This message will not appear in the logfile.");
+  ACTS_INFO("This message will not appear in the logfile.");
   ACTS_INFO("But this one will: Hello World!");
   // do not forget to close the logfile
   logfile.close();

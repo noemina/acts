@@ -163,9 +163,9 @@ ActsExamples::FatrasSimulation::FatrasSimulation(Config cfg,
                                                  Acts::Logging::Level lvl)
     : ActsExamples::BareAlgorithm("FatrasSimulation", lvl),
       m_cfg(std::move(cfg)) {
-  ACTS_DEBUG("hits on sensitive surfaces: " << m_cfg.generateHitsOnSensitive);
-  ACTS_DEBUG("hits on material surfaces: " << m_cfg.generateHitsOnMaterial);
-  ACTS_DEBUG("hits on passive surfaces: " << m_cfg.generateHitsOnPassive);
+  ACTS_INFO("hits on sensitive surfaces: " << m_cfg.generateHitsOnSensitive);
+  ACTS_INFO("hits on material surfaces: " << m_cfg.generateHitsOnMaterial);
+  ACTS_INFO("hits on passive surfaces: " << m_cfg.generateHitsOnPassive);
 
   if (!m_cfg.generateHitsOnSensitive && !m_cfg.generateHitsOnMaterial &&
       !m_cfg.generateHitsOnPassive) {
@@ -195,7 +195,7 @@ ActsExamples::ProcessCode ActsExamples::FatrasSimulation::execute(
   const auto &inputParticles =
       ctx.eventStore.get<SimParticleContainer>(m_cfg.inputParticles);
 
-  ACTS_DEBUG(inputParticles.size() << " input particles");
+  ACTS_INFO(inputParticles.size() << " input particles");
 
   // prepare output containers
   SimParticleContainer::sequence_type particlesInitialUnordered;
@@ -227,11 +227,11 @@ ActsExamples::ProcessCode ActsExamples::FatrasSimulation::execute(
                         << ": " << failed.error.message());
   }
 
-  ACTS_DEBUG(particlesInitialUnordered.size()
+  ACTS_INFO(particlesInitialUnordered.size()
              << " simulated particles (initial state)");
-  ACTS_DEBUG(particlesFinalUnordered.size()
+  ACTS_INFO(particlesFinalUnordered.size()
              << " simulated particles (final state)");
-  ACTS_DEBUG(simHitsUnordered.size() << " simulated hits");
+  ACTS_INFO(simHitsUnordered.size() << " simulated hits");
 
   // order output containers
   SimParticleContainer particlesInitial;

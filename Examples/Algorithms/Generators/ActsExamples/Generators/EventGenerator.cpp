@@ -56,7 +56,7 @@ ActsExamples::ProcessCode ActsExamples::EventGenerator::read(
       // generate particles associated to this vertex
       auto vertexParticles = (*generate.particles)(rng);
 
-      ACTS_VERBOSE("Generate vertex at " << vertexPosition.transpose());
+      ACTS_INFO("Generate vertex at " << vertexPosition.transpose());
 
       auto updateParticleInPlace = [&](ActsFatras::Particle& particle) {
         // only set the primary vertex, leave everything else as-is
@@ -67,7 +67,7 @@ ActsExamples::ProcessCode ActsExamples::EventGenerator::read(
                              .setVertexPrimary(nPrimaryVertices);
         // move particle to the vertex
         const auto pos4 = (vertexPosition + particle.fourPosition()).eval();
-        ACTS_VERBOSE(" - particle at " << pos4.transpose());
+        ACTS_INFO(" - particle at " << pos4.transpose());
         // `withParticleId` returns a copy because it changes the identity
         particle = particle.withParticleId(pid).setPosition4(pos4);
       };
@@ -75,7 +75,7 @@ ActsExamples::ProcessCode ActsExamples::EventGenerator::read(
         updateParticleInPlace(vertexParticle);
       }
 
-      ACTS_VERBOSE("event=" << ctx.eventNumber << " generator=" << iGenerate
+      ACTS_INFO("event=" << ctx.eventNumber << " generator=" << iGenerate
                             << " primary_vertex=" << nPrimaryVertices
                             << " n_particles=" << vertexParticles.size());
 
@@ -83,7 +83,7 @@ ActsExamples::ProcessCode ActsExamples::EventGenerator::read(
     }
   }
 
-  ACTS_DEBUG("event=" << ctx.eventNumber
+  ACTS_INFO("event=" << ctx.eventNumber
                       << " n_primary_vertices=" << nPrimaryVertices
                       << " n_particles=" << particles.size());
 

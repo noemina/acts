@@ -25,7 +25,7 @@ void ActsExamples::FakeRatePlotTool::book(
   PlotHelpers::Binning bEta = m_cfg.varBinning.at("Eta");
   PlotHelpers::Binning bPhi = m_cfg.varBinning.at("Phi");
   PlotHelpers::Binning bNum = m_cfg.varBinning.at("Num");
-  ACTS_DEBUG("Initialize the histograms for fake rate plots");
+  ACTS_INFO("Initialize the histograms for fake rate plots");
 
   // number of reco tracks vs pT scatter plots
   fakeRatePlotCache.nReco_vs_pT = PlotHelpers::bookHisto(
@@ -77,7 +77,7 @@ void ActsExamples::FakeRatePlotTool::clear(
 
 void ActsExamples::FakeRatePlotTool::write(
     const FakeRatePlotTool::FakeRatePlotCache& fakeRatePlotCache) const {
-  ACTS_DEBUG("Write the plots to output file.");
+  ACTS_INFO("Write the plots to output file.");
   fakeRatePlotCache.nReco_vs_pT->Write();
   fakeRatePlotCache.nTruthMatched_vs_pT->Write();
   fakeRatePlotCache.nFake_vs_pT->Write();

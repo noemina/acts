@@ -37,9 +37,9 @@ Acts::SurfaceArrayCreator::surfaceArrayOnCylinder(
   ProtoLayer protoLayer =
       protoLayerOpt ? *protoLayerOpt : ProtoLayer(gctx, surfacesRaw);
 
-  ACTS_VERBOSE("Creating a SurfaceArray on a cylinder");
-  ACTS_VERBOSE(" -- with " << surfaces.size() << " surfaces.")
-  ACTS_VERBOSE(" -- with phi x z  = " << binsPhi << " x " << binsZ << " = "
+  ACTS_INFO("Creating a SurfaceArray on a cylinder");
+  ACTS_INFO(" -- with " << surfaces.size() << " surfaces.")
+  ACTS_INFO(" -- with phi x z  = " << binsPhi << " x " << binsZ << " = "
                                       << binsPhi * binsZ << " bins.");
 
   Transform3 ftransform = transform;
@@ -130,9 +130,9 @@ Acts::SurfaceArrayCreator::surfaceArrayOnCylinder(
   size_t bins0 = axes.at(0)->getNBins();
   size_t bins1 = axes.at(1)->getNBins();
 
-  ACTS_VERBOSE("Creating a SurfaceArray on a cylinder");
-  ACTS_VERBOSE(" -- with " << surfaces.size() << " surfaces.")
-  ACTS_VERBOSE(" -- with phi x z  = " << bins0 << " x " << bins1 << " = "
+  ACTS_INFO("Creating a SurfaceArray on a cylinder");
+  ACTS_INFO(" -- with " << surfaces.size() << " surfaces.")
+  ACTS_INFO(" -- with phi x z  = " << bins0 << " x " << bins1 << " = "
                                       << bins0 * bins1 << " bins.");
 
   return std::make_unique<SurfaceArray>(std::move(sl), std::move(surfaces),
@@ -150,7 +150,7 @@ Acts::SurfaceArrayCreator::surfaceArrayOnDisc(
   ProtoLayer protoLayer =
       protoLayerOpt ? *protoLayerOpt : ProtoLayer(gctx, surfacesRaw);
 
-  ACTS_VERBOSE("Creating a SurfaceArray on a disc");
+  ACTS_INFO("Creating a SurfaceArray on a disc");
 
   Transform3 ftransform = transform;
   ProtoAxis pAxisR = createEquidistantAxis(gctx, surfacesRaw, binR, protoLayer,
@@ -159,7 +159,7 @@ Acts::SurfaceArrayCreator::surfaceArrayOnDisc(
                                              protoLayer, ftransform, binsPhi);
 
   double Z = protoLayer.medium(binZ, true);
-  ACTS_VERBOSE("- z-position of disk estimated as " << Z);
+  ACTS_INFO("- z-position of disk estimated as " << Z);
 
   Transform3 itransform = transform.inverse();
   // transform lambda captures the transform matrix
@@ -182,8 +182,8 @@ Acts::SurfaceArrayCreator::surfaceArrayOnDisc(
   size_t bins0 = axes.at(0)->getNBins();
   size_t bins1 = axes.at(1)->getNBins();
 
-  ACTS_VERBOSE(" -- with " << surfaces.size() << " surfaces.")
-  ACTS_VERBOSE(" -- with r x phi  = " << bins0 << " x " << bins1 << " = "
+  ACTS_INFO(" -- with " << surfaces.size() << " surfaces.")
+  ACTS_INFO(" -- with r x phi  = " << bins0 << " x " << bins1 << " = "
                                       << bins0 * bins1 << " bins.");
   sl->fill(gctx, surfacesRaw);
   completeBinning(gctx, *sl, surfacesRaw);
@@ -203,7 +203,7 @@ Acts::SurfaceArrayCreator::surfaceArrayOnDisc(
   ProtoLayer protoLayer =
       protoLayerOpt ? *protoLayerOpt : ProtoLayer(gctx, surfacesRaw);
 
-  ACTS_VERBOSE("Creating a SurfaceArray on a disc");
+  ACTS_INFO("Creating a SurfaceArray on a disc");
 
   ProtoAxis pAxisPhi;
   ProtoAxis pAxisR;
@@ -265,7 +265,7 @@ Acts::SurfaceArrayCreator::surfaceArrayOnDisc(
   }
 
   double Z = protoLayer.medium(binZ, true);
-  ACTS_VERBOSE("- z-position of disk estimated as " << Z);
+  ACTS_INFO("- z-position of disk estimated as " << Z);
 
   Transform3 itransform = ftransform.inverse();
   // transform lambda captures the transform matrix
@@ -288,8 +288,8 @@ Acts::SurfaceArrayCreator::surfaceArrayOnDisc(
   size_t bins0 = axes.at(0)->getNBins();
   size_t bins1 = axes.at(1)->getNBins();
 
-  ACTS_VERBOSE(" -- with " << surfaces.size() << " surfaces.")
-  ACTS_VERBOSE(" -- with r x phi  = " << bins0 << " x " << bins1 << " = "
+  ACTS_INFO(" -- with " << surfaces.size() << " surfaces.")
+  ACTS_INFO(" -- with r x phi  = " << bins0 << " x " << bins1 << " = "
                                       << bins0 * bins1 << " bins.");
 
   sl->fill(gctx, surfacesRaw);
@@ -311,9 +311,9 @@ Acts::SurfaceArrayCreator::surfaceArrayOnPlane(
   ProtoLayer protoLayer =
       protoLayerOpt ? *protoLayerOpt : ProtoLayer(gctx, surfacesRaw);
 
-  ACTS_VERBOSE("Creating a SurfaceArray on a plance");
-  ACTS_VERBOSE(" -- with " << surfaces.size() << " surfaces.")
-  ACTS_VERBOSE(" -- with " << bins1 << " x " << bins2 << " = " << bins1 * bins2
+  ACTS_INFO("Creating a SurfaceArray on a plance");
+  ACTS_INFO(" -- with " << surfaces.size() << " surfaces.")
+  ACTS_INFO(" -- with " << bins1 << " x " << bins2 << " = " << bins1 * bins2
                            << " bins.");
   Transform3 ftransform = transform;
   Transform3 itransform = transform.inverse();
@@ -530,13 +530,13 @@ Acts::SurfaceArrayCreator::createVariableAxis(
     }
   }
   std::sort(bValues.begin(), bValues.end());
-  ACTS_VERBOSE("Create variable binning Axis for binned SurfaceArray");
-  ACTS_VERBOSE("	BinningValue: " << bValue);
-  ACTS_VERBOSE(
+  ACTS_INFO("Create variable binning Axis for binned SurfaceArray");
+  ACTS_INFO("	BinningValue: " << bValue);
+  ACTS_INFO(
       "	(binX = 0, binY = 1, binZ = 2, binR = 3, binPhi = 4, "
       "binRPhi = 5, binH = 6, binEta = 7)");
-  ACTS_VERBOSE("	Number of bins: " << (bValues.size() - 1));
-  ACTS_VERBOSE("	(Min/Max) = (" << bValues.front() << "/"
+  ACTS_INFO("	Number of bins: " << (bValues.size() - 1));
+  ACTS_INFO("	(Min/Max) = (" << bValues.front() << "/"
                                        << bValues.back() << ")");
 
   ProtoAxis pAxis;
@@ -634,13 +634,13 @@ Acts::SurfaceArrayCreator::createEquidistantAxis(
   }
 
   // assign the bin size
-  ACTS_VERBOSE("Create equidistant binning Axis for binned SurfaceArray");
-  ACTS_VERBOSE("	BinningValue: " << bValue);
-  ACTS_VERBOSE(
+  ACTS_INFO("Create equidistant binning Axis for binned SurfaceArray");
+  ACTS_INFO("	BinningValue: " << bValue);
+  ACTS_INFO(
       "	(binX = 0, binY = 1, binZ = 2, binR = 3, binPhi = 4, "
       "binRPhi = 5, binH = 6, binEta = 7)");
-  ACTS_VERBOSE("	Number of bins: " << binNumber);
-  ACTS_VERBOSE("	(Min/Max) = (" << minimum << "/" << maximum << ")");
+  ACTS_INFO("	Number of bins: " << binNumber);
+  ACTS_INFO("	(Min/Max) = (" << minimum << "/" << maximum << ")");
 
   ProtoAxis pAxis;
   pAxis.max = maximum;

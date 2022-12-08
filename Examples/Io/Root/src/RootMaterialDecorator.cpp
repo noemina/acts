@@ -62,7 +62,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
     // Remember the directory
     std::string tdName(key->GetName());
 
-    ACTS_VERBOSE("Processing directory: " << tdName);
+    ACTS_INFO("Processing directory: " << tdName);
 
     // volume
     std::vector<std::string> splitNames;
@@ -102,7 +102,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
       geoID.setLayer(layID);
       geoID.setApproach(appID);
       geoID.setSensitive(senID);
-      ACTS_VERBOSE("GeometryIdentifier re-constructed as " << geoID);
+      ACTS_INFO("GeometryIdentifier re-constructed as " << geoID);
 
       // Construct the names
       std::string nName = tdName + "/" + m_cfg.ntag;
@@ -174,7 +174,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
             float rmax = max->GetBinContent(ib);
             bUtility += Acts::BinUtility(nbins, rmin, rmax, opt, val);
           }
-          ACTS_VERBOSE("Created " << bUtility);
+          ACTS_INFO("Created " << bUtility);
 
           // Construct the binned material with the right bin utility
           sMaterial = std::make_shared<const Acts::BinnedSurfaceMaterial>(
@@ -195,7 +195,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
               Acts::MaterialSlab(material, dt));
         }
       }
-      ACTS_VERBOSE("Successfully read Material for : " << geoID);
+      ACTS_INFO("Successfully read Material for : " << geoID);
 
       // Insert into the new collection
       m_surfaceMaterialMap.insert({geoID, std::move(sMaterial)});
@@ -210,7 +210,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
       // Reconstruct the geometry ID
       Acts::GeometryIdentifier geoID;
       geoID.setVolume(volID);
-      ACTS_VERBOSE("GeometryIdentifier re-constructed as " << geoID);
+      ACTS_INFO("GeometryIdentifier re-constructed as " << geoID);
 
       // Construct the names
       std::string nName = tdName + "/" + m_cfg.ntag;
@@ -257,7 +257,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
             float rmax = max->GetBinContent(ib);
             bUtility += Acts::BinUtility(nbins, rmin, rmax, opt, val);
           }
-          ACTS_VERBOSE("Created " << bUtility);
+          ACTS_INFO("Created " << bUtility);
 
           if (dim == 2) {
             // 2D Grid material
@@ -337,7 +337,7 @@ ActsExamples::RootMaterialDecorator::RootMaterialDecorator(
               std::make_shared<Acts::HomogeneousVolumeMaterial>(material);
         }
       }
-      ACTS_VERBOSE("Successfully read Material for : " << geoID);
+      ACTS_INFO("Successfully read Material for : " << geoID);
 
       // Insert into the new collection
       m_volumeMaterialMap.insert({geoID, std::move(vMaterial)});

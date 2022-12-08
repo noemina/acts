@@ -161,7 +161,7 @@ void CsvBFieldWriter::run(const Config<Coord, Grid>& config,
           std::size_t idx = (x * bins[1] * bins[2]) + (y * bins[2]) + z + 1;
 
           if (idx % 10000 == 0 || idx == total_items) {
-            ACTS_VERBOSE("Wrote " << idx << " out of " << total_items
+            ACTS_INFO("Wrote " << idx << " out of " << total_items
                                   << " items (" << std::setprecision(3)
                                   << ((100.f * idx) / total_items) << "%).");
           }
@@ -215,7 +215,7 @@ void CsvBFieldWriter::run(const Config<Coord, Grid>& config,
         std::size_t idx = (r * bins[1]) + z + 1;
 
         if (idx % 10000 == 0 || idx == total_items) {
-          ACTS_VERBOSE("Wrote " << idx << " out of " << total_items
+          ACTS_INFO("Wrote " << idx << " out of " << total_items
                                 << " items (" << std::setprecision(3)
                                 << ((100.f * idx) / total_items) << "%).");
         }

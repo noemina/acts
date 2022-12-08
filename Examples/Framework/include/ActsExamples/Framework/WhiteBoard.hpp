@@ -99,10 +99,10 @@ inline void ActsExamples::WhiteBoard::add(const std::string& name, T&& object) {
   }
   auto holder = std::make_shared<HolderT<T>>(std::forward<T>(object));
   m_store.emplace(name, holder);
-  ACTS_VERBOSE("Added object '" << name << "'");
+  ACTS_INFO("Added object '" << name << "'");
   if (auto it = m_objectAliases.find(name); it != m_objectAliases.end()) {
     m_store[it->second] = holder;
-    ACTS_VERBOSE("Added alias object '" << it->second << "'");
+    ACTS_INFO("Added alias object '" << it->second << "'");
   }
 }
 
@@ -130,7 +130,7 @@ inline const T& ActsExamples::WhiteBoard::get(const std::string& name) const {
     throw std::out_of_range("Type mismatch for object '" + name + "'");
   }
 
-  ACTS_VERBOSE("Retrieved object '" << name << "'");
+  ACTS_INFO("Retrieved object '" << name << "'");
   return castedHolder->value;
 }
 

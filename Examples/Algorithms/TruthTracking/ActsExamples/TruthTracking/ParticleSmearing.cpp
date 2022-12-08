@@ -85,11 +85,11 @@ ActsExamples::ProcessCode ActsExamples::ParticleSmearing::execute(
       const double newP = std::max(0.0, p + sigmaP * stdNormal(rng));
       params[Acts::eBoundQOverP] = (q != 0) ? (q / newP) : (1 / newP);
 
-      ACTS_VERBOSE("Smearing particle (pos, time, phi, theta, q/p):");
-      ACTS_VERBOSE(" from: " << particle.position().transpose() << ", " << time
+      ACTS_INFO("Smearing particle (pos, time, phi, theta, q/p):");
+      ACTS_INFO(" from: " << particle.position().transpose() << ", " << time
                              << "," << phi << "," << theta << ","
                              << (q != 0 ? q / p : 1 / p));
-      ACTS_VERBOSE("   to: " << perigee
+      ACTS_INFO("   to: " << perigee
                                     ->localToGlobal(
                                         ctx.geoContext,
                                         Acts::Vector2{params[Acts::eBoundLoc0],

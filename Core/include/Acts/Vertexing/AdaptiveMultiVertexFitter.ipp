@@ -288,10 +288,10 @@ Acts::Result<void> Acts::
         KalmanVertexUpdater::updateVertexWithTrack<input_track_t>(*vtx,
                                                                   trkAtVtx);
       } else {
-        ACTS_VERBOSE("Track weight too low. Skip track.");
+        ACTS_INFO("Track weight too low. Skip track.");
       }
     }  // End loop over tracks at vertex
-    ACTS_VERBOSE("New vertex position: " << vtx->fullPosition());
+    ACTS_INFO("New vertex position: " << vtx->fullPosition());
   }  // End loop over vertex collection
 
   return {};

@@ -297,7 +297,7 @@ class Chi2Fitter {
             (result.measurementStates > 0 and
              state.navigation.navigationBreak)) {
           result.missedActiveSurfaces.resize(result.measurementHoles);
-          ACTS_VERBOSE("chi2 | Finalize...");
+          ACTS_INFO("chi2 | Finalize...");
           result.finished = true;
         }
       }
@@ -344,7 +344,7 @@ class Chi2Fitter {
       auto sourcelink_it = inputMeasurements->find(surface->geometryId());
       // inputMeasurements is a std::map<GeometryIdentifier, source_link_t>
       if (sourcelink_it != inputMeasurements->end()) {
-        ACTS_VERBOSE("chi2 |    processSurface: Measurement surface "
+        ACTS_INFO("chi2 |    processSurface: Measurement surface "
                      << surface->geometryId() << " detected.");
 
         // add a full TrackState entry multi trajectory
@@ -370,7 +370,7 @@ class Chi2Fitter {
               });
 
           if (!foundExistingSurface) {
-            ACTS_VERBOSE(
+            ACTS_INFO(
                 "chi2 |    processSurface: Found new surface during update.");
             result.lastTrackIndex = result.fittedStates->addTrackState(
                 ~(TrackStatePropMask::Smoothed | TrackStatePropMask::Filtered),
@@ -449,7 +449,7 @@ class Chi2Fitter {
           typeFlags.set(TrackStateFlag::MeasurementFlag);
           ++result.measurementStates;
         } else {
-          ACTS_VERBOSE("chi2 | Measurement is determined to be an outlier.");
+          ACTS_INFO("chi2 | Measurement is determined to be an outlier.");
           typeFlags.set(TrackStateFlag::OutlierFlag);
         }
 
@@ -490,14 +490,14 @@ class Chi2Fitter {
             typeFlags.set(TrackStateFlag::MaterialFlag);
           }
           if (surface->associatedDetectorElement() != nullptr) {
-            ACTS_VERBOSE("Detected hole on " << surface->geometryId());
+            ACTS_INFO("Detected hole on " << surface->geometryId());
             // If the surface is sensitive, set the hole type flag
             typeFlags.set(TrackStateFlag::HoleFlag);
 
             // Count the missed surface
             result.missedActiveSurfaces.push_back(surface);
           } else if (surface->surfaceMaterial() != nullptr) {
-            ACTS_VERBOSE("Detected in-sensitive surface "
+            ACTS_INFO("Detected in-sensitive surface "
                          << surface->geometryId());
           }
 
@@ -560,10 +560,10 @@ class Chi2Fitter {
                                                            energyLoss);
 
           // Screen out material effects info
-          ACTS_VERBOSE("Material effects on surface: "
+          ACTS_INFO("Material effects on surface: "
                        << surface->geometryId()
                        << " at update stage: " << updateStage << " are :");
-          ACTS_VERBOSE("eLoss = "
+          ACTS_INFO("eLoss = "
                        << interaction.Eloss << ", "
                        << "variancePhi = " << interaction.variancePhi << ", "
                        << "varianceTheta = " << interaction.varianceTheta
@@ -577,7 +577,7 @@ class Chi2Fitter {
 
       if (not hasMaterial) {
         // Screen out message
-        ACTS_VERBOSE("No material effects on surface: " << surface->geometryId()
+        ACTS_INFO("No material effects on surface: " << surface->geometryId()
                                                         << " at update stage: "
                                                         << updateStage);
       }
@@ -629,7 +629,7 @@ class Chi2Fitter {
 
     // To be able to find measurements later, we put them into a map
     // We need to copy input SourceLinks anyways, so the map can own them.
-    ACTS_VERBOSE("chi2 | preparing " << std::distance(it, end)
+    ACTS_INFO("chi2 | preparing " << std::distance(it, end)
                                      << " input measurements");
     std::map<GeometryIdentifier, std::reference_wrapper<const SourceLink>>
         inputMeasurements;
@@ -724,7 +724,7 @@ class Chi2Fitter {
       c2rCurrent.chisquare = c2rCurrent.residuals.transpose() *
                              c2rCurrent.covariance.inverse() *
                              c2rCurrent.residuals;
-      ACTS_VERBOSE("chi2 | it=" << i << " | χ² = " << c2rCurrent.chisquare);
+      ACTS_INFO("chi2 | it=" << i << " | χ² = " << c2rCurrent.chisquare);
 
       // copy over data from previous runs (namely chisquares vector)
       c2rCurrent.chisquares.reserve(c2r.chisquares.size() + 1);
@@ -753,7 +753,7 @@ class Chi2Fitter {
               c2r.collectorDerive1Chi2Sum);
 
       BoundVector newParamsVec = vParams.parameters() - delta_start_parameters;
-      ACTS_VERBOSE("chi2 | it=" << i << " | updated parameters = "
+      ACTS_INFO("chi2 | it=" << i << " | updated parameters = "
                                 << newParamsVec.transpose());
       c2r.fittedParameters =
           BoundTrackParameters(vParams.referenceSurface().getSharedPtr(),

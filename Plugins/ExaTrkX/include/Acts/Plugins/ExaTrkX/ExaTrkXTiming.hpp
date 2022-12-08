@@ -30,12 +30,12 @@ struct ExaTrkXTime {
   float total = 0.0;
 
   void summary(LoggerWrapper& logger) const {
-    ACTS_VERBOSE("1) embedding: " << embedding);
-    ACTS_VERBOSE("2) building: " << building);
-    ACTS_VERBOSE("3) filtering: " << filtering);
-    ACTS_VERBOSE("4) gnn: " << gnn);
-    ACTS_VERBOSE("5) labeling: " << labeling);
-    ACTS_VERBOSE("6) total: " << total);
+    ACTS_INFO("1) embedding: " << embedding);
+    ACTS_INFO("2) building: " << building);
+    ACTS_INFO("3) filtering: " << filtering);
+    ACTS_INFO("4) gnn: " << gnn);
+    ACTS_INFO("5) labeling: " << labeling);
+    ACTS_INFO("6) total: " << total);
   }
 };
 

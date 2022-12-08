@@ -23,7 +23,7 @@ void ActsExamples::EffPlotTool::book(
   PlotHelpers::Binning bPhi = m_cfg.varBinning.at("Phi");
   PlotHelpers::Binning bEta = m_cfg.varBinning.at("Eta");
   PlotHelpers::Binning bPt = m_cfg.varBinning.at("Pt");
-  ACTS_DEBUG("Initialize the histograms for efficiency plots");
+  ACTS_INFO("Initialize the histograms for efficiency plots");
   // efficiency vs pT
   effPlotCache.trackEff_vs_pT = PlotHelpers::bookEff(
       "trackeff_vs_pT", "Tracking efficiency;Truth pT [GeV/c];Efficiency", bPt);
@@ -43,7 +43,7 @@ void ActsExamples::EffPlotTool::clear(EffPlotCache& effPlotCache) const {
 
 void ActsExamples::EffPlotTool::write(
     const EffPlotTool::EffPlotCache& effPlotCache) const {
-  ACTS_DEBUG("Write the plots to output file.");
+  ACTS_INFO("Write the plots to output file.");
   effPlotCache.trackEff_vs_pT->Write();
   effPlotCache.trackEff_vs_eta->Write();
   effPlotCache.trackEff_vs_phi->Write();

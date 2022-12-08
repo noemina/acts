@@ -103,7 +103,7 @@ ActsExamples::ProcessCode ActsExamples::SeedingOrthogonalAlgorithm::execute(
     protoTracks.push_back(std::move(protoTrack));
   }
 
-  ACTS_DEBUG("Created " << seeds.size() << " track seeds from "
+  ACTS_INFO("Created " << seeds.size() << " track seeds from "
                         << spacePoints.size() << " space points");
 
   ctx.eventStore.add(m_cfg.outputSeeds, std::move(seeds));

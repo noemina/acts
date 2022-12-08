@@ -20,13 +20,13 @@ ActsExamples::MaterialPhysicsList::MaterialPhysicsList(
 }
 
 void ActsExamples::MaterialPhysicsList::ConstructParticle() {
-  ACTS_DEBUG("Construct Geantinos and Charged Geantinos.");
+  ACTS_INFO("Construct Geantinos and Charged Geantinos.");
   G4Geantino::GeantinoDefinition();
   G4ChargedGeantino::ChargedGeantinoDefinition();
 }
 
 void ActsExamples::MaterialPhysicsList::ConstructProcess() {
-  ACTS_DEBUG("Adding Transport as single supperted Process.");
+  ACTS_INFO("Adding Transport as single supperted Process.");
   AddTransportation();
 }
 

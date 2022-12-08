@@ -23,7 +23,7 @@ EDM4hepMeasurementWriter::EDM4hepMeasurementWriter(
     : WriterT(config.inputMeasurements, "EDM4hepMeasurementWriter", level),
       m_cfg(config),
       m_writer(config.outputPath, &m_store) {
-  ACTS_VERBOSE("Created output file " << config.outputPath);
+  ACTS_INFO("Created output file " << config.outputPath);
 
   // Input container for measurements is already checked by base constructor
   if (m_cfg.inputSimHits.empty()) {
@@ -55,11 +55,11 @@ ActsExamples::ProcessCode EDM4hepMeasurementWriter::writeT(
   ClusterContainer clusters;
 
   if (!m_cfg.inputClusters.empty()) {
-    ACTS_VERBOSE("Fetch clusters for writing: " << m_cfg.inputClusters);
+    ACTS_INFO("Fetch clusters for writing: " << m_cfg.inputClusters);
     clusters = ctx.eventStore.get<ClusterContainer>(m_cfg.inputClusters);
   }
 
-  ACTS_VERBOSE("Writing " << measurements.size()
+  ACTS_INFO("Writing " << measurements.size()
                           << " measurements in this event.");
 
   for (Index hitIdx = 0u; hitIdx < measurements.size(); ++hitIdx) {

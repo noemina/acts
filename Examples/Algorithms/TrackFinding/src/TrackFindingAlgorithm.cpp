@@ -93,7 +93,7 @@ ActsExamples::ProcessCode ActsExamples::TrackFindingAlgorithm::execute(
       extensions, Acts::LoggerWrapper{logger()}, pOptions, &(*pSurface));
 
   // Perform the track finding for all initial parameters
-  ACTS_DEBUG("Invoke track finding with " << initialParameters.size()
+  ACTS_INFO("Invoke track finding with " << initialParameters.size()
                                           << " seeds.");
 
   auto mtj = std::make_shared<Acts::VectorMultiTrajectory>();
@@ -126,7 +126,7 @@ ActsExamples::ProcessCode ActsExamples::TrackFindingAlgorithm::execute(
     }
   }
 
-  ACTS_DEBUG("Finalized track finding with " << trajectories.size()
+  ACTS_INFO("Finalized track finding with " << trajectories.size()
                                              << " track candidates.");
 
   m_memoryStatistics.local().hist += mtj->statistics().hist;
@@ -151,6 +151,6 @@ ActsExamples::ProcessCode ActsExamples::TrackFindingAlgorithm::finalize()
       });
   std::stringstream ss;
   memoryStatistics.toStream(ss);
-  ACTS_DEBUG("Track State memory statistics (averaged):\n" << ss.str());
+  ACTS_INFO("Track State memory statistics (averaged):\n" << ss.str());
   return ProcessCode::SUCCESS;
 }

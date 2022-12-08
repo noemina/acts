@@ -250,7 +250,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrajectorySummaryWriter::writeT(
           foundMajorityParticle = true;
 
           const auto& particle = *ip;
-          ACTS_DEBUG(
+          ACTS_INFO(
               "Find the truth particle with barcode = " << majorityParticleId);
           // Get the truth particle info at vertex
           t_p = particle.absoluteMomentum();

@@ -280,9 +280,9 @@ int ActsExamples::Sequencer::run() {
     service->startRun();
   }
 
-  ACTS_VERBOSE("Initialize algorithms");
+  ACTS_INFO("Initialize algorithms");
   for (auto& alg : m_algorithms) {
-    ACTS_VERBOSE("Initialize algorithm: " << alg->name());
+    ACTS_INFO("Initialize algorithm: " << alg->name());
     if (alg->initialize() != ProcessCode::SUCCESS) {
       ACTS_FATAL("Failed to initialize algorithm: " << alg->name());
       throw std::runtime_error("Failed to process event data");
@@ -319,35 +319,35 @@ int ActsExamples::Sequencer::run() {
             /// Decorate the context
             for (auto& cdr : m_decorators) {
               StopWatch sw(localClocksAlgorithms[ialgo++]);
-              ACTS_VERBOSE("Execute context decorator: " << cdr->name());
+              ACTS_INFO("Execute context decorator: " << cdr->name());
               if (cdr->decorate(++context) != ProcessCode::SUCCESS) {
                 throw std::runtime_error("Failed to decorate event context");
               }
             }
 
-            ACTS_VERBOSE("Execute readers");
+            ACTS_INFO("Execute readers");
             for (auto& rdr : m_readers) {
               StopWatch sw(localClocksAlgorithms[ialgo++]);
-              ACTS_VERBOSE("Execute reader: " << rdr->name());
+              ACTS_INFO("Execute reader: " << rdr->name());
               if (rdr->read(++context) != ProcessCode::SUCCESS) {
                 throw std::runtime_error("Failed to read input data");
               }
             }
 
-            ACTS_VERBOSE("Execute algorithms");
+            ACTS_INFO("Execute algorithms");
             for (auto& alg : m_algorithms) {
               StopWatch sw(localClocksAlgorithms[ialgo++]);
-              ACTS_VERBOSE("Execute algorithm: " << alg->name());
+              ACTS_INFO("Execute algorithm: " << alg->name());
               if (alg->execute(++context) != ProcessCode::SUCCESS) {
                 ACTS_FATAL("Failed to execute algorithm: " << alg->name());
                 throw std::runtime_error("Failed to process event data");
               }
             }
 
-            ACTS_VERBOSE("Execute writers");
+            ACTS_INFO("Execute writers");
             for (auto& wrt : m_writers) {
               StopWatch sw(localClocksAlgorithms[ialgo++]);
-              ACTS_VERBOSE("Execute writer: " << wrt->name());
+              ACTS_INFO("Execute writer: " << wrt->name());
               if (wrt->write(++context) != ProcessCode::SUCCESS) {
                 throw std::runtime_error("Failed to write output data");
               }
@@ -374,9 +374,9 @@ int ActsExamples::Sequencer::run() {
         });
   });
 
-  ACTS_VERBOSE("Finalize algorithms");
+  ACTS_INFO("Finalize algorithms");
   for (auto& alg : m_algorithms) {
-    ACTS_VERBOSE("Finalize algorithm: " << alg->name());
+    ACTS_INFO("Finalize algorithm: " << alg->name());
     if (alg->finalize() != ProcessCode::SUCCESS) {
       ACTS_FATAL("Failed to finalize algorithm: " << alg->name());
       throw std::runtime_error("Failed to process event data");
@@ -401,9 +401,9 @@ int ActsExamples::Sequencer::run() {
   ACTS_INFO("Processed " << numEvents << " events in " << asString(totalWall)
                          << " (wall clock)");
   ACTS_INFO("Average time per event: " << perEvent(totalReal, numEvents));
-  ACTS_DEBUG("Average time per algorithm:");
+  ACTS_INFO("Average time per algorithm:");
   for (size_t i = 0; i < names.size(); ++i) {
-    ACTS_DEBUG("  " << names[i] << ": "
+    ACTS_INFO("  " << names[i] << ": "
                     << perEvent(clocksAlgorithms[i], numEvents));
   }
   storeTiming(names, clocksAlgorithms, numEvents,

@@ -33,7 +33,7 @@ template <typename stepper_t>
 Acts::Intersection3D::Status updateSingleSurfaceStatus(
     const stepper_t& stepper, typename stepper_t::State& state,
     const Surface& surface, const BoundaryCheck& bcheck, LoggerWrapper logger) {
-  ACTS_VERBOSE(
+  ACTS_INFO(
       "Update single surface status for surface: " << surface.geometryId());
 
   auto sIntersection =
@@ -44,7 +44,7 @@ Acts::Intersection3D::Status updateSingleSurfaceStatus(
   if (sIntersection.intersection.status == Intersection3D::Status::onSurface) {
     // Release navigation step size
     state.stepSize.release(ConstrainedStep::actor);
-    ACTS_VERBOSE("Intersection: state is ON SURFACE");
+    ACTS_INFO("Intersection: state is ON SURFACE");
     return Intersection3D::Status::onSurface;
   } else if (sIntersection.intersection or sIntersection.alternative) {
     // Path and overstep limit checking
@@ -54,7 +54,7 @@ Acts::Intersection3D::Status updateSingleSurfaceStatus(
     // If either of the two intersections are viable return reachable
     if (detail::checkIntersection(sIntersection.intersection, pLimit, oLimit,
                                   s_onSurfaceTolerance, logger)) {
-      ACTS_VERBOSE("Surface is reachable");
+      ACTS_INFO("Surface is reachable");
       stepper.setStepSize(state,
                           state.navDir * sIntersection.intersection.pathLength);
       return Intersection3D::Status::reachable;
@@ -63,13 +63,13 @@ Acts::Intersection3D::Status updateSingleSurfaceStatus(
     if (sIntersection.alternative and
         detail::checkIntersection(sIntersection.alternative, pLimit, oLimit,
                                   s_onSurfaceTolerance, logger)) {
-      ACTS_VERBOSE("Surface is reachable");
+      ACTS_INFO("Surface is reachable");
       stepper.setStepSize(state,
                           state.navDir * sIntersection.alternative.pathLength);
       return Intersection3D::Status::reachable;
     }
   }
-  ACTS_VERBOSE("Surface is NOT reachable");
+  ACTS_INFO("Surface is NOT reachable");
   return Intersection3D::Status::unreachable;
 }
 

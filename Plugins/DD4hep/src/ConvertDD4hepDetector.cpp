@@ -62,7 +62,7 @@ std::unique_ptr<const TrackingGeometry> convertDD4hepDetector(
   // go through the detector hierarchies
   collectSubDetectors_dd4hep(worldDetElement, subDetectors,
                              LoggerWrapper{*logger.m_logger});
-  ACTS_VERBOSE("Collected " << subDetectors.size() << " sub detectors");
+  ACTS_INFO("Collected " << subDetectors.size() << " sub detectors");
   // sort to build detector from bottom to top
   sortSubDetectors(subDetectors);
   // the volume builders of the subdetectors
@@ -78,9 +78,9 @@ std::unique_ptr<const TrackingGeometry> convertDD4hepDetector(
         subDetector.extension<dd4hep::rec::VariantParameters>(false);
 
     if (params != nullptr) {
-      ACTS_VERBOSE("VariantParameters from DD4hep:");
+      ACTS_INFO("VariantParameters from DD4hep:");
       for (const auto& [k, v] : params->variantParameters) {
-        ACTS_VERBOSE("- " << k << ": "
+        ACTS_INFO("- " << k << ": "
                           << boost::apply_visitor(DebugVisitor{}, v));
       }
     }
@@ -150,18 +150,18 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
   auto volumeHelper = cylinderVolumeHelper_dd4hep(loggingLevel);
   // create local logger for conversion
   ACTS_LOCAL_LOGGER(Acts::getDefaultLogger("D2A_Logger", loggingLevel));
-  ACTS_VERBOSE("Processing detector element:  " << subDetector.name());
+  ACTS_INFO("Processing detector element:  " << subDetector.name());
 
   LoggerWrapper loggerWrapper{*logger.m_logger};
 
   dd4hep::DetType subDetType{subDetector.typeFlag()};
-  ACTS_VERBOSE("SubDetector type is: ["
+  ACTS_INFO("SubDetector type is: ["
                << subDetType << "], compound: "
                << (subDetector.type() == "compound" ? "yes" : "no"));
   if (subDetector.type() == "compound") {
-    ACTS_VERBOSE("Subdetector : '" << subDetector.name()
+    ACTS_INFO("Subdetector : '" << subDetector.name()
                                    << "' has type compound ");
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "handling as a compound volume (a hierachy of a "
         "barrel-endcap structure) and resolving the "
         "subvolumes...");
@@ -188,7 +188,7 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
     bool pEndCap = false;
     bool barrel = false;
     for (auto& volumeDetElement : compounds) {
-      ACTS_VERBOSE("Volume : '"
+      ACTS_INFO("Volume : '"
                    << subDetector.name()
                    << "' is a compound volume -> resolve the sub volumes");
 
@@ -211,7 +211,7 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
       dd4hep::DetType type{volumeDetElement.typeFlag()};
 
       if (type.is(dd4hep::DetType::ENDCAP)) {
-        ACTS_VERBOSE(std::string("Subvolume : '") + volumeDetElement.name() +
+        ACTS_INFO(std::string("Subvolume : '") + volumeDetElement.name() +
                      std::string("' is marked ENDCAP"));
         if (zPos < 0.) {
           if (nEndCap) {
@@ -222,24 +222,24 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
                 "hierarchy.");
           }
           nEndCap = true;
-          ACTS_VERBOSE("-> is negative endcap");
-          ACTS_VERBOSE("-> collecting layers");
+          ACTS_INFO("-> is negative endcap");
+          ACTS_INFO("-> collecting layers");
           collectLayers_dd4hep(volumeDetElement, negativeLayers, loggerWrapper);
           // Fill the volume material for barrel case
           if (getParamOr<bool>("boundary_material", volumeDetElement, false)) {
-            ACTS_VERBOSE(
+            ACTS_INFO(
                 "-> boundary_material flag detected, creating proto "
                 "material.");
             auto& params = getParams(volumeDetElement);
             if (hasParam("boundary_material_negative", volumeDetElement)) {
-              ACTS_VERBOSE("--> negative");
+              ACTS_INFO("--> negative");
               cvbConfig.boundaryMaterial[2] = Acts::createProtoMaterial(
                   params, "boundary_material_negative",
                   {{"binPhi", Acts::closed}, {"binR", Acts::open}},
                   LoggerWrapper{logger()});
             }
             if (hasParam("boundary_material_positive", volumeDetElement)) {
-              ACTS_VERBOSE("--> positive");
+              ACTS_INFO("--> positive");
               cvbConfig.boundaryMaterial[3] = Acts::createProtoMaterial(
                   params, "boundary_material_positive",
                   {{"binPhi", Acts::closed}, {"binR", Acts::open}},
@@ -255,24 +255,24 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
                 "hierarchy.");
           }
           pEndCap = true;
-          ACTS_VERBOSE("-> is positive endcap");
-          ACTS_VERBOSE("-> collecting layers");
+          ACTS_INFO("-> is positive endcap");
+          ACTS_INFO("-> collecting layers");
           collectLayers_dd4hep(volumeDetElement, positiveLayers, loggerWrapper);
           // Fill the volume material for barrel case
           if (getParamOr<bool>("boundary_material", volumeDetElement, false)) {
-            ACTS_VERBOSE(
+            ACTS_INFO(
                 "-> boundary_material flag detected, creating proto "
                 "material.");
             auto& params = getParams(volumeDetElement);
             if (params.contains("boundary_material_negative")) {
-              ACTS_VERBOSE("--> negative");
+              ACTS_INFO("--> negative");
               cvbConfig.boundaryMaterial[4] = Acts::createProtoMaterial(
                   params, "boundary_material_negative",
                   {{"binPhi", Acts::closed}, {"binR", Acts::open}},
                   LoggerWrapper{logger()});
             }
             if (params.contains("boundary_material_positive")) {
-              ACTS_VERBOSE("--> positive");
+              ACTS_INFO("--> positive");
               cvbConfig.boundaryMaterial[5] = Acts::createProtoMaterial(
                   params, "boundary_material_positive",
                   {{"binPhi", Acts::closed}, {"binR", Acts::open}},
@@ -289,25 +289,25 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
               "hierarchy.");
         }
         barrel = true;
-        ACTS_VERBOSE("Subvolume : " << volumeDetElement.name()
+        ACTS_INFO("Subvolume : " << volumeDetElement.name()
                                     << " is marked as BARREL");
-        ACTS_VERBOSE("-> collecting layers");
+        ACTS_INFO("-> collecting layers");
         collectLayers_dd4hep(volumeDetElement, centralLayers, loggerWrapper);
         // Fill the volume material for barrel case
         if (getParamOr<bool>("boundary_material", volumeDetElement, false)) {
-          ACTS_VERBOSE(
+          ACTS_INFO(
               "-> boundary_material flag detected, creating proto "
               "material.");
           auto& params = getParams(volumeDetElement);
           if (params.contains("boundary_material_negative")) {
-            ACTS_VERBOSE("--> negative");
+            ACTS_INFO("--> negative");
             cvbConfig.boundaryMaterial[3] = Acts::createProtoMaterial(
                 params, "boundary_material_negative",
                 {{"binPhi", Acts::closed}, {"binR", Acts::open}},
                 LoggerWrapper{logger()});
           }
           if (params.contains("boundary_material_positive")) {
-            ACTS_VERBOSE("--> positive");
+            ACTS_INFO("--> positive");
             cvbConfig.boundaryMaterial[4] = Acts::createProtoMaterial(
                 params, "boundary_material_positive",
                 {{"binPhi", Acts::closed}, {"binR", Acts::open}},
@@ -324,19 +324,19 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
 
       // Fill the volume material for the inner / outer cover
       if (getParamOr<bool>("boundary_material", volumeDetElement, false)) {
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "-> boundary_material flag detected, creating proto "
             "material.");
         auto& params = getParams(volumeDetElement);
         if (params.contains("boundary_material_inner")) {
-          ACTS_VERBOSE("--> inner");
+          ACTS_INFO("--> inner");
           cvbConfig.boundaryMaterial[0] = Acts::createProtoMaterial(
               params, "boundary_material_inner",
               {{"binPhi", Acts::closed}, {"binZ", Acts::open}},
               LoggerWrapper{logger()});
         }
         if (params.contains("boundary_material_outer")) {
-          ACTS_VERBOSE("--> outer");
+          ACTS_INFO("--> outer");
           cvbConfig.boundaryMaterial[1] = Acts::createProtoMaterial(
               params, "boundary_material_outer",
               {{"binPhi", Acts::closed}, {"binZ", Acts::open}},
@@ -395,11 +395,11 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
     return cylinderVolumeBuilder;
   } else if (subDetType.is(dd4hep::DetType::BEAMPIPE) ||
              getParamOr<bool>("passive_layer", subDetector, false)) {
-    ACTS_VERBOSE("Subdetector : " << subDetector.name()
+    ACTS_INFO("Subdetector : " << subDetector.name()
                                   << " - building a passive cylinder.");
 
     if (subDetType.is(dd4hep::DetType::BEAMPIPE)) {
-      ACTS_VERBOSE("This is the beam pipe - will be built to r -> 0.");
+      ACTS_INFO("This is the beam pipe - will be built to r -> 0.");
     }
 
     // get the dimensions of the volume
@@ -414,7 +414,7 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
     double rMin = tube->GetRmin() * UnitConstants::cm - layerEnvelopeR;
     double rMax = tube->GetRmax() * UnitConstants::cm + layerEnvelopeR;
     double halfZ = tube->GetDz() * UnitConstants::cm + layerEnvelopeZ;
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Extracting cylindrical volume bounds ( rmin / rmax / "
         "halfZ )=  ( "
         << rMin << " / " << rMax << " / " << halfZ << " )");
@@ -422,7 +422,7 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
     std::shared_ptr<Acts::ISurfaceMaterial> plMaterial = nullptr;
     if (getParamOr<bool>("layer_material", subDetector, false)) {
       // get the possible material of the surounding volume
-      ACTS_VERBOSE("--> adding layer material at 'representing'");
+      ACTS_INFO("--> adding layer material at 'representing'");
       plMaterial = Acts::createProtoMaterial(
           getParams(subDetector), "layer_material_representing",
           {{"binPhi", Acts::closed}, {"binZ", Acts::open}},
@@ -453,19 +453,19 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
 
     // Fill the volume material for the inner / outer cover
     if (getParamOr<bool>("boundary_material", subDetector, false)) {
-      ACTS_VERBOSE(
+      ACTS_INFO(
           "-> boundary_material flag detected, creating proto "
           "material.");
       auto& params = getParams(subDetector);
       if (hasParam("boundary_material_inner", subDetector)) {
-        ACTS_VERBOSE("--> inner");
+        ACTS_INFO("--> inner");
         cvbConfig.boundaryMaterial[0] = Acts::createProtoMaterial(
             params, "boundary_material_inner",
             {{"binPhi", Acts::closed}, {"binZ", Acts::open}},
             LoggerWrapper{logger()});
       }
       if (hasParam("boundary_material_outer", subDetector)) {
-        ACTS_VERBOSE("--> outer");
+        ACTS_INFO("--> outer");
         cvbConfig.boundaryMaterial[1] = Acts::createProtoMaterial(
             params, "boundary_material_outer",
             {{"binPhi", Acts::closed}, {"binZ", Acts::open}},
@@ -480,12 +480,12 @@ std::shared_ptr<const CylinderVolumeBuilder> volumeBuilder_dd4hep(
                                loggingLevel));
     return pcVolumeBuilder;
   } else if (subDetType.is(dd4hep::DetType::BARREL)) {
-    ACTS_VERBOSE("Subdetector: "
+    ACTS_INFO("Subdetector: "
                  << subDetector.name()
                  << " is a (sensitive) Barrel volume - building barrel.");
     /// the dd4hep::DetElements of the layers of the central volume
     std::vector<dd4hep::DetElement> centralLayers, centralVolumes;
-    ACTS_VERBOSE("-> collecting layers");
+    ACTS_INFO("-> collecting layers");
     collectLayers_dd4hep(subDetector, centralLayers, loggerWrapper);
 
     // configure SurfaceArrayCreator
@@ -630,7 +630,7 @@ void collectLayers_dd4hep(dd4hep::DetElement& detElement,
 
     if (params != nullptr) {
       _expr = params->value_or<std::string>("layer_pattern", _expr);
-      ACTS_VERBOSE("--> Layer pattern for elt " << detElement.name() << ": "
+      ACTS_INFO("--> Layer pattern for elt " << detElement.name() << ": "
                                                 << _expr);
     }
     std::regex expr{_expr};
@@ -638,7 +638,7 @@ void collectLayers_dd4hep(dd4hep::DetElement& detElement,
     dd4hep::DetElement childDetElement = child.second;
 
     if (std::regex_search(childDetElement.name(), expr)) {
-      ACTS_VERBOSE("--> Layer candidate match: " << _expr << " -> "
+      ACTS_INFO("--> Layer candidate match: " << _expr << " -> "
                                                  << childDetElement.name());
       layers.push_back(childDetElement);
       continue;

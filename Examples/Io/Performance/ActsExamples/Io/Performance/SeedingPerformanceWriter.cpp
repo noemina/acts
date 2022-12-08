@@ -71,11 +71,11 @@ ActsExamples::ProcessCode ActsExamples::SeedingPerformanceWriter::endRun() {
   float aveNDuplicatedSeeds =
       float(m_nTotalMatchedSeeds - m_nTotalMatchedParticles) /
       m_nTotalMatchedParticles;
-  ACTS_DEBUG("nTotalSeeds               = " << m_nTotalSeeds);
-  ACTS_DEBUG("nTotalMatchedSeeds        = " << m_nTotalMatchedSeeds);
-  ACTS_DEBUG("nTotalParticles           = " << m_nTotalParticles);
-  ACTS_DEBUG("nTotalMatchedParticles    = " << m_nTotalMatchedParticles);
-  ACTS_DEBUG("nTotalDuplicatedParticles = " << m_nTotalDuplicatedParticles);
+  ACTS_INFO("nTotalSeeds               = " << m_nTotalSeeds);
+  ACTS_INFO("nTotalMatchedSeeds        = " << m_nTotalMatchedSeeds);
+  ACTS_INFO("nTotalParticles           = " << m_nTotalParticles);
+  ACTS_INFO("nTotalMatchedParticles    = " << m_nTotalMatchedParticles);
+  ACTS_INFO("nTotalDuplicatedParticles = " << m_nTotalDuplicatedParticles);
 
   ACTS_INFO("Efficiency (nMatchedParticles / nAllParticles) = " << eff);
   ACTS_INFO("Fake rate (nUnMatchedSeeds / nAllSeeds) = " << fakeRate);
@@ -141,7 +141,7 @@ ActsExamples::ProcessCode ActsExamples::SeedingPerformanceWriter::writeT(
     m_duplicationPlotTool.fill(m_duplicationPlotCache, particle,
                                nMatchedSeedsForParticle - 1);
   }
-  ACTS_DEBUG("Number of seeds: " << nSeeds);
+  ACTS_INFO("Number of seeds: " << nSeeds);
   m_nTotalSeeds += nSeeds;
   m_nTotalMatchedSeeds += nMatchedSeeds;
   m_nTotalParticles += particles.size();

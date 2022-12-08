@@ -27,7 +27,7 @@ void ActsExamples::DuplicationPlotTool::book(
   PlotHelpers::Binning bEta = m_cfg.varBinning.at("Eta");
   PlotHelpers::Binning bPhi = m_cfg.varBinning.at("Phi");
   PlotHelpers::Binning bNum = m_cfg.varBinning.at("Num");
-  ACTS_DEBUG("Initialize the histograms for duplication rate plots");
+  ACTS_INFO("Initialize the histograms for duplication rate plots");
 
   // duplication rate vs pT
   duplicationPlotCache.duplicationRate_vs_pT =
@@ -66,7 +66,7 @@ void ActsExamples::DuplicationPlotTool::clear(
 void ActsExamples::DuplicationPlotTool::write(
     const DuplicationPlotTool::DuplicationPlotCache& duplicationPlotCache)
     const {
-  ACTS_DEBUG("Write the plots to output file.");
+  ACTS_INFO("Write the plots to output file.");
   duplicationPlotCache.duplicationRate_vs_pT->Write();
   duplicationPlotCache.duplicationRate_vs_eta->Write();
   duplicationPlotCache.duplicationRate_vs_phi->Write();

@@ -51,13 +51,13 @@ const Acts::LayerVector Acts::PassiveLayerBuilder::endcapLayers(
   // pos/neg layers
   size_t numpnLayers = m_cfg.posnegLayerPositionZ.size();
   if (numpnLayers != 0u) {
-    ACTS_DEBUG("Configured to build " << numpnLayers
+    ACTS_INFO("Configured to build " << numpnLayers
                                       << " passive layers on side :" << side);
     eLayers.reserve(numpnLayers);
     // loop through
     for (size_t ipnl = 0; ipnl < numpnLayers; ++ipnl) {
       // some screen output
-      ACTS_VERBOSE("- build layers "
+      ACTS_INFO("- build layers "
                    << (ipnl)
                    << " at  = " << side * m_cfg.posnegLayerPositionZ.at(ipnl)
                    << " and rMin/rMax = " << m_cfg.posnegLayerRmin.at(ipnl)
@@ -95,13 +95,13 @@ const Acts::LayerVector Acts::PassiveLayerBuilder::centralLayers(
   // the central layers
   size_t numcLayers = m_cfg.centralLayerRadii.size();
   if (numcLayers != 0u) {
-    ACTS_DEBUG("Configured to build " << numcLayers
+    ACTS_INFO("Configured to build " << numcLayers
                                       << " passive central layers.");
     cLayers.reserve(numcLayers);
     // loop through
     for (size_t icl = 0; icl < numcLayers; ++icl) {
       // some screen output
-      ACTS_VERBOSE("- build layer "
+      ACTS_INFO("- build layer "
                    << icl
                    << " with radius = " << m_cfg.centralLayerRadii.at(icl)
                    << " and halfZ = " << m_cfg.centralLayerHalflengthZ.at(icl));

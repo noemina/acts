@@ -28,7 +28,7 @@ std::string ActsExamples::SvgTrackingGeometryWriter::name() const {
 
 ActsExamples::ProcessCode ActsExamples::SvgTrackingGeometryWriter::write(
     const AlgorithmContext& context, const Acts::TrackingGeometry& tGeometry) {
-  ACTS_DEBUG(">>Svg: Writer for TrackingGeometry object called.");
+  ACTS_INFO(">>Svg: Writer for TrackingGeometry object called.");
 
   m_writeMutex.lock();
 

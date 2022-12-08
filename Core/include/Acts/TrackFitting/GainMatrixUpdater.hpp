@@ -52,7 +52,7 @@ class GainMatrixUpdater {
       NavigationDirection direction = NavigationDirection::Forward,
       LoggerWrapper logger = getDummyLogger()) const {
     (void)gctx;
-    ACTS_VERBOSE("Invoked GainMatrixUpdater");
+    ACTS_INFO("Invoked GainMatrixUpdater");
 
     // there should be a calibrated measurement
     assert(trackState.hasCalibrated());
@@ -65,9 +65,9 @@ class GainMatrixUpdater {
     // const auto predicted = trackState.predicted();
     // const auto predictedCovariance = trackState.predictedCovariance();
 
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Predicted parameters: " << trackState.predicted().transpose());
-    ACTS_VERBOSE("Predicted covariance:\n" << trackState.predictedCovariance());
+    ACTS_INFO("Predicted covariance:\n" << trackState.predictedCovariance());
 
     // read-write handles. Types are eigen maps into backing storage.
     // This writes directly into the trajectory storage

@@ -117,7 +117,7 @@ Acts::Svg::SurfaceArrayConverter::convert(
     }
   }
 
-  ACTS_DEBUG("Found " << templateObjects.size() << " templates for this layer");
+  ACTS_INFO("Found " << templateObjects.size() << " templates for this layer");
   // Estimate a reference radius
   ActsScalar radius = 0.;
 

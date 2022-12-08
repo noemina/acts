@@ -35,11 +35,11 @@ void Acts::DD4hepVolumeBuilder::setConfiguration(
 std::vector<std::shared_ptr<Acts::TrackingVolume>>
 Acts::DD4hepVolumeBuilder::centralVolumes() const {
   if (m_cfg.centralVolumes.empty()) {
-    ACTS_VERBOSE("[L] No layers handed over for central volume!");
+    ACTS_INFO("[L] No layers handed over for central volume!");
     return {};
   }
 
-  ACTS_VERBOSE(
+  ACTS_INFO(
       "[L] Received layers for central volume -> creating "
       "cylindrical layers");
 

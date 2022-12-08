@@ -344,7 +344,7 @@ class CombinatorialKalmanFilter {
         return;
       }
 
-      ACTS_VERBOSE("CombinatorialKalmanFilter step");
+      ACTS_INFO("CombinatorialKalmanFilter step");
 
       // Update:
       // - Waiting for a current surface
@@ -364,7 +364,7 @@ class CombinatorialKalmanFilter {
         // -> Call branch stopper to justify the branch
         // 3) The surface is neither in the measurement map nor with material
         // -> Do nothing
-        ACTS_VERBOSE("Perform filter step");
+        ACTS_INFO("Perform filter step");
         auto res = filter(surface, state, stepper, result);
         if (!res.ok()) {
           ACTS_ERROR("Error in filter: " << res.error());
@@ -395,7 +395,7 @@ class CombinatorialKalmanFilter {
             }
             // Record the tips if there are measurements on the track
             if (tipState.nMeasurements > 0) {
-              ACTS_VERBOSE("Find track with entry index = "
+              ACTS_INFO("Find track with entry index = "
                            << currentTip << " and there are nMeasurements = "
                            << tipState.nMeasurements
                            << ", nOutliers = " << tipState.nOutliers
@@ -424,11 +424,11 @@ class CombinatorialKalmanFilter {
         // If no more active tip, done with filtering; Otherwise, reset
         // propagation state to track state at last tip of active tips
         if (result.activeTips.empty()) {
-          ACTS_VERBOSE("Kalman filtering finds "
+          ACTS_INFO("Kalman filtering finds "
                        << result.lastTrackIndices.size() << " tracks");
           result.filtered = true;
         } else {
-          ACTS_VERBOSE("Propagation jumps to branch with tip = "
+          ACTS_INFO("Propagation jumps to branch with tip = "
                        << result.activeTips.back().first);
           reset(state, stepper, result);
         }
@@ -440,7 +440,7 @@ class CombinatorialKalmanFilter {
           // we are already done
         } else if (result.activeTips.size() == 1) {
           // this was the last track - we are done
-          ACTS_VERBOSE("Kalman filtering finds "
+          ACTS_INFO("Kalman filtering finds "
                        << result.lastTrackIndices.size() << " tracks");
           result.filtered = true;
         } else {
@@ -458,7 +458,7 @@ class CombinatorialKalmanFilter {
           result.finished = true;
         } else {
           if (not smoothing) {
-            ACTS_VERBOSE("Finish Kalman filtering");
+            ACTS_INFO("Finish Kalman filtering");
             // Remember that track finding is done
             result.finished = true;
           } else {
@@ -467,7 +467,7 @@ class CombinatorialKalmanFilter {
             // propagation steps:
             // -> first run smoothing for found track indexed with iSmoothed
             if (not result.smoothed) {
-              ACTS_VERBOSE(
+              ACTS_INFO(
                   "Finalize/run smoothing for track with last measurement "
                   "index = "
                   << result.lastMeasurementIndices.at(result.iSmoothed));
@@ -486,7 +486,7 @@ class CombinatorialKalmanFilter {
             // track parameters for found track indexed with iSmoothed
             if (result.smoothed and
                 targetReached(state, stepper, *targetSurface)) {
-              ACTS_VERBOSE(
+              ACTS_INFO(
                   "Completing the track with last measurement index = "
                   << result.lastMeasurementIndices.at(result.iSmoothed));
               // Transport & bind the parameter to the final surface
@@ -521,7 +521,7 @@ class CombinatorialKalmanFilter {
                     ConstrainedStep(state.stepping.navDir *
                                     std::abs(state.options.maxStepSize));
               } else {
-                ACTS_VERBOSE("Finish Kalman filtering and smoothing");
+                ACTS_INFO("Finish Kalman filtering and smoothing");
                 // Remember that track finding is done
                 result.finished = true;
               }
@@ -590,7 +590,7 @@ class CombinatorialKalmanFilter {
       auto [slBegin, slEnd] = m_sourcelinkAccessor(*surface);
       if (slBegin != slEnd) {
         // Screen output message
-        ACTS_VERBOSE("Measurement surface " << surface->geometryId()
+        ACTS_INFO("Measurement surface " << surface->geometryId()
                                             << " detected.");
 
         // Transport the covariance to the surface
@@ -653,7 +653,7 @@ class CombinatorialKalmanFilter {
 
         if (nBranchesOnSurface > 0 and not isOutlier) {
           // If there are measurement track states on this surface
-          ACTS_VERBOSE("Filtering step successful with " << nBranchesOnSurface
+          ACTS_INFO("Filtering step successful with " << nBranchesOnSurface
                                                          << " branches");
           // Update stepping state using filtered parameters of last track
           // state on this surface
@@ -663,8 +663,8 @@ class CombinatorialKalmanFilter {
                          MultiTrajectoryHelpers::freeFiltered(
                              state.options.geoContext, ts),
                          ts.filtered(), ts.filteredCovariance(), *surface);
-          ACTS_VERBOSE("Stepping state is updated with filtered parameter:");
-          ACTS_VERBOSE("-> " << ts.filtered().transpose()
+          ACTS_INFO("Stepping state is updated with filtered parameter:");
+          ACTS_INFO("-> " << ts.filtered().transpose()
                              << " of track state with tip = "
                              << result.activeTips.back().first);
         }
@@ -689,7 +689,7 @@ class CombinatorialKalmanFilter {
         bool isSensitive = (surface->associatedDetectorElement() != nullptr);
         bool isMaterial = (surface->surfaceMaterial() != nullptr);
         std::string type = isSensitive ? "sensitive" : "passive";
-        ACTS_VERBOSE("Detected " << type
+        ACTS_INFO("Detected " << type
                                  << " surface: " << surface->geometryId());
         if (isSensitive) {
           // Increment of number of passed sensitive surfaces
@@ -756,14 +756,14 @@ class CombinatorialKalmanFilter {
 
       // Reset current tip if there is no branch on current surface
       if (nBranchesOnSurface == 0) {
-        ACTS_DEBUG("Branch on surface " << surface->geometryId()
+        ACTS_INFO("Branch on surface " << surface->geometryId()
                                         << " is stopped");
         if (not result.activeTips.empty()) {
-          ACTS_VERBOSE("Propagation jumps to branch with tip = "
+          ACTS_INFO("Propagation jumps to branch with tip = "
                        << result.activeTips.back().first);
           reset(state, stepper, result);
         } else {
-          ACTS_VERBOSE("Stop Kalman filtering with "
+          ACTS_INFO("Stop Kalman filtering with "
                        << result.lastMeasurementIndices.size()
                        << " found tracks");
           result.filtered = true;
@@ -920,7 +920,7 @@ class CombinatorialKalmanFilter {
         tipState.nStates++;
 
         if (isOutlier) {
-          ACTS_VERBOSE(
+          ACTS_INFO(
               "Creating outlier track state with tip = " << currentTip);
           // Set the outlier flag
           typeFlags.set(TrackStateFlag::OutlierFlag);
@@ -939,7 +939,7 @@ class CombinatorialKalmanFilter {
             ACTS_ERROR("Update step failed: " << updateRes.error());
             return updateRes.error();
           }
-          ACTS_VERBOSE(
+          ACTS_INFO(
               "Creating measurement track state with tip = " << currentTip);
           // Set the measurement flag
           typeFlags.set(TrackStateFlag::MeasurementFlag);
@@ -976,9 +976,9 @@ class CombinatorialKalmanFilter {
       // Add a track state
       auto currentTip = result.fittedStates->addTrackState(stateMask, prevTip);
       if (isSensitive) {
-        ACTS_VERBOSE("Creating Hole track state with tip = " << currentTip);
+        ACTS_INFO("Creating Hole track state with tip = " << currentTip);
       } else {
-        ACTS_VERBOSE("Creating Material track state with tip = " << currentTip);
+        ACTS_INFO("Creating Material track state with tip = " << currentTip);
       }
       // now get track state proxy back
       auto trackStateProxy = result.fittedStates->getTrackState(currentTip);
@@ -1046,10 +1046,10 @@ class CombinatorialKalmanFilter {
                                                            energyLoss);
 
           // Screen out material effects info
-          ACTS_VERBOSE("Material effects on surface: "
+          ACTS_INFO("Material effects on surface: "
                        << surface->geometryId()
                        << " at update stage: " << updateStage << " are :");
-          ACTS_VERBOSE("eLoss = "
+          ACTS_INFO("eLoss = "
                        << interaction.Eloss << ", "
                        << "variancePhi = " << interaction.variancePhi << ", "
                        << "varianceTheta = " << interaction.varianceTheta
@@ -1063,7 +1063,7 @@ class CombinatorialKalmanFilter {
 
       if (not hasMaterial) {
         // Screen out message
-        ACTS_VERBOSE("No material effects on surface: " << surface->geometryId()
+        ACTS_INFO("No material effects on surface: " << surface->geometryId()
                                                         << " at update stage: "
                                                         << updateStage);
       }
@@ -1106,7 +1106,7 @@ class CombinatorialKalmanFilter {
         return CombinatorialKalmanFilterError::SmoothFailed;
       }
       // Screen output for debugging
-      ACTS_VERBOSE("Apply smoothing on " << nStates
+      ACTS_INFO("Apply smoothing on " << nStates
                                          << " filtered track states.");
       // Smooth the track states
       auto smoothRes =
@@ -1174,14 +1174,14 @@ class CombinatorialKalmanFilter {
       const auto& surface = closerToFirstCreatedState
                                 ? firstCreatedState.referenceSurface()
                                 : lastCreatedMeasurement.referenceSurface();
-      ACTS_VERBOSE(
+      ACTS_INFO(
           "Smoothing successful, updating stepping state to smoothed "
           "parameters at surface "
           << surface.geometryId() << ". Prepared to reach the target surface.");
 
       // Reverse the navigation direction if necessary
       if (reverseDirection) {
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "Reverse navigation direction after smoothing for reaching the "
             "target surface");
         state.stepping.navDir =

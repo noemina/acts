@@ -57,26 +57,26 @@ Acts::SurfaceMaterialMapper::State Acts::SurfaceMaterialMapper::createState(
   resolveMaterialSurfaces(mState, *world);
   collectMaterialVolumes(mState, *world);
 
-  ACTS_DEBUG(mState.accumulatedMaterial.size()
+  ACTS_INFO(mState.accumulatedMaterial.size()
              << " Surfaces with PROXIES collected ... ");
   for (auto& smg : mState.accumulatedMaterial) {
-    ACTS_VERBOSE(" -> Surface in with id " << smg.first);
+    ACTS_INFO(" -> Surface in with id " << smg.first);
   }
   return mState;
 }
 
 void Acts::SurfaceMaterialMapper::resolveMaterialSurfaces(
     State& mState, const TrackingVolume& tVolume) const {
-  ACTS_VERBOSE("Checking volume '" << tVolume.volumeName()
+  ACTS_INFO("Checking volume '" << tVolume.volumeName()
                                    << "' for material surfaces.")
 
-  ACTS_VERBOSE("- boundary surfaces ...");
+  ACTS_INFO("- boundary surfaces ...");
   // Check the boundary surfaces
   for (auto& bSurface : tVolume.boundarySurfaces()) {
     checkAndInsert(mState, bSurface->surfaceRepresentation());
   }
 
-  ACTS_VERBOSE("- confined layers ...");
+  ACTS_INFO("- confined layers ...");
   // Check the confined layers
   if (tVolume.confinedLayers() != nullptr) {
     for (auto& cLayer : tVolume.confinedLayers()->arrayObjects()) {
@@ -125,8 +125,8 @@ void Acts::SurfaceMaterialMapper::checkAndInsert(State& mState,
     }
     auto geoID = surface.geometryId();
     size_t volumeID = geoID.volume();
-    ACTS_DEBUG("Material surface found with volumeID " << volumeID);
-    ACTS_DEBUG("       - surfaceID is " << geoID);
+    ACTS_INFO("Material surface found with volumeID " << volumeID);
+    ACTS_INFO("       - surfaceID is " << geoID);
 
     // We need a dynamic_cast to either a surface material proxy or
     // proper surface material
@@ -136,11 +136,11 @@ void Acts::SurfaceMaterialMapper::checkAndInsert(State& mState,
     const BinUtility* bu = (psm != nullptr) ? (&psm->binUtility()) : nullptr;
     if (bu != nullptr) {
       // Screen output for Binned Surface material
-      ACTS_DEBUG("       - (proto) binning is " << *bu);
+      ACTS_INFO("       - (proto) binning is " << *bu);
       // Now update
       BinUtility buAdjusted = adjustBinUtility(*bu, surface, mState.geoContext);
       // Screen output for Binned Surface material
-      ACTS_DEBUG("       - adjusted binning is " << buAdjusted);
+      ACTS_INFO("       - adjusted binning is " << buAdjusted);
       mState.accumulatedMaterial[geoID] =
           AccumulatedSurfaceMaterial(buAdjusted);
       return;
@@ -152,11 +152,11 @@ void Acts::SurfaceMaterialMapper::checkAndInsert(State& mState,
     // Creaete a binned type of material
     if (bu != nullptr) {
       // Screen output for Binned Surface material
-      ACTS_DEBUG("       - binning is " << *bu);
+      ACTS_INFO("       - binning is " << *bu);
       mState.accumulatedMaterial[geoID] = AccumulatedSurfaceMaterial(*bu);
     } else {
       // Create a homogeneous type of material
-      ACTS_DEBUG("       - this is homogeneous material.");
+      ACTS_INFO("       - this is homogeneous material.");
       mState.accumulatedMaterial[geoID] = AccumulatedSurfaceMaterial();
     }
   }
@@ -164,9 +164,9 @@ void Acts::SurfaceMaterialMapper::checkAndInsert(State& mState,
 
 void Acts::SurfaceMaterialMapper::collectMaterialVolumes(
     State& mState, const TrackingVolume& tVolume) const {
-  ACTS_VERBOSE("Checking volume '" << tVolume.volumeName()
+  ACTS_INFO("Checking volume '" << tVolume.volumeName()
                                    << "' for material surfaces.")
-  ACTS_VERBOSE("- Insert Volume ...");
+  ACTS_INFO("- Insert Volume ...");
   if (tVolume.volumeMaterial() != nullptr) {
     mState.volumeMaterial[tVolume.geometryId()] =
         tVolume.volumeMaterialSharedPtr();
@@ -174,7 +174,7 @@ void Acts::SurfaceMaterialMapper::collectMaterialVolumes(
 
   // Step down into the sub volume
   if (tVolume.confinedVolumes()) {
-    ACTS_VERBOSE("- Check children volume ...");
+    ACTS_INFO("- Check children volume ...");
     for (auto& sVolume : tVolume.confinedVolumes()->arrayObjects()) {
       // Recursive call
       collectMaterialVolumes(mState, *sVolume);
@@ -191,7 +191,7 @@ void Acts::SurfaceMaterialMapper::collectMaterialVolumes(
 void Acts::SurfaceMaterialMapper::finalizeMaps(State& mState) const {
   // iterate over the map to call the total average
   for (auto& accMaterial : mState.accumulatedMaterial) {
-    ACTS_DEBUG("Finalizing map for Surface " << accMaterial.first);
+    ACTS_INFO("Finalizing map for Surface " << accMaterial.first);
     mState.surfaceMaterial[accMaterial.first] =
         accMaterial.second.totalAverage();
   }
@@ -201,19 +201,19 @@ void Acts::SurfaceMaterialMapper::mapMaterialTrack(
     State& mState, RecordedMaterialTrack& mTrack) const {
   // Retrieve the recorded material from the recorded material track
   auto& rMaterial = mTrack.second.materialInteractions;
-  ACTS_VERBOSE("Retrieved " << rMaterial.size()
+  ACTS_INFO("Retrieved " << rMaterial.size()
                             << " recorded material steps to map.")
 
   // Check if the material interactions are associated with a surface. If yes we
   // simply need to loop over them and accumulate the material
   if (rMaterial.begin()->intersectionID != GeometryIdentifier()) {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Material surfaces are associated with the material interaction. The "
         "association interaction/surfaces won't be performed again.");
     mapSurfaceInteraction(mState, rMaterial);
     return;
   } else {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Material interactions need to be associated with surfaces. Collecting "
         "all surfaces on the trajectory.");
     mapInteraction(mState, mTrack);
@@ -264,11 +264,11 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
 
   std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   // These should be mapped onto the mapping surfaces found
-  ACTS_VERBOSE("Found     " << mappingSurfaces.size()
+  ACTS_INFO("Found     " << mappingSurfaces.size()
                             << " mapping surfaces for this track.");
-  ACTS_VERBOSE("Mapping surfaces are :")
+  ACTS_INFO("Mapping surfaces are :")
   for (auto& mSurface : mappingSurfaces) {
-    ACTS_VERBOSE(" - Surface : " << mSurface.surface->geometryId()
+    ACTS_INFO(" - Surface : " << mSurface.surface->geometryId()
                                  << " at position = (" << mSurface.position.x()
                                  << ", " << mSurface.position.y() << ", "
                                  << mSurface.position.z() << ")");
@@ -434,9 +434,9 @@ void Acts::SurfaceMaterialMapper::mapInteraction(
 
   std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
-  ACTS_VERBOSE("Surfaces have following number of assigned hits :")
+  ACTS_INFO("Surfaces have following number of assigned hits :")
   for (auto& [key, value] : assignedMaterial) {
-    ACTS_VERBOSE(" + Surface : " << key << " has " << value << " hits.");
+    ACTS_INFO(" + Surface : " << key << " has " << value << " hits.");
   }
 
   // After mapping this track, average the touched bins

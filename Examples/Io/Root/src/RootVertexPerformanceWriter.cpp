@@ -162,7 +162,7 @@ ActsExamples::ProcessCode ActsExamples::RootVertexPerformanceWriter::writeT(
 
   m_nrecoVtx = vertices.size();
 
-  ACTS_DEBUG("Number of reco vertices in event: " << m_nrecoVtx);
+  ACTS_INFO("Number of reco vertices in event: " << m_nrecoVtx);
   if (m_outputFile == nullptr) {
     return ProcessCode::SUCCESS;
   }
@@ -173,9 +173,9 @@ ActsExamples::ProcessCode ActsExamples::RootVertexPerformanceWriter::writeT(
   // Get number of generated true primary vertices
   m_ntrueVtx = getNumberOfTruePriVertices(allTruthParticles);
 
-  ACTS_VERBOSE("Total number of generated truth particles in event : "
+  ACTS_INFO("Total number of generated truth particles in event : "
                << allTruthParticles.size());
-  ACTS_VERBOSE(
+  ACTS_INFO(
       "Total number of generated truth primary vertices : " << m_ntrueVtx);
 
   // Read selected truth particle input collection
@@ -184,9 +184,9 @@ ActsExamples::ProcessCode ActsExamples::RootVertexPerformanceWriter::writeT(
   // Get number of detector-accepted true primary vertices
   m_nVtxDetAcceptance = getNumberOfTruePriVertices(selectedTruthParticles);
 
-  ACTS_VERBOSE("Total number of selected truth particles in event : "
+  ACTS_INFO("Total number of selected truth particles in event : "
                << selectedTruthParticles.size());
-  ACTS_VERBOSE("Total number of detector-accepted truth primary vertices : "
+  ACTS_INFO("Total number of detector-accepted truth primary vertices : "
                << m_nVtxDetAcceptance);
 
   std::vector<Acts::BoundTrackParameters> trackParameters;
@@ -285,7 +285,7 @@ ActsExamples::ProcessCode ActsExamples::RootVertexPerformanceWriter::writeT(
     }
   }
 
-  ACTS_VERBOSE(
+  ACTS_INFO(
       "Total number of reconstructed tracks : " << trackParameters.size());
 
   // Get number of track-associated true primary vertices

@@ -141,7 +141,7 @@ ActsExamples::ProcessCode ActsExamples::RootTrackParameterWriter::writeT(
   // Get the event number
   m_eventNr = ctx.eventNumber;
 
-  ACTS_VERBOSE("Writing " << trackParams.size() << " track parameters");
+  ACTS_INFO("Writing " << trackParams.size() << " track parameters");
 
   // Loop over the estimated track parameters
   for (size_t iparams = 0; iparams < trackParams.size(); ++iparams) {

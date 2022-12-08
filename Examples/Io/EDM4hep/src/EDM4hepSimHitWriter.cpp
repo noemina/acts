@@ -26,7 +26,7 @@ EDM4hepSimHitWriter::EDM4hepSimHitWriter(
     : WriterT(config.inputSimHits, "CsvSimHitWriter", level),
       m_cfg(config),
       m_writer(config.outputPath, &m_store) {
-  ACTS_VERBOSE("Created output file " << config.outputPath);
+  ACTS_INFO("Created output file " << config.outputPath);
 
   if (m_cfg.inputSimHits.empty()) {
     throw std::invalid_argument("Missing simulated hits input collection");

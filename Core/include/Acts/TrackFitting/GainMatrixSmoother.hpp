@@ -72,10 +72,10 @@ class GainMatrixSmoother {
       return static_cast<TrackStateProxy*>(ts)->jacobian();
     });
 
-    ACTS_VERBOSE("Invoked GainMatrixSmoother on entry index: " << entryIndex);
+    ACTS_INFO("Invoked GainMatrixSmoother on entry index: " << entryIndex);
 
     // For the last state: smoothed is filtered - also: switch to next
-    ACTS_VERBOSE("Getting previous track state");
+    ACTS_INFO("Getting previous track state");
     auto prev_ts = trajectory.getTrackState(entryIndex);
 
     prev_ts.smoothed() = prev_ts.filtered();
@@ -83,11 +83,11 @@ class GainMatrixSmoother {
 
     // make sure there is more than one track state
     if (!prev_ts.hasPrevious()) {
-      ACTS_VERBOSE("Only one track state given, smoothing terminates early");
+      ACTS_INFO("Only one track state given, smoothing terminates early");
       return Result<void>::success();
     }
 
-    ACTS_VERBOSE("Start smoothing from previous track state at index: "
+    ACTS_INFO("Start smoothing from previous track state at index: "
                  << prev_ts.previous());
 
     // default-constructed error represents success, i.e. an invalid error code
@@ -103,9 +103,9 @@ class GainMatrixSmoother {
       assert(prev_ts.hasSmoothed());
       assert(prev_ts.hasPredicted());
 
-      ACTS_VERBOSE("Calculate smoothing matrix:");
-      ACTS_VERBOSE("Filtered covariance:\n" << ts.filteredCovariance());
-      ACTS_VERBOSE("Jacobian:\n" << ts.jacobian());
+      ACTS_INFO("Calculate smoothing matrix:");
+      ACTS_INFO("Filtered covariance:\n" << ts.filteredCovariance());
+      ACTS_INFO("Jacobian:\n" << ts.jacobian());
 
       if (auto res = calculate(&ts, &prev_ts, filtered, filteredCovariance,
                                smoothed, predicted, predictedCovariance,

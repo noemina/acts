@@ -18,7 +18,7 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
   std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // Pre-stepping call to the navigator and action list
-  ACTS_VERBOSE("Entering propagation.");
+  ACTS_INFO("Entering propagation.");
 
   // Navigator initialize state call
   m_navigator.status(state, m_stepper);
@@ -39,7 +39,7 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
     // Pre-Stepping: target setting
     m_navigator.target(state, m_stepper);
     // Stepping loop
-    ACTS_VERBOSE("Starting stepping loop.");
+    ACTS_INFO("Starting stepping loop.");
 
     terminatedNormally = false;  // priming error condition
 
@@ -60,7 +60,7 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
         double s = *res;
         result.pathLength += s;
         std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
-        ACTS_VERBOSE("Step with size = " << s << " performed");
+        ACTS_INFO("Step with size = " << s << " performed");
       } else {
         std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
         ACTS_ERROR("Step failed with " << res.error() << ": "
@@ -88,7 +88,7 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
   } else {
     std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
-    ACTS_VERBOSE("Propagation terminated without going into stepping loop.");
+    ACTS_INFO("Propagation terminated without going into stepping loop.");
   }
 
   std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
@@ -106,7 +106,7 @@ auto Acts::Propagator<S, N>::propagate_impl(propagator_state_t& state,
   std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;
 
   // Post-stepping call to the action list
-  ACTS_VERBOSE("Stepping loop done.");
+  ACTS_INFO("Stepping loop done.");
   state.options.actionList(state, m_stepper, result);
 
   std::cout << "---------- " << __func__ << " --- " << __LINE__ << std::endl;

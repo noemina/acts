@@ -72,7 +72,7 @@ struct MultiStepperSurfaceReached {
       if (sIntersection.intersection.status ==
               Intersection3D::Status::onSurface or
           sIntersection.intersection.pathLength < averageOnSurfaceTolerance) {
-        ACTS_VERBOSE("Reached target in average mode");
+        ACTS_INFO("Reached target in average mode");
         state.navigation.currentSurface = &targetSurface;
         state.navigation.targetReached = true;
         return true;

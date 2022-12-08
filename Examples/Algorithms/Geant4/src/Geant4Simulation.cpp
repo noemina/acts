@@ -138,7 +138,7 @@ ActsExamples::ProcessCode ActsExamples::Geant4Simulation::execute(
   // this will allow access from the User*Actions
   eventData.store = &(ctx.eventStore);
 
-  ACTS_DEBUG("Sending Geant RunManager the BeamOn() command.");
+  ACTS_INFO("Sending Geant RunManager the BeamOn() command.");
   // Start simulation. each track is simulated as a separate Geant4 event.
   m_cfg.runManager->BeamOn(1);
 

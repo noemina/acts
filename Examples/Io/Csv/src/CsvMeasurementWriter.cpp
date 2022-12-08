@@ -69,7 +69,7 @@ ActsExamples::ProcessCode ActsExamples::CsvMeasurementWriter::writeT(
 
   std::optional<dfe::NamedTupleCsvWriter<CellData>> writerCells{std::nullopt};
   if (not m_cfg.inputClusters.empty()) {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Set up writing of clusters from collection: " << m_cfg.inputClusters);
     clusters = ctx.eventStore.get<ClusterContainer>(m_cfg.inputClusters);
     std::string pathCells =
@@ -87,7 +87,7 @@ ActsExamples::ProcessCode ActsExamples::CsvMeasurementWriter::writeT(
   // Will be reused as hit counter
   meas.measurement_id = 0;
 
-  ACTS_VERBOSE("Writing " << measurements.size()
+  ACTS_INFO("Writing " << measurements.size()
                           << " measurements in this event.");
 
   for (Index hitIdx = 0u; hitIdx < measurements.size(); ++hitIdx) {

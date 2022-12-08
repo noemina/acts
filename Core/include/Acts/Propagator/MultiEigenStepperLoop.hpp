@@ -631,7 +631,7 @@ class MultiEigenStepperLoop
       ++counts[static_cast<std::size_t>(component.status)];
     }
 
-    ACTS_VERBOSE("Component status wrt "
+    ACTS_INFO("Component status wrt "
                  << surface.geometryId() << " at {"
                  << surface.center(state.geoContext).transpose() << "}:\t"
                  << [&]() {
@@ -648,7 +648,7 @@ class MultiEigenStepperLoop
         counts[static_cast<std::size_t>(Status::onSurface)] > 0 &&
         counts[static_cast<std::size_t>(Status::reachable)] > 0) {
       state.stepCounterAfterFirstComponentOnSurface = 0;
-      ACTS_VERBOSE("started stepCounterAfterFirstComponentOnSurface");
+      ACTS_INFO("started stepCounterAfterFirstComponentOnSurface");
     }
 
     // This is a 'any_of' criterium. As long as any of the components has a

@@ -70,7 +70,7 @@ ActsExamples::ProcessCode ActsExamples::TrackSelector::execute(
     }
     outputTrackParameters.shrink_to_fit();
 
-    ACTS_DEBUG("event " << ctx.eventNumber << " selected "
+    ACTS_INFO("event " << ctx.eventNumber << " selected "
                         << outputTrackParameters.size() << " from "
                         << inputTrackParameters.size()
                         << " tracks in track parameters");
@@ -108,7 +108,7 @@ ActsExamples::ProcessCode ActsExamples::TrackSelector::execute(
                                       parameters);
     }
 
-    ACTS_DEBUG("event " << ctx.eventNumber << " selected " << outputCount
+    ACTS_INFO("event " << ctx.eventNumber << " selected " << outputCount
                         << " from " << inputCount << " tracks in trajectories");
 
     ctx.eventStore.add(m_cfg.outputTrajectories, std::move(outputTrajectories));

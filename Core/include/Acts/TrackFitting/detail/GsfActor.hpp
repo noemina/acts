@@ -205,7 +205,7 @@ struct GsfActor {
     // We only need to do something if we are on a surface
     if (state.navigation.currentSurface && on_surface) {
       const auto& surface = *state.navigation.currentSurface;
-      ACTS_VERBOSE("Step is at surface " << surface.geometryId());
+      ACTS_INFO("Step is at surface " << surface.geometryId());
 
       // Early return if we already were on this surface TODO why is this
       // necessary
@@ -214,7 +214,7 @@ struct GsfActor {
                                      &surface) != result.visitedSurfaces.end();
 
       if (visited) {
-        ACTS_VERBOSE("Already visited surface, return");
+        ACTS_INFO("Already visited surface, return");
         return;
       }
 
@@ -238,7 +238,7 @@ struct GsfActor {
       const bool haveMeasurement =
           found_source_link != m_cfg.inputMeasurements.end();
 
-      ACTS_VERBOSE(std::boolalpha << "haveMaterial " << haveMaterial
+      ACTS_INFO(std::boolalpha << "haveMaterial " << haveMaterial
                                   << ", haveMeasurement: " << haveMeasurement);
 
       ////////////////////////
@@ -392,7 +392,7 @@ struct GsfActor {
       const auto new_weight = gaussian.weight * old_weight;
 
       if (new_weight < m_cfg.weightCutoff) {
-        ACTS_VERBOSE("Skip component with weight " << new_weight);
+        ACTS_INFO("Skip component with weight " << new_weight);
         continue;
       }
 
@@ -696,10 +696,10 @@ struct GsfActor {
             m_cfg.multipleScattering, false);
 
         // Screen out material effects info
-        ACTS_VERBOSE("Material effects on surface: "
+        ACTS_INFO("Material effects on surface: "
                      << surface.geometryId()
                      << " at update stage: " << updateStage << " are :");
-        ACTS_VERBOSE("eLoss = "
+        ACTS_INFO("eLoss = "
                      << interaction.Eloss << ", "
                      << "variancePhi = " << interaction.variancePhi << ", "
                      << "varianceTheta = " << interaction.varianceTheta << ", "

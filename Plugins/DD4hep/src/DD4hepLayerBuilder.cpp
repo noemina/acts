@@ -54,14 +54,14 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::endcapLayers(
     const std::string& side) const {
   LayerVector layers;
   if (dendcapLayers.empty()) {
-    ACTS_VERBOSE(" No layers handed over for " << side << " volume!");
+    ACTS_INFO(" No layers handed over for " << side << " volume!");
   } else {
-    ACTS_VERBOSE(" Received layers for " << side
+    ACTS_INFO(" Received layers for " << side
                                          << " volume -> creating "
                                             "disc layers");
     // go through layers
     for (auto& detElement : dendcapLayers) {
-      ACTS_VERBOSE("=> Translating layer from: " << detElement.name());
+      ACTS_INFO("=> Translating layer from: " << detElement.name());
       // prepare the layer surfaces
       std::vector<std::shared_ptr<const Surface>> layerSurfaces;
       // access the extension of the layer
@@ -81,7 +81,7 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::endcapLayers(
       if (logger().doPrint(Logging::VERBOSE)) {
         std::stringstream ss;
         pl.toStream(ss);
-        ACTS_VERBOSE("Extent from surfaces: " << ss.str());
+        ACTS_INFO("Extent from surfaces: " << ss.str());
 
         std::vector<double> rvalues;
         std::transform(layerSurfaces.begin(), layerSurfaces.end(),
@@ -94,7 +94,7 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::endcapLayers(
                        std::unique(rvalues.begin(), rvalues.end()),
                        std::back_inserter(locs),
                        [](const auto& v) { return std::to_string(v); });
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "-> unique r locations: " << boost::algorithm::join(locs, ", "));
       }
 
@@ -129,7 +129,7 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::endcapLayers(
         }
         // check if layer has surfaces
         if (layerSurfaces.empty()) {
-          ACTS_VERBOSE(" Disc layer has no sensitive surfaces.");
+          ACTS_INFO(" Disc layer has no sensitive surfaces.");
           // in case no surfaces are handed over the layer thickness will be
           // set to a default value to allow attaching material layers
           double z = (zMin + zMax) * 0.5;
@@ -142,7 +142,7 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::endcapLayers(
           pl.envelope[Acts::binR] = {0., 0.};
           pl.envelope[Acts::binZ] = {0., 0.};
         } else {
-          ACTS_VERBOSE(" Disc layer has " << layerSurfaces.size()
+          ACTS_INFO(" Disc layer has " << layerSurfaces.size()
                                           << " senstive surfaces.");
           // set the values of the proto layer in case dimensions are given by
           // geometry
@@ -222,14 +222,14 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::centralLayers(
     const GeometryContext& gctx) const {
   LayerVector layers;
   if (m_cfg.centralLayers.empty()) {
-    ACTS_VERBOSE(" No layers handed over for central volume!");
+    ACTS_INFO(" No layers handed over for central volume!");
   } else {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         " Received layers for central volume -> creating "
         "cylindrical layers");
     // go through layers
     for (auto& detElement : m_cfg.centralLayers) {
-      ACTS_VERBOSE("=> Translating layer from: " << detElement.name());
+      ACTS_INFO("=> Translating layer from: " << detElement.name());
       // prepare the layer surfaces
       std::vector<std::shared_ptr<const Surface>> layerSurfaces;
       // access the extension of the layer
@@ -249,7 +249,7 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::centralLayers(
       if (logger().doPrint(Logging::VERBOSE)) {
         std::stringstream ss;
         pl.toStream(ss);
-        ACTS_VERBOSE("Extent from surfaces: " << ss.str());
+        ACTS_INFO("Extent from surfaces: " << ss.str());
         std::vector<double> zvalues;
         std::transform(layerSurfaces.begin(), layerSurfaces.end(),
                        std::back_inserter(zvalues), [&](const auto& surface) {
@@ -261,7 +261,7 @@ const Acts::LayerVector Acts::DD4hepLayerBuilder::centralLayers(
                        std::unique(zvalues.begin(), zvalues.end()),
                        std::back_inserter(locs),
                        [](const auto& v) { return std::to_string(v); });
-        ACTS_VERBOSE(
+        ACTS_INFO(
             "-> unique z locations: " << boost::algorithm::join(locs, ", "));
       }
 

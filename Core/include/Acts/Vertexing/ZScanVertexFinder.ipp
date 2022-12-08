@@ -60,7 +60,7 @@ auto Acts::ZScanVertexFinder<vfitter_t>::find(
         z0AndWeight.second = 1.;
       }
     } else {
-      ACTS_DEBUG(
+      ACTS_INFO(
           "Unable to compute IP significance. "
           "Setting IP weight to 1.");
 
@@ -94,7 +94,7 @@ auto Acts::ZScanVertexFinder<vfitter_t>::find(
       return res.error();
     }
 
-    ACTS_DEBUG("Resulting mean Z position found: " << ZResult);
+    ACTS_INFO("Resulting mean Z position found: " << ZResult);
   }
 
   // constraint x()/y() equals 0 if no constraint

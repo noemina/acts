@@ -35,7 +35,7 @@ ActsAlignment::Alignment<fitter_t>::evaluateTrackAlignmentState(
       gctx, *fitOutput.fittedStates, fitOutput.lastMeasurementIndex,
       globalTrackParamsCov, idxedAlignSurfaces, alignMask);
   if (alignState.alignmentDof == 0) {
-    ACTS_VERBOSE("No alignment dof on track!");
+    ACTS_INFO("No alignment dof on track!");
     return AlignmentError::NoAlignmentDofOnTrack;
   }
   return alignState;
@@ -83,7 +83,7 @@ void ActsAlignment::Alignment<fitter_t>::calculateAlignmentParameters(
         fitOptionsWithRefSurface, alignResult.idxedAlignSurfaces, alignMask,
         logger);
     if (not evaluateRes.ok()) {
-      ACTS_DEBUG("Evaluation of alignment state for track " << iTraj
+      ACTS_INFO("Evaluation of alignment state for track " << iTraj
                                                             << " failed");
       continue;
     }
@@ -120,7 +120,7 @@ void ActsAlignment::Alignment<fitter_t>::calculateAlignmentParameters(
       Acts::ActsDynamicMatrix::Zero(alignDof, alignDof);
   sumChi2SecondDerivativeInverse = sumChi2SecondDerivative.inverse();
   if (sumChi2SecondDerivativeInverse.hasNaN()) {
-    ACTS_DEBUG("Chi2 second derivative inverse has NaN");
+    ACTS_INFO("Chi2 second derivative inverse has NaN");
     // return AlignmentError::AlignmentParametersUpdateFailure;
   }
 
@@ -132,9 +132,9 @@ void ActsAlignment::Alignment<fitter_t>::calculateAlignmentParameters(
   // Solve the linear equation to get alignment parameters change
   alignResult.deltaAlignmentParameters =
       -sumChi2SecondDerivative.fullPivLu().solve(sumChi2Derivative);
-  ACTS_VERBOSE("sumChi2SecondDerivative = \n" << sumChi2SecondDerivative);
-  ACTS_VERBOSE("sumChi2Derivative = \n" << sumChi2Derivative);
-  ACTS_VERBOSE("alignResult.deltaAlignmentParameters \n");
+  ACTS_INFO("sumChi2SecondDerivative = \n" << sumChi2SecondDerivative);
+  ACTS_INFO("sumChi2Derivative = \n" << sumChi2Derivative);
+  ACTS_INFO("alignResult.deltaAlignmentParameters \n");
 
   // Alignment parameters covariance
   alignResult.alignmentCovariance = 2 * sumChi2SecondDerivativeInverse;
@@ -189,7 +189,7 @@ ActsAlignment::Alignment<fitter_t>::updateAlignmentParameters(
     // 4. Update the aligned transform
     //@Todo: use a better way to handle this (need dynamic cast to inherited
     // detector element type)
-    ACTS_VERBOSE("Delta of alignment parameters at element "
+    ACTS_INFO("Delta of alignment parameters at element "
                  << index << "= \n"
                  << deltaAlignmentParam);
     bool updated = alignedTransformUpdater(alignedDetElements.at(index), gctx,
@@ -223,7 +223,7 @@ ActsAlignment::Alignment<fitter_t>::align(
         &alignOptions.alignedDetElements.at(iDetElement)->surface(),
         iDetElement);
   }
-  ACTS_VERBOSE("There are " << alignResult.idxedAlignSurfaces.size()
+  ACTS_INFO("There are " << alignResult.idxedAlignSurfaces.size()
                             << " detector elements to be aligned");
 
   // Start the iteration to minimize the chi2
@@ -310,16 +310,16 @@ ActsAlignment::Alignment<fitter_t>::align(
       const auto& translation = transform.translation();
       const auto& rotation = transform.rotation();
       const Acts::Vector3 rotAngles = rotation.eulerAngles(2, 1, 0);
-      ACTS_VERBOSE("Detector element with surface "
+      ACTS_INFO("Detector element with surface "
                    << surface->geometryId()
                    << " has aligned geometry position as below:");
-      ACTS_VERBOSE("Center (cenX, cenY, cenZ) = " << translation.transpose());
-      ACTS_VERBOSE(
+      ACTS_INFO("Center (cenX, cenY, cenZ) = " << translation.transpose());
+      ACTS_INFO(
           "Euler angles (rotZ, rotY, rotX) = " << rotAngles.transpose());
-      ACTS_VERBOSE("Rotation marix = \n" << rotation);
+      ACTS_INFO("Rotation marix = \n" << rotation);
     }
   } else {
-    ACTS_DEBUG("Alignment parameters is not updated.");
+    ACTS_INFO("Alignment parameters is not updated.");
   }
 
   return alignResult;

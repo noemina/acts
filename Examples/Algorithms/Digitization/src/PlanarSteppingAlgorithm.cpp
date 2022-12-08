@@ -149,7 +149,7 @@ ActsExamples::ProcessCode ActsExamples::PlanarSteppingAlgorithm::execute(
                                                localIntersect, localDirection);
       // everything under threshold or edge effects
       if (dSteps.empty()) {
-        ACTS_VERBOSE("No steps returned from stepper.");
+        ACTS_INFO("No steps returned from stepper.");
         continue;
       }
 
@@ -221,7 +221,7 @@ ActsExamples::ProcessCode ActsExamples::PlanarSteppingAlgorithm::execute(
     }
   }
 
-  ACTS_DEBUG("digitized " << simHits.size() << " hits into " << clusters.size()
+  ACTS_INFO("digitized " << simHits.size() << " hits into " << clusters.size()
                           << " clusters");
 
   ctx.eventStore.add(m_cfg.outputClusters, std::move(clusters));

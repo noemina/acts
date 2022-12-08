@@ -19,7 +19,7 @@ Result<void> GainMatrixSmoother::calculate(
   static constexpr double epsilon = 1e-13;
   auto regularization = BoundMatrix::Identity() * epsilon;
 
-  ACTS_VERBOSE("Prev. predicted covariance\n"
+  ACTS_INFO("Prev. predicted covariance\n"
                << predictedCovariance(prev_ts) << "\n, inverse: \n"
                << predictedCovariance(prev_ts).inverse()
                << "\n, regularized inverse: \n"
@@ -37,20 +37,20 @@ Result<void> GainMatrixSmoother::calculate(
     return KalmanFitterError::SmoothFailed;
   }
 
-  ACTS_VERBOSE("Gain smoothing matrix G:\n" << G);
+  ACTS_INFO("Gain smoothing matrix G:\n" << G);
 
-  ACTS_VERBOSE("Calculate smoothed parameters:");
-  ACTS_VERBOSE("Filtered parameters: " << filtered(ts).transpose());
-  ACTS_VERBOSE("Prev. smoothed parameters: " << smoothed(prev_ts).transpose());
-  ACTS_VERBOSE(
+  ACTS_INFO("Calculate smoothed parameters:");
+  ACTS_INFO("Filtered parameters: " << filtered(ts).transpose());
+  ACTS_INFO("Prev. smoothed parameters: " << smoothed(prev_ts).transpose());
+  ACTS_INFO(
       "Prev. predicted parameters: " << predicted(prev_ts).transpose());
 
   // Calculate the smoothed parameters
   smoothed(ts) = filtered(ts) + G * (smoothed(prev_ts) - predicted(prev_ts));
 
-  ACTS_VERBOSE("Smoothed parameters are: " << smoothed(ts).transpose());
-  ACTS_VERBOSE("Calculate smoothed covariance:");
-  ACTS_VERBOSE("Prev. smoothed covariance:\n" << smoothedCovariance(prev_ts));
+  ACTS_INFO("Smoothed parameters are: " << smoothed(ts).transpose());
+  ACTS_INFO("Calculate smoothed covariance:");
+  ACTS_INFO("Prev. smoothed covariance:\n" << smoothedCovariance(prev_ts));
 
   // And the smoothed covariance
   smoothedCovariance(ts) =
@@ -64,13 +64,13 @@ Result<void> GainMatrixSmoother::calculate(
   // but it could still be non semi-positive
   BoundSymMatrix smoothedCov = smoothedCovariance(ts);
   if (not detail::covariance_helper<BoundSymMatrix>::validate(smoothedCov)) {
-    ACTS_DEBUG(
+    ACTS_INFO(
         "Smoothed covariance is not positive definite. Could result in "
         "negative covariance!");
   }
   // Reset smoothed covariance
   smoothedCovariance(ts) = smoothedCov;
-  ACTS_VERBOSE("Smoothed covariance is: \n" << smoothedCovariance(ts));
+  ACTS_INFO("Smoothed covariance is: \n" << smoothedCovariance(ts));
 
   return Result<void>::success();
 }

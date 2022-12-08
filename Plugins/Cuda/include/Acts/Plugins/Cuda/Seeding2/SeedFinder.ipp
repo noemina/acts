@@ -60,7 +60,7 @@ SeedFinder<external_spacepoint_t>::SeedFinder(
 
   // Tell the user what CUDA device will be used by the object.
   if (static_cast<std::size_t>(m_device) < Info::instance().devices().size()) {
-    ACTS_DEBUG("Will be using device:\n"
+    ACTS_INFO("Will be using device:\n"
                << Info::instance().devices()[m_device]);
   } else {
     ACTS_FATAL("Invalid CUDA device requested");

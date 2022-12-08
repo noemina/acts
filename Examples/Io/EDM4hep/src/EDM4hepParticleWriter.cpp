@@ -24,7 +24,7 @@ EDM4hepParticleWriter::EDM4hepParticleWriter(
     : WriterT(cfg.inputParticles, "EDM4hepParticleWriter", lvl),
       m_cfg(cfg),
       m_writer(cfg.outputPath, &m_store) {
-  ACTS_VERBOSE("Created output file " << cfg.outputPath);
+  ACTS_INFO("Created output file " << cfg.outputPath);
 
   if (m_cfg.inputParticles.empty()) {
     throw std::invalid_argument("Missing particles input collection");

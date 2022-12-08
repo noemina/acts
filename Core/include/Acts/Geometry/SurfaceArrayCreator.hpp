@@ -432,13 +432,13 @@ class SurfaceArrayCreator {
   void completeBinning(const GeometryContext& gctx,
                        SurfaceArray::ISurfaceGridLookup& sl,
                        const std::vector<const Surface*>& surfaces) const {
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Complete binning by filling closest neighbour surfaces into "
         "empty bins.");
 
     size_t binCompleted = sl.completeBinning(gctx, surfaces);
 
-    ACTS_VERBOSE("       filled  : " << binCompleted
+    ACTS_INFO("       filled  : " << binCompleted
                                      << " (includes under/overflow)");
   }
 

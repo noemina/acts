@@ -23,7 +23,7 @@ ActsExamples::ProcessCode ActsExamples::HelloLoggerAlgorithm::execute(
 
   ACTS_INFO(" Hello World! (from event=" << ctx.eventNumber
                                          << ", block=" << block << ")");
-  ACTS_DEBUG("  - that's an ACTS_DEBUG message");
-  ACTS_VERBOSE("  - that's an ACTS_VERBOSE message");
+  ACTS_INFO("  - that's an ACTS_INFO message");
+  ACTS_INFO("  - that's an ACTS_INFO message");
   return ActsExamples::ProcessCode::SUCCESS;
 }

@@ -223,7 +223,7 @@ struct GaussianSumFitter {
 
     // To be able to find measurements later, we put them into a map
     // We need to copy input SourceLinks anyways, so the map can own them.
-    ACTS_VERBOSE("Preparing " << std::distance(begin, end)
+    ACTS_INFO("Preparing " << std::distance(begin, end)
                               << " input measurements");
     std::map<GeometryIdentifier, std::reference_wrapper<const SourceLink>>
         inputMeasurements;
@@ -232,7 +232,7 @@ struct GaussianSumFitter {
       inputMeasurements.emplace(sl.geometryId(), *it);
     }
 
-    ACTS_VERBOSE(
+    ACTS_INFO(
         "Gsf: Final measuerement map size: " << inputMeasurements.size());
     throw_assert(sParameters.covariance() != std::nullopt,
                  "we need a covariance here...");
@@ -240,9 +240,9 @@ struct GaussianSumFitter {
     /////////////////
     // Forward pass
     /////////////////
-    ACTS_VERBOSE("+-----------------------------+");
-    ACTS_VERBOSE("| Gsf: Do forward propagation |");
-    ACTS_VERBOSE("+-----------------------------+");
+    ACTS_INFO("+-----------------------------+");
+    ACTS_INFO("| Gsf: Do forward propagation |");
+    ACTS_INFO("+-----------------------------+");
 
     auto fwdResult = [&]() {
       auto fwdPropOptions = fwdPropInitializer(options, logger);
@@ -299,17 +299,17 @@ struct GaussianSumFitter {
       return return_error_or_abort(GsfError::NoStatesCreated);
     }
 
-    ACTS_VERBOSE("Finished forward propagation");
-    ACTS_VERBOSE("- visited surfaces: " << fwdGsfResult.visitedSurfaces.size());
-    ACTS_VERBOSE("- processed states: " << fwdGsfResult.processedStates);
-    ACTS_VERBOSE("- measuerement states: " << fwdGsfResult.measurementStates);
+    ACTS_INFO("Finished forward propagation");
+    ACTS_INFO("- visited surfaces: " << fwdGsfResult.visitedSurfaces.size());
+    ACTS_INFO("- processed states: " << fwdGsfResult.processedStates);
+    ACTS_INFO("- measuerement states: " << fwdGsfResult.measurementStates);
 
     //////////////////
     // Backward pass
     //////////////////
-    ACTS_VERBOSE("+------------------------------+");
-    ACTS_VERBOSE("| Gsf: Do backward propagation |");
-    ACTS_VERBOSE("+------------------------------+");
+    ACTS_INFO("+------------------------------+");
+    ACTS_INFO("| Gsf: Do backward propagation |");
+    ACTS_INFO("+------------------------------+");
 
     auto bwdResult = [&]() {
       auto bwdPropOptions = bwdPropInitializer(options, logger);
@@ -386,17 +386,17 @@ struct GaussianSumFitter {
     ////////////////////////////////////
     // Create Kalman Result
     ////////////////////////////////////
-    ACTS_VERBOSE("Gsf - States summary:");
-    ACTS_VERBOSE("- Fwd measurement states: " << fwdGsfResult.measurementStates
+    ACTS_INFO("Gsf - States summary:");
+    ACTS_INFO("- Fwd measurement states: " << fwdGsfResult.measurementStates
                                               << ", holes: "
                                               << fwdGsfResult.measurementHoles);
-    ACTS_VERBOSE("- Bwd measurement states: " << bwdGsfResult.measurementStates
+    ACTS_INFO("- Bwd measurement states: " << bwdGsfResult.measurementStates
                                               << ", holes: "
                                               << bwdGsfResult.measurementHoles);
 
     // TODO should this be warning level? it happens quite often... Investigate!
     if (bwdGsfResult.measurementStates != fwdGsfResult.measurementStates) {
-      ACTS_DEBUG("Fwd and bwd measuerement states do not match");
+      ACTS_INFO("Fwd and bwd measuerement states do not match");
     }
 
     KalmanFitterResult<traj_t> kalmanResult;

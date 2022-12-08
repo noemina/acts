@@ -39,7 +39,7 @@
 ///        = /* .. your initialization .. */;
 ///    ACTS_LOCAL_LOGGER(std::move(myLogger));
 ///
-///    ACTS_VERBOSE("hello world!");
+///    ACTS_INFO("hello world!");
 /// }
 /// @endcode
 #define ACTS_LOCAL_LOGGER(log_object)                                          \
@@ -76,7 +76,7 @@
 ///
 /// The debug message is printed if the current Acts::Logging::Level <=
 /// Acts::Logging::VERBOSE.
-#define ACTS_VERBOSE(x)  ACTS_LOG(Acts::Logging::VERBOSE, x)
+#define ACTS_INFO(x)  ACTS_LOG(Acts::Logging::VERBOSE, x)
 
 /// @brief macro for debug debug output
 /// @ingroup Logging
@@ -88,7 +88,7 @@
 ///
 /// The debug message is printed if the current Acts::Logging::Level <=
 /// Acts::Logging::DEBUG.
-#define ACTS_DEBUG(x)  ACTS_LOG(Acts::Logging::DEBUG, x)
+#define ACTS_INFO(x)  ACTS_LOG(Acts::Logging::DEBUG, x)
 
 /// @brief macro for info debug output
 /// @ingroup Logging

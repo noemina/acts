@@ -74,8 +74,8 @@ void debug_level_test(const char* output_file, Logging::Level lvl) {
   test_logging([&] { ACTS_ERROR("error level"); }, ERROR);
   test_logging([&] { ACTS_WARNING("warning level"); }, WARNING);
   test_logging([&] { ACTS_INFO("info level"); }, INFO);
-  test_logging([&] { ACTS_DEBUG("debug level"); }, DEBUG);
-  test_logging([&] { ACTS_VERBOSE("verbose level"); }, VERBOSE);
+  test_logging([&] { ACTS_INFO("debug level"); }, DEBUG);
+  test_logging([&] { ACTS_INFO("verbose level"); }, VERBOSE);
   logfile.close();
 
   // Compute expected output for current debug levels
