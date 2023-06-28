@@ -6,8 +6,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+#include "Acts/Detector/Detector.hpp"
+#include "Acts/Detector/DetectorVolume.hpp"
 #include "Acts/Geometry/GeometryContext.hpp"
 #include "Acts/Geometry/TrackingGeometry.hpp"
+#include "Acts/Plugins/ActSVG/DetectorSvgConverter.hpp"
+#include "Acts/Plugins/ActSVG/DetectorVolumeSvgConverter.hpp"
 #include "Acts/Plugins/ActSVG/LayerSvgConverter.hpp"
 #include "Acts/Plugins/ActSVG/SurfaceSvgConverter.hpp"
 #include "Acts/Plugins/ActSVG/SvgUtils.hpp"
@@ -155,6 +159,75 @@ void addSvg(Context& ctx) {
     ACTS_PYTHON_MEMBER(infoBoxTitle);
     ACTS_PYTHON_MEMBER(outputDir);
     ACTS_PYTHON_STRUCT_END();
+  }
+  {
+    mex.def("drawDetectorSvg", [](const Acts::Experimental::Detector& detector,
+                                  const std::vector<std::string>& modes = {}) {
+      Acts::Svg::DetectorConverter::Options detectorOptions;
+      auto pDetector = Acts::Svg::DetectorConverter::convert(
+          Acts::GeometryContext(), detector, detectorOptions);
+      pDetector._name = detector.name();
+
+      for (const auto& mode : modes) {
+        if (mode == "zr") {
+          auto dZr = Acts::Svg::View::zr(pDetector, pDetector._name);
+          Acts::Svg::toFile({dZr}, pDetector._name + "_zr.svg");
+        } else if (mode == "xy") {
+          auto dXy = Acts::Svg::View::xy(pDetector, pDetector._name);
+          Acts::Svg::toFile({dXy}, pDetector._name + "_xy.svg");
+        }
+      }
+    });
+  }
+
+  {
+    mex.def("drawDetectorVolumesSvg",
+            [](const Acts::Experimental::Detector& detector,
+               const std::vector<std::string>& modes = {}) {
+              Acts::Svg::DetectorVolumeConverter::Options volumeOptions;
+
+              Acts::Svg::SurfaceConverter::Options surfaceOptions;
+              surfaceOptions.style.fillColor = {50, 121, 168};
+              surfaceOptions.style.fillOpacity = 0.5;
+              volumeOptions.surfaceOptions = surfaceOptions;
+
+              for (const auto& volume : detector.volumes()) {
+                auto [pVolume, pGrid] =
+                    Acts::Svg::DetectorVolumeConverter::convert(
+                        Acts::GeometryContext(), *volume, volumeOptions);
+
+                std::string pvname =  pVolume._name;
+                
+
+                for (const auto& mode : modes) {
+                  // x-y view
+                  if (mode == "xy") {
+                    auto volumeXY = Acts::Svg::View::xy(pVolume, pVolume._name);
+                    Acts::Svg::toFile({volumeXY}, pvname + "_xy.svg");
+                  }
+
+                  // z-r view
+                  if (mode == "zr") {
+                    auto volumeZR = Acts::Svg::View::zr(pVolume, pVolume._name);
+                    Acts::Svg::toFile({volumeZR}, pvname + "_zr.svg");
+                  }
+
+                  // x-y grid view
+                  if (mode == "grid_xy" and not volume->surfaces().empty()) {
+                    auto gridXY =
+                        Acts::Svg::View::xy(pGrid, pVolume._name + "_grid_xy");
+                    Acts::Svg::toFile({gridXY}, pvname + "_grid_xy.svg");
+                  }
+
+                  // x-y grid view
+                  if (mode == "grid_zphi" and not volume->surfaces().empty()) {
+                    auto gridZPhi = Acts::Svg::View::zphi(
+                        pGrid, pVolume._name + "grid_zphi");
+                    Acts::Svg::toFile({gridZPhi}, pvname + "_grid_zphi.svg");
+                  }
+                }
+              }
+            });
   }
 }
 }  // namespace Acts::Python

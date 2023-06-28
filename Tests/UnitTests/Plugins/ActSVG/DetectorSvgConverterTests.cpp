@@ -96,16 +96,29 @@ BOOST_AUTO_TEST_CASE(CylindricalDetector) {
   // Declare a barrel sub builder
   auto beampipe = std::make_shared<
       CylindricalVolumeBuilder<CylinderSurface, CylinderBounds>>(
-      Transform3::Identity(), CylinderVolumeBounds(0., 50., 400.),
+      Transform3::Identity(), CylinderVolumeBounds(0., 50., 1000.),
       CylinderBounds(25., 380.), "BeamPipe");
 
-  // Declare a negative disc builder
-  Transform3 negZ = Transform3::Identity();
-  negZ.pretranslate(Vector3(0., 0., -300.));
-  auto endcapN =
-      std::make_shared<CylindricalVolumeBuilder<DiscSurface, RadialBounds>>(
-          negZ, CylinderVolumeBounds(50., 140., 100.), RadialBounds(60., 120.),
-          "NegativeEndcap");
+  // Declare a negative endcap builder
+  std::vector<Acts::ActsScalar> ecNs = {-900, -700, -500, -300};
+  std::vector<std::shared_ptr<const IDetectorComponentBuilder>>
+      negativeEndcapsBuilders;
+
+  for (auto [iz, nz] : Acts::enumerate(ecNs)) {
+    Transform3 negZ = Transform3::Identity();
+    negZ.pretranslate(Vector3(0., 0., nz));
+    negativeEndcapsBuilders.push_back(
+        std::make_shared<CylindricalVolumeBuilder<DiscSurface, RadialBounds>>(
+            negZ, CylinderVolumeBounds(50., 140., 100.),
+            RadialBounds(60., 120.), "NegativeEndcap" + std::to_string(iz)));
+  }
+  // Create the barrel container builder
+  CylindricalContainerBuilder::Config negativeEndcapCfg;
+  negativeEndcapCfg.builders = negativeEndcapsBuilders;
+  negativeEndcapCfg.binning = {binZ};
+
+  auto negativeEndcap = std::make_shared<CylindricalContainerBuilder>(
+      negativeEndcapCfg, getDefaultLogger("NegativeEndcapZ", Logging::VERBOSE));
 
   // Declare a barrel sub builder
   auto barrel0 = std::make_shared<
@@ -133,25 +146,44 @@ BOOST_AUTO_TEST_CASE(CylindricalDetector) {
   auto barrel = std::make_shared<CylindricalContainerBuilder>(
       barrelRCfg, getDefaultLogger("BarrelBuilderR", Logging::VERBOSE));
 
-  Transform3 posZ = Transform3::Identity();
-  posZ.pretranslate(Vector3(0., 0., 300.));
-  auto endcapP =
-      std::make_shared<CylindricalVolumeBuilder<DiscSurface, RadialBounds>>(
-          posZ, CylinderVolumeBounds(50., 140., 100.), RadialBounds(60., 120.),
-          "PositiveEndcap");
+  // Declare a positive endcap builder
+  std::vector<Acts::ActsScalar> ecPs = {300, 500, 700, 900};
+  std::vector<std::shared_ptr<const IDetectorComponentBuilder>>
+      positiveEndcapsBuilders;
+
+  for (auto [iz, pz] : Acts::enumerate(ecPs)) {
+    Transform3 posZ = Transform3::Identity();
+    posZ.pretranslate(Vector3(0., 0., pz));
+    positiveEndcapsBuilders.push_back(
+        std::make_shared<CylindricalVolumeBuilder<DiscSurface, RadialBounds>>(
+            posZ, CylinderVolumeBounds(50., 140., 100.),
+            RadialBounds(60., 120.), "PositiveEndcap" + std::to_string(iz)));
+  }
+  // Create the barrel container builder
+  CylindricalContainerBuilder::Config positiveEndcapCfg;
+  positiveEndcapCfg.builders = positiveEndcapsBuilders;
+  positiveEndcapCfg.binning = {binZ};
+
+  auto positiveEndcap = std::make_shared<CylindricalContainerBuilder>(
+      positiveEndcapCfg, getDefaultLogger("PositiveEndcapZ", Logging::VERBOSE));
 
   // Create the barrel container builder
   CylindricalContainerBuilder::Config barrelEndcapCfg;
-  barrelEndcapCfg.builders = {endcapN, barrel, endcapP};
+  barrelEndcapCfg.builders = {negativeEndcap, barrel, positiveEndcap};
   barrelEndcapCfg.binning = {binZ};
 
   auto barrelEndcap = std::make_shared<CylindricalContainerBuilder>(
       barrelEndcapCfg,
       getDefaultLogger("BarrelEndcapBuilder", Logging::VERBOSE));
 
+  auto support = std::make_shared<
+      CylindricalVolumeBuilder<CylinderSurface, CylinderBounds>>(
+      Transform3::Identity(), CylinderVolumeBounds(140., 200., 1000.),
+      CylinderBounds(180., 980.), "Support");
+
   // Create the barrel container builder
   CylindricalContainerBuilder::Config detectorCfg;
-  detectorCfg.builders = {beampipe, barrelEndcap};
+  detectorCfg.builders = {beampipe, barrelEndcap, support};
   detectorCfg.binning = {binR};
 
   auto containerBuilder = std::make_shared<CylindricalContainerBuilder>(
@@ -177,8 +209,17 @@ BOOST_AUTO_TEST_CASE(CylindricalDetector) {
   actsvg::style::color red({{255, 0, 0}});
   actsvg::style::color green({{0, 255, 0}});
   actsvg::style::color blue({{0, 0, 255}});
-  std::vector<actsvg::style::color> colors = {gray, pink,  brown,
-                                              red,  green, blue};
+  actsvg::style::color yellow({{246, 250, 5}});
+  actsvg::style::color purple({{132, 5, 250}});
+  actsvg::style::color turqoise({{2, 247, 170}});
+  actsvg::style::color magenta({{247, 2, 178}});
+  actsvg::style::color marine({{31, 1, 84}});
+  actsvg::style::color black({{0, 0, 0}});
+  actsvg::style::color orange({{250, 114, 2}});
+
+  std::vector<actsvg::style::color> colors = {
+      gray,   pink,     brown,   red,    green, blue,  yellow,
+      purple, turqoise, magenta, marine, black, orange};
   for (auto& c : colors) {
     c._opacity = 0.1;
   }

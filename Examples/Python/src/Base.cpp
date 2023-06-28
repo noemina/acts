@@ -268,6 +268,14 @@ void addAlgebra(Acts::Python::Context& ctx) {
       }))
       .def("__getitem__",
            [](const Acts::Vector4& self, Eigen::Index i) { return self[i]; });
+
+  py::class_<Acts::Transform3>(m,"Transform3")
+   .def(py::init([](std::array<double, 3> translation){
+        Acts::Transform3 t = Acts::Transform3::Identity();
+        t.pretranslate(Acts::Vector3(translation[0],translation[1],translation[2]));
+        return t;
+      }));
+
 }
 
 void addBinning(Context& ctx) {
