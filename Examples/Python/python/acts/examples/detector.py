@@ -306,8 +306,10 @@ def createBarrel(name, dimensions, surfacesMap, volumeID, layerPositions, layerH
             rMin = dimensions[0]
         if rMax > dimensions[1]:
             rMax = dimensions[1]
+
         binningInR = acts.ProtoBinning(
             acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, modulesInPhi[i], 1)
+
         barrelLayers = LayerVolume('L'+str(i),
                                    [rMin, rMax], acts.LayerStructureBuilder.SurfacesHolder(
                                        surfacesMap[volumeID][(i+1)*2]),
@@ -334,12 +336,13 @@ def createEndcaps(name, dimensions, surfacesMap, endcapVolumeIds, endcapLayerIdO
     for it, t in enumerate(tags):
         endcapLayers = []
         endcapPositions.reverse()
+        endcapBinnings.reverse()
         sign = -sign
         endcapDimensionsZ = [sign*endcapZmid, sign*endcapZmax]
         endcapDimensionsZ.sort()
         offset = 0
         if sign < 0:
-            offset = 6
+            offset = len(endcapPositions)-1
         # build the layer loops
         for i in range(0, len(endcapPositions)):
             #  calculate z min / z max
@@ -353,7 +356,8 @@ def createEndcaps(name, dimensions, surfacesMap, endcapVolumeIds, endcapLayerIdO
                                          [endcapRmin, endcapRmax, zMin, zMax],
                                          acts.LayerStructureBuilder.SurfacesHolder(
                 surfacesMap[volID][layerID]),
-                endcapBinnings, [])]
+                endcapBinnings[i], [])]
+
         endcap = ContainerStructure(name+t,
                                     [endcapRmin, endcapRmax, endcapDimensionsZ[0], endcapDimensionsZ[1]], endcapLayers, acts.Binning.z)
         endcap.printDimensions()
@@ -361,144 +365,144 @@ def createEndcaps(name, dimensions, surfacesMap, endcapVolumeIds, endcapLayerIdO
     return endcaps
 
 
-jsOptions = acts.examples.SurfaceJsonOptions()
-jsOptions.inputFile = 'geometry-map.json'
-
-# Where to pick the surfaces from
-
-surfacesHierarchyMap = acts.examples.readSurfaceFromJson(jsOptions)
-svlMap = acts.examples.extractVolumeLayerSurfaces(surfacesHierarchyMap, True)
-
-# Create the detector structure
-detectorRmin = 0.
-detectorRmax = 1200
-detectorZmin = -3100
-detectorZmax = -detectorZmin
-beamPipeRmax = 27.
-
-
-# Beam pipe section
-beamPipe = EmptyVolume(
-    'BeamPipe', [detectorRmin, beamPipeRmax, -detectorZmax, detectorZmax])
-
-
-# Pixel section
-#
-pixelRmax = 200.
-pixelZmid = 580.
-
-# Pixel negative/positive endcap
-# binning r / binning phi
-pixelEndcapBinningR = acts.ProtoBinning(
-    acts.Binning.r, acts.Binning.bound, 40, 175, 2, 1)
-pixelEndcapBinningPhi = acts.ProtoBinning(
-    acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, 56, 1)
-pixelEndcapPositions = [620., 720., 840., 980., 1120., 1320., 1520.]
-pixelEndcapVolumeIds = [16, 18]
-pixelEndcapLayerIdOffsets = [4, 2]
-
-pixelEndcaps = createEndcaps('Pixel::Endcap',
-                             [beamPipeRmax, pixelRmax, pixelZmid, detectorZmax],
-                             svlMap, pixelEndcapVolumeIds, pixelEndcapLayerIdOffsets,
-                             pixelEndcapPositions, 20.,
-                             [pixelEndcapBinningR, pixelEndcapBinningPhi])
-
-# Pixel barrel
-pixelBarrelPositions = [34., 70., 116., 172.]
-pixelBarrelBinningZ = acts.ProtoBinning(
-    acts.Binning.z, acts.Binning.bound, -500, 500, 14, 1)
-pixelBarrel = createBarrel('Pixel::Barrel', [beamPipeRmax, pixelRmax, -pixelZmid, pixelZmid],
-                           svlMap, 17, pixelBarrelPositions, 10., pixelBarrelBinningZ, [16, 32, 52, 78])
-
-pixelBarrel.printDimensions()
-
-# Pxiel overall
-pixelBuilder = ContainerStructure('Pixel',
-                                  [beamPipeRmax, pixelRmax, detectorZmin, detectorZmax], [pixelEndcaps[0], pixelBarrel, pixelEndcaps[1]], None)
-# PST
-#
-pstRmax = 220.
-pst = EmptyVolume('PST', [pixelRmax, pstRmax, -detectorZmax, detectorZmax])
-
-# SStrip section
-#
-sstripRmax = 720.
-sstripZmid = 1250.
-# SStrip negative/positive endcap
-sstripEndcapBinningR = acts.ProtoBinning(
-    acts.Binning.r, acts.Binning.bound, 230, 710, 3, 1)
-sstripEndcapBinningPhi = acts.ProtoBinning(
-    acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, 40, 1)
-sstripEndcapPositions = [1300., 1550., 1850., 2200, 2550., 2950.]
-sstripEndcapVolumeIds = [23, 25]
-sstripEndcapLayerIdOffsets = [2, 2]
-
-sstripEndcaps = createEndcaps('ShortStrips::Endcap',
-                              [pstRmax, sstripRmax, sstripZmid, detectorZmax],
-                              svlMap, sstripEndcapVolumeIds, sstripEndcapLayerIdOffsets,
-                              sstripEndcapPositions, 50.,
-                              [sstripEndcapBinningR, sstripEndcapBinningPhi])
-
-# SStrip barrel
-sstripBarrelPositions = [260., 360., 500., 660.]
-sstripBarrelBinningZ = acts.ProtoBinning(
-    acts.Binning.z, acts.Binning.bound, -1100, 1100, 21, 1)
-sstripBarrel = createBarrel('ShortStrips::Barrel', [pstRmax, sstripRmax, -sstripZmid, sstripZmid],
-                            svlMap, 24, sstripBarrelPositions, 20., sstripBarrelBinningZ, [40, 56, 78, 102])
-
-sstripBarrel.printDimensions()
-
-sstripBuilder = ContainerStructure('ShortStrips',
-                                   [pstRmax, sstripRmax, detectorZmin, detectorZmax], [sstripEndcaps[0], sstripBarrel, sstripEndcaps[1]], None)
-
-
-# LStrip section
-lstripRmax = 1100.
-lstripZmid = sstripZmid
-
-# LStrip negative/positive endcap
-lstripEndcapBinningR = acts.ProtoBinning(
-    acts.Binning.r, acts.Binning.bound, 720, 1020, 2, 1)
-lstripEndcapBinningPhi = acts.ProtoBinning(
-    acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, 40, 1)
-lstripEndcapPositions = [1300., 1600., 1900., 2250, 2600., 3000.]
-lstripEndcapVolumeIds = [28, 30]
-lstripEndcapLayerIdOffsets = [2, 2]
-
-lstripEndcaps = createEndcaps('LongStrips::Endcap',
-                              [sstripRmax, lstripRmax, lstripZmid, detectorZmax],
-                              svlMap, lstripEndcapVolumeIds, lstripEndcapLayerIdOffsets,
-                              lstripEndcapPositions, 50.,
-                              [lstripEndcapBinningR, lstripEndcapBinningPhi])
-
-# SStrip barrel
-lstripBarrelPositions = [830, 1030]
-lstripBarrelBinningZ = acts.ProtoBinning(
-    acts.Binning.z, acts.Binning.bound, -1100, 1100, 21, 1)
-lstripBarrel = createBarrel('LongStrips::Barrel', [sstripRmax, lstripRmax, -lstripZmid, lstripZmid],
-                            svlMap, 29, lstripBarrelPositions, 30., lstripBarrelBinningZ, [40, 56])
-
-lstripBarrel.printDimensions()
-
-lstripBuilder = ContainerStructure('ShortStrips',
-                                   [sstripRmax, lstripRmax, detectorZmin, detectorZmax], [lstripEndcaps[0], lstripBarrel, lstripEndcaps[1]], None)
-
-
-detectorBuilder = ContainerStructure('Detector',
-                                     [detectorRmin, lstripRmax, detectorZmin, detectorZmax], [beamPipe, pixelBuilder, pst, sstripBuilder, lstripBuilder], None)
-
-
-detectorBuilderConf = acts.DetectorBuilder.Config()
-detectorBuilderConf.name = 'ODD'
-detectorBuilderConf.builder = detectorBuilder.getBuilder()
-
-detectorBuilder = acts.DetectorBuilder(
-    detectorBuilderConf, 'ODD Detector Builder', acts.logging.VERBOSE)
-
-detector = detectorBuilder.construct(acts.GeometryContext())
-
-
-acts.examples.drawDetectorSvg(detector,  ['zr', 'xy'])
-acts.examples.drawDetectorVolumesSvg(detector, ['grid_zphi', 'grid_xy'])
-
-
+# # # jsOptions = acts.examples.SurfaceJsonOptions()
+# # # jsOptions.inputFile = 'odd-geometry-map.json'
+# # #
+# # # # Where to pick the surfaces from
+# # #
+# # # surfacesHierarchyMap = acts.examples.readSurfaceFromJson(jsOptions)
+# # # svlMap = acts.examples.extractVolumeLayerSurfaces(surfacesHierarchyMap, True)
+# # #
+# # # # Create the detector structure
+# # # detectorRmin = 0.
+# # # detectorRmax = 1200
+# # # detectorZmin = -3100
+# # # detectorZmax = -detectorZmin
+# # # beamPipeRmax = 27.
+# # #
+# # #
+# # # # Beam pipe section
+# # # beamPipe = EmptyVolume(
+# # #     'BeamPipe', [detectorRmin, beamPipeRmax, -detectorZmax, detectorZmax])
+# # #
+# # #
+# # # # Pixel section
+# # # #
+# # # pixelRmax = 200.
+# # # pixelZmid = 580.
+# # #
+# # # # Pixel negative/positive endcap
+# # # # binning r / binning phi
+# # # pixelEndcapBinningR = acts.ProtoBinning(
+# # #     acts.Binning.r, acts.Binning.bound, 40, 175, 2, 1)
+# # # pixelEndcapBinningPhi = acts.ProtoBinning(
+# # #     acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, 56, 1)
+# # # pixelEndcapPositions = [620., 720., 840., 980., 1120., 1320., 1520.]
+# # # pixelEndcapVolumeIds = [16, 18]
+# # # pixelEndcapLayerIdOffsets = [4, 2]
+# # #
+# # # pixelEndcaps = createEndcaps('Pixel::Endcap',
+# # #                              [beamPipeRmax, pixelRmax, pixelZmid, detectorZmax],
+# # #                              svlMap, pixelEndcapVolumeIds, pixelEndcapLayerIdOffsets,
+# # #                              pixelEndcapPositions, 20.,
+# # #                              [pixelEndcapBinningR, pixelEndcapBinningPhi])
+# # #
+# # # # Pixel barrel
+# # # pixelBarrelPositions = [34., 70., 116., 172.]
+# # # pixelBarrelBinningZ = acts.ProtoBinning(
+# # #     acts.Binning.z, acts.Binning.bound, -500, 500, 14, 1)
+# # # pixelBarrel = createBarrel('Pixel::Barrel', [beamPipeRmax, pixelRmax, -pixelZmid, pixelZmid],
+# # #                            svlMap, 17, pixelBarrelPositions, 10., pixelBarrelBinningZ, [16, 32, 52, 78])
+# # #
+# # # pixelBarrel.printDimensions()
+# # #
+# # # # Pxiel overall
+# # # pixelBuilder = ContainerStructure('Pixel',
+# # #                                   [beamPipeRmax, pixelRmax, detectorZmin, detectorZmax], [pixelEndcaps[0], pixelBarrel, pixelEndcaps[1]], None)
+# # # # PST
+# # # #
+# # # pstRmax = 220.
+# # # pst = EmptyVolume('PST', [pixelRmax, pstRmax, -detectorZmax, detectorZmax])
+# # #
+# # # # SStrip section
+# # # #
+# # # sstripRmax = 720.
+# # # sstripZmid = 1250.
+# # # # SStrip negative/positive endcap
+# # # sstripEndcapBinningR = acts.ProtoBinning(
+# # #     acts.Binning.r, acts.Binning.bound, 230, 710, 3, 1)
+# # # sstripEndcapBinningPhi = acts.ProtoBinning(
+# # #     acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, 40, 1)
+# # # sstripEndcapPositions = [1300., 1550., 1850., 2200, 2550., 2950.]
+# # # sstripEndcapVolumeIds = [23, 25]
+# # # sstripEndcapLayerIdOffsets = [2, 2]
+# # #
+# # # sstripEndcaps = createEndcaps('ShortStrips::Endcap',
+# # #                               [pstRmax, sstripRmax, sstripZmid, detectorZmax],
+# # #                               svlMap, sstripEndcapVolumeIds, sstripEndcapLayerIdOffsets,
+# # #                               sstripEndcapPositions, 50.,
+# # #                               [sstripEndcapBinningR, sstripEndcapBinningPhi])
+# # #
+# # # # SStrip barrel
+# # # sstripBarrelPositions = [260., 360., 500., 660.]
+# # # sstripBarrelBinningZ = acts.ProtoBinning(
+# # #     acts.Binning.z, acts.Binning.bound, -1100, 1100, 21, 1)
+# # # sstripBarrel = createBarrel('ShortStrips::Barrel', [pstRmax, sstripRmax, -sstripZmid, sstripZmid],
+# # #                             svlMap, 24, sstripBarrelPositions, 20., sstripBarrelBinningZ, [40, 56, 78, 102])
+# # #
+# # # sstripBarrel.printDimensions()
+# # #
+# # # sstripBuilder = ContainerStructure('ShortStrips',
+# # #                                    [pstRmax, sstripRmax, detectorZmin, detectorZmax], [sstripEndcaps[0], sstripBarrel, sstripEndcaps[1]], None)
+# # #
+# # #
+# # # # LStrip section
+# # # lstripRmax = 1100.
+# # # lstripZmid = sstripZmid
+# # #
+# # # # LStrip negative/positive endcap
+# # # lstripEndcapBinningR = acts.ProtoBinning(
+# # #     acts.Binning.r, acts.Binning.bound, 720, 1020, 2, 1)
+# # # lstripEndcapBinningPhi = acts.ProtoBinning(
+# # #     acts.Binning.phi, acts.Binning.closed, -math.pi, math.pi, 40, 1)
+# # # lstripEndcapPositions = [1300., 1600., 1900., 2250, 2600., 3000.]
+# # # lstripEndcapVolumeIds = [28, 30]
+# # # lstripEndcapLayerIdOffsets = [2, 2]
+# # #
+# # # lstripEndcaps = createEndcaps('LongStrips::Endcap',
+# # #                               [sstripRmax, lstripRmax, lstripZmid, detectorZmax],
+# # #                               svlMap, lstripEndcapVolumeIds, lstripEndcapLayerIdOffsets,
+# # #                               lstripEndcapPositions, 50.,
+# # #                               [lstripEndcapBinningR, lstripEndcapBinningPhi])
+# # #
+# # # # SStrip barrel
+# # # lstripBarrelPositions = [830, 1030]
+# # # lstripBarrelBinningZ = acts.ProtoBinning(
+# # #     acts.Binning.z, acts.Binning.bound, -1100, 1100, 21, 1)
+# # # lstripBarrel = createBarrel('LongStrips::Barrel', [sstripRmax, lstripRmax, -lstripZmid, lstripZmid],
+# # #                             svlMap, 29, lstripBarrelPositions, 30., lstripBarrelBinningZ, [40, 56])
+# # #
+# # # lstripBarrel.printDimensions()
+# # #
+# # # lstripBuilder = ContainerStructure('ShortStrips',
+# # #                                    [sstripRmax, lstripRmax, detectorZmin, detectorZmax], [lstripEndcaps[0], lstripBarrel, lstripEndcaps[1]], None)
+# # #
+# # #
+# # # detectorBuilder = ContainerStructure('Detector',
+# # #                                      [detectorRmin, lstripRmax, detectorZmin, detectorZmax], [beamPipe, pixelBuilder, pst, sstripBuilder, lstripBuilder], None)
+# # #
+# # #
+# # # detectorBuilderConf = acts.DetectorBuilder.Config()
+# # # detectorBuilderConf.name = 'ODD'
+# # # detectorBuilderConf.builder = detectorBuilder.getBuilder()
+# # #
+# # # detectorBuilder = acts.DetectorBuilder(
+# # #     detectorBuilderConf, 'ODD Detector Builder', acts.logging.VERBOSE)
+# # #
+# # # detector = detectorBuilder.construct(acts.GeometryContext())
+# # #
+# # #
+# # # acts.examples.drawDetectorSvg(detector,  ['zr', 'xy'])
+# # # acts.examples.drawDetectorVolumesSvg(detector, ['grid_zphi', 'grid_xy'])
+# # #
+# # #

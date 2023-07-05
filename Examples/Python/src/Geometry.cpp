@@ -156,6 +156,21 @@ void addExperimentalGeometry(Context& ctx) {
         if (sensitiveOnly and gid.sensitive() == 0) {
           continue;
         };
+
+        long unsigned int phi_module = 13;
+
+        if (gid.sensitive()<=phi_module*(14*4*2*2) or gid.sensitive()>(phi_module+1)*(14*4*2*2))
+          continue;
+
+        // if ((gid.sensitive()%(14*4*2*2))<=56)
+        //   continue;
+        // if ((gid.sensitive()%(14*4*2*2))>56*3)
+        //   continue;
+
+        if ((gid.sensitive()%(14*4*2*2))>56 and (gid.sensitive()%(14*4*2*2))<=56*3)
+          continue;
+
+
         surfaceVolumeLayerMap[gid.volume()][gid.layer()].push_back(surface);
       }
       // Return the surface volume map
