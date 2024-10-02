@@ -44,10 +44,21 @@ RootMaterialTrackReader::RootMaterialTrackReader(const Config& config,
                               << "'.");
   }
 
-  // get the number of entries, which also loads the tree
-  std::size_t nentries = m_inputChain->GetEntries();
+    // loop over the input files
+  for (const auto& inputFile : m_cfg.fileList) {
+    // add file to the input chain
+    m_inputChain->Add(inputFile.c_str());
+    ACTS_DEBUG("Adding File " << inputFile << " to tree '" << m_cfg.treeName
+                              << "'.");
+  }
 
-  m_inputChain->SetBranchAddress("event_id", &m_eventId);
+  // get the number of entries, which also loads the tree
+  size_t nentries = m_inputChain->GetEntries();
+
+  bool eventIdPresent =
+      (TTree::kMatch == m_inputChain->SetBranchAddress("event_id", &m_eventId));
+
+  // m_inputChain->SetBranchAddress("event_id", &m_eventId);
   m_inputChain->SetBranchAddress("v_x", &m_v_x);
   m_inputChain->SetBranchAddress("v_y", &m_v_y);
   m_inputChain->SetBranchAddress("v_z", &m_v_z);
@@ -78,7 +89,9 @@ RootMaterialTrackReader::RootMaterialTrackReader(const Config& config,
     m_inputChain->SetBranchAddress("sur_pathCorrection", &m_sur_pathCorrection);
   }
 
-  m_events = static_cast<std::size_t>(m_inputChain->GetMaximum("event_id") + 1);
+  m_events = eventIdPresent
+                 ? static_cast<size_t>(m_inputChain->GetMaximum("event_id") + 1)
+                 : nentries;
   m_batchSize = nentries / m_events;
   ACTS_DEBUG("The full chain has "
              << nentries << " entries for " << m_events
@@ -88,7 +101,7 @@ RootMaterialTrackReader::RootMaterialTrackReader(const Config& config,
             << std::endl;
 
   // Sort the entry numbers of the events
-  {
+  if (eventIdPresent) {
     m_entryNumbers.resize(nentries);
     m_inputChain->Draw("event_id", "", "goff");
     RootUtility::stableSort(m_inputChain->GetEntries(), m_inputChain->GetV1(),
@@ -144,11 +157,15 @@ ProcessCode RootMaterialTrackReader::read(const AlgorithmContext& context) {
   // The collection to be written
   std::unordered_map<std::size_t, Acts::RecordedMaterialTrack> mtrackCollection;
 
+  ACTS_VERBOSE("Starting loop...");
   // Loop over the entries for this event
   for (std::size_t ib = 0; ib < m_batchSize; ++ib) {
+    ACTS_VERBOSE("Reading entry " << ib << " from batch size = " << m_batchSize);
     // Read the correct entry: startEntry + ib
     auto entry = m_batchSize * context.eventNumber + ib;
-    entry = m_entryNumbers.at(entry);
+    if (entry < m_entryNumbers.size()) {
+      entry = m_entryNumbers[entry];
+    }
     ACTS_VERBOSE("Reading event: " << context.eventNumber
                                    << " with stored entry: " << entry);
     m_inputChain->GetEntry(entry);
